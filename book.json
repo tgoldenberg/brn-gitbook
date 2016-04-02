@@ -1,0 +1,6 @@
+{
+    "plugins": ["styles-sass"],
+    "styles": {
+        "html": "./styles/html.sass"
+    }
+}
