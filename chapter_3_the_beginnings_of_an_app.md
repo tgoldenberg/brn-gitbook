@@ -12,9 +12,18 @@ You should see something like this: ![installing](Screen Shot 2016-04-07 at 7.34
 
 3. Let's run our app! 
 
-`cd` into the directory, and type the command `react-native run-ios` to open XCode and run the app on the simulator. After opening another terminal window to run the JS, your app should finally load on the iOS simulator. (it's a lot of logs to look at the first time, but don't worry). 
+Just `cd` into the directory, and type the command `react-native run-ios` to open XCode and run the app on the simulator. After opening another terminal window to run the JS, your app should load on the iOS simulator. (It's a lot of logs to look at the first time, but don't worry). 
 
-Alternatively, you can open the `.xcodeproj` file in XCode with the command `open ios/assembliesTutorial.xcodeproj`, and then press the `run` button in Xcode to launch it on the Simulator. I prefer this way, just because it's good to get acquainted with the XCode environment. 
+Alternatively, you can also open the `.xcodeproj` file in XCode with the command `open ios/assembliesTutorial.xcodeproj`, and then press the `run` button to launch it on the Simulator. I prefer this way, just because it's good to get acquainted with the XCode environment. 
+
+4. Now is a good time for a `git` commit. As we go through the tutorial, we'll provide commits as snapshots of the app at different phases. It's always a good habit to commit early and often. Here's a link to some pointers on good `git` hygiene. 
+
+**** 
+![github](http://www.plusdoption.com/lib/img/all/github-logo.png) [Commit 1](https://www.github.com/buildreactnative/assemblies-tutorial) - `Initialize React Native app`
+
+
+
+**** 
 
 
 
