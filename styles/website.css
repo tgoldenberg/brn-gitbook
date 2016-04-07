@@ -4,3 +4,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #2d5b92;
   font-family: 'Fira Sans';
 }
+
+.github {
+  width: 200px;
+  }
