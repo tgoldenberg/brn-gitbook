@@ -6,7 +6,7 @@
 
 2. After checking to make sure you have all the requirements (see Chapter 2), create your app with the command `react-native init assembliesTutorial`
 
-You should see something like this - ![installing](Screen Shot 2016-04-07 at 7.34.18 PM.png)
+You should see something like this: ![installing](Screen Shot 2016-04-07 at 7.34.18 PM.png)
 
 3. 
 
