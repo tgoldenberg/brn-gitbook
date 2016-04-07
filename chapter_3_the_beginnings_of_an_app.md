@@ -8,23 +8,5 @@
 
 You should see something like this: ![installing](Screen Shot 2016-04-07 at 7.34.18 PM.png)
 
-3. 
+3. Once the React Native packager is done installing, you will see a list of the packages installed by `NPM` (in a nested tree structure) and instructions on running the app. ![](Screen Shot 2016-04-07 at 7.37.19 PM.png)
 
-
-### Basic Requirements
-
-The steps that follow assume you’ve met React Native’s basic requirements, which are:
-
-1. You’re using OS X, since it is (and will definitely continue to be) required for any iOS development.
-
-2. You have [Homebrew](http://brew.sh/) installed (a good idea no matter what). Also run ```brew update && brew upgrade``` to be safe.
-
-3. Node.js, 4.0+ (React Native runs on Node)
-
-4. ```brew install watchman```
-
-5. ```brew install flow``` (optional)
-
-We’re paraphrasing the requirements listed in the official React native [documentation](https://facebook.github.io/react-native/docs/getting-started.html). It’s a good idea to check the details there before getting started.
-
-#### For iOS:
