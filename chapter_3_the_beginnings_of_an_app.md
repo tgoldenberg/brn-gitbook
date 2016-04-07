@@ -17,3 +17,5 @@ You should see something like this: ![installing](Screen Shot 2016-04-07 at 7.34
 Alternatively, you can open the `.xcodeproj` file in XCode with the command `open ios/assembliesTutorial.xcodeproj`, and then press the `run` button in Xcode to launch it on the Simulator. I prefer this way, just because it's good to get acquainted with the XCode environment. 
 
 
+
+
