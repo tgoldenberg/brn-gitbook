@@ -351,3 +351,127 @@ This is something I'm a strong believer in. Fake it and then make it. The wirefr
 
 We won't be in the tutorial. I love Redux but even its creator has said that you shouldn't use it until you've felt the pain without it. I would say that this app would be a good candidate for a Flux architecture such as Redux. However, we were also able to create a good product without it. So while the production version of Assemblies may incorporate Redux, the tutorial itself won't touch on the topic.
 
+##### Fleshing out our Landing Page
+
+Loosely based on the sketches, I'm going to fill in our `Landing` page. Later, this will link to a `login/signup`, but for now I'll have it go directly to the `Dashboard`. Let place an image as the screen background using the `Dimensions` module. Then let's use the `TouchableOpacity` component as a button that leads to our `Dashboard`
+
+```
+import NavigationBar from 'react-native-navbar';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Colors from '../styles/colors';
+
+import React, {
+  View,
+  Text,
+  StyleSheet,
+  Component,
+  TouchableOpacity,
+  Dimensions,
+  Image,
+} from 'react-native';
+
+let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+
+export default class Landing extends Component{
+  render(){
+    return (
+        <View style={styles.container}>
+          <View style={styles.backgroundHolder}>
+            <Image style={styles.image} source={require('../assets/images/welcome.png')}/>
+          </View>
+          <View style={styles.logoHolder}>
+            <Image style={styles.logo} source={require('../assets/images/logo.png')}/>
+            <Text style={styles.title}>assemblies</Text>
+            <Text style={styles.subTitle}>Where Developers Connect</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              this.props.navigator.push({
+                name: 'Dashboard'
+              })
+            }}
+          >
+            <Icon style={styles.icon} name='person' size={36} color='white' />
+            <Text style={styles.buttonText}>Go to Dashboard</Text>
+          </TouchableOpacity>
+        </View>
+    )
+  }
+};
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  },
+  backgroundHolder: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  },
+  image: {
+    height: deviceHeight,
+    width: deviceWidth,
+  },
+  logoHolder: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 80,
+  },
+  logo: {
+    height: 90,
+    width: 90,
+  },
+  title: {
+    color: 'white',
+    fontSize: 28,
+    fontWeight: '700',
+    paddingBottom: 24,
+  },
+  subTitle: {
+    color: 'white',
+    fontSize: 20,
+  },
+  button: {
+    height: 80,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    backgroundColor: Colors.brandPrimary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon: {
+    position: 'absolute',
+    top: 20,
+    left: 30,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+});
+```
+
+You'll notice that I reference `Colors` from a separate file now, and that some images are referenced. Feel free to download the `logo.png` and `welcome.png` images and then keeping them in a `assets/images` folder under `application`. The `colors.js` file can be in `styles/` under `application` is so far is just this 
+```
+export default Colors = {
+  brandPrimary: '#3A7BD2',
+};
+```
+As for the styles, some stuff should be pretty self-explanatory for those familiar with styling with CSS on the web. The most important thing about styling in React Native is understanding how to use flexbox properly. You'll see that we use some absolute positioning as well here, but the majority of components typically use flexbox for positioning. Nick will delve a little into flexbox styling later as well. After all that, you should see something like this
+
+<img src="phone-08.png" style="height: 300px;"/>
+
