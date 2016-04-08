@@ -208,8 +208,7 @@ class assembliesTutorial extends Component{
             return <Dashboard />
         }
       }}
-      configureScene={() => {
-        return Navigator.SceneConfigs.FadeAndroid;
+      configureScene={() => Navigator.SceneConfigs.FadeAndroid}
       }}
     />
   }
