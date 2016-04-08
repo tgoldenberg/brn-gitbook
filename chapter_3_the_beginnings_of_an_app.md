@@ -190,10 +190,24 @@ import React, {
   StyleSheet,
 } from 'react-native';
 
+import Landing from './application/components/Landing';
+import Dashboard from './application/components/Dashboard';
+
 class assembliesTutorial extends Component{
   render(){
     <Navigator
-      
+      style={styles.container}
+      initialRoute={{
+        name: 'Landing'
+      }}
+      renderScene={(route, navigator) => {
+        switch(route.name){
+          case 'Landing':
+            return <Landing />
+          case 'Dashboard':
+            return <Dashboard />
+        }
+      }}
     />
   }
 }
