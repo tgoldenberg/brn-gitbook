@@ -180,7 +180,7 @@ This will install the packages to our `node_modules` folder. Now, one issue that
 
 <img src="terminal-03.png" /> `magical linking :)`
 
-
+Now we can switch out `NavigatorIOS` for `Navigator` in our `index.ios.js` file. In `Navigator`, we must provide an initial route and a render 
 
 
 
