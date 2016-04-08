@@ -112,7 +112,35 @@ Finally, let's connect them in our `index.ios.js` file -
 
 
 <pre><code>
+import React from 'react-native';
+import Landing from './application/components/Landing';
 
+let {
+  AppRegistry,
+  Component,
+  NavigatorIOS,
+  StyleSheet,
+} = React;
+
+class assembliesTutorial extends Component{
+  render(){
+    return (
+      <NavigatorIOS
+        style={{flex: 1}}
+        barTintColor='#3A7BD2'
+        titleTextColor='white'
+        tintColor='white'
+        shadowHidden={true}
+        translucent={false}
+        initialRoute={{
+          component: Landing,
+          title: 'Landing',
+        }}
+    );
+  }
+};
+
+AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
 
 </code></pre>
 
