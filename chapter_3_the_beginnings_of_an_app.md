@@ -323,7 +323,7 @@ Okay, now it's time for another commit! Congrats on having delved into navigatio
 
 *** 
 
-## 3.3 TabBar Navigation
+## 3.3 Fleshing out the app
 
 One important thing to understand about an open source project like React Native is what its roadmap is. Facebook uses React Native currently in 2 apps - the Ads Manager app for iOS and Android, and partially in the Groups app. If we look at these apps, we can see where React Native's strengths are, and we should be looking to leverage them. This is why we decided to use TabBar navigation in Assemblies. Facebook uses this type of navigation in both apps and more apps are following suit. In this chapter, we will implement a simple TabBar navigation. 
 
