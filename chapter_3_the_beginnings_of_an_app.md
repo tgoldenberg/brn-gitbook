@@ -23,5 +23,8 @@ Alternatively, you can also open the `.xcodeproj` file in XCode with the command
 **** 
 
 
+## Hot Loading - say what?!?
+
+Thanks to the amazing team of contributors (including @gaeron) to `react-native`, recent versions enable hot loading. This makes development simply a joy -- style changes appear instantly without having to navigate to a particular component. So try it out. Open `index.ios.js` in your favorite text editor (I use `Atom`, `Sublime`, or `Vim`). Change the line `Welcome to React Native` to `Welcome to Assemblies`. Did you see the simulator change right away? Amazing, I know. 
 
 
