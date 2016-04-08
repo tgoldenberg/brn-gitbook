@@ -221,7 +221,39 @@ Notice that the `configureScene` option decides what type of animation our navig
 Next we redesign our 2 screens so that they route to each other and also include our navbar with a back icon. Let's look at `Landing.js`
 
 ```
+import NavigationBar from 'react-native-navbar';
+import Icon from 'react-native-vector-icons/Ionicons';
 
+import React, {
+  View,
+  Text,
+  StyleSheet,
+  Component, 
+  TouchableOpacity,
+} from 'react-native';
+
+export default class Landing extends Component{
+  render(){
+    return (
+      <View style={{flex: 1}}>
+        <NavigationBar
+          title={{title: 'Landing', tintColor: 'white'}}
+          tintColor='#3A7BD2'
+        />
+        <View style={styles.container}>
+          <Text style={styles.h1}>This is Landing</Text>
+          <TouchableOpacity onPress={() => {
+            this.props.navigator.push({
+              name: 'Dashboard'
+            });
+          }}>
+            <Text>Go to Dashboard</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+};
 ```
 
 
