@@ -45,6 +45,28 @@ We will be using `Navigator` for this project, because it is more widely support
 
 Now we're ready to start writing some components! First, let's setup our file directory structure. Create a folder in the root level called `application`, and within that, a folder called `components`. There we will create 2 `.js` files, `Landing.js` and `Dashboard.js`. 
 
+Let's build our Landing component - 
+
+<pre><code>
+import React from 'react-native';
+
+let {
+  View,
+  Text,
+} = React;
+
+export default class Landing extends Component{
+  render(){
+    return (
+      <View>
+        <Text>Landing</Text>
+      </View>
+    );
+  }
+};
+</code></pre>
+
+
 
 
 
