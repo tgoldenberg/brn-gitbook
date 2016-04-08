@@ -47,7 +47,7 @@ Now we're ready to start writing some components! First, let's setup our file di
 
 Let's build our Landing component - 
 
-<pre><code>
+```
 import React from 'react-native';
 import Dashboard from './Dashboard';
 
@@ -87,11 +87,11 @@ let styles = StyleSheet.create({
     padding: 20,
   },
 });
-</code></pre>
+```
 
 And our Dashboard component (with the same styles)- 
 
-<pre><code>
+```
 import React from 'react-native';
 import Landing from './Landing';
 
@@ -121,13 +121,13 @@ export default class Dashboard extends Component{
 
 let styles = StyleSheet.create({ .... (same as previous file)
 
-</code></pre>
+```
 
 
 Finally, let's connect them in our `index.ios.js` file - 
 
 
-<pre><code>
+```
 import React from 'react-native';
 import Landing from './application/components/Landing';
 
@@ -158,7 +158,7 @@ class assembliesTutorial extends Component{
 
 AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
 
-</code></pre>
+```
 
 ## Time for a commit 
 
@@ -180,7 +180,25 @@ This will install the packages to our `node_modules` folder. Now, one issue that
 
 <img src="terminal-03.png" /> `magical linking :)`
 
-Now we can switch out `NavigatorIOS` for `Navigator` in our `index.ios.js` file. In `Navigator`, we must provide an initial route and a render 
+Now we can switch out `NavigatorIOS` for `Navigator` in our `index.ios.js` file. In `Navigator`, we must provide an initial route and a `renderScene` function which acts as a `switch()` statement for all of our main routes. Let's setup the Navigator for our two previous components, `Dashboard` and `Landing`.
+
+```
+import React, {
+  AppRegistry,
+  Component,
+  Navigator,
+  StyleSheet,
+} from 'react-native';
+
+class assembliesTutorial extends Component{
+  render(){
+    <Navigator
+      
+    />
+  }
+}
+
+```
 
 
 
