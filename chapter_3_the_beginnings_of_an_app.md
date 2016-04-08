@@ -475,3 +475,10 @@ As for the styles, some stuff should be pretty self-explanatory for those famili
 
 <img src="phone-08.png" style="height: 300px;"/>
 
+### Time for a commit! 
+
+*** 
+<img src="github-logo.png" style="width: 40px;"/> [Commit 4]() - "Flesh out landing page"
+
+*** 
+
