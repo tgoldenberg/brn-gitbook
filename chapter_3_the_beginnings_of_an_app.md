@@ -332,10 +332,10 @@ The interesting thing about TabBar navigation is that to accomplish it, you ofte
 I've gone ahead and picked out a few routes based on the sketches that Nick has given me. In all, there will be 5 tabs, but for now, I'll start with a Profile view, a Dashboard view, and a Messages view. Here's a look at the early sketches we used. 
 
 <div style="display: flex; align-items: center;">
-  <img src="phone-04.png" style="height: 300px;"/>
-  <img src="phone-05.png" style="height: 300px;"/>
-  <img src="phone-06.png" style="height: 300px;"/>
-  <img src="phone-07.png" style="height: 300px;"/>
+  <img src="phone-04.png" style="height: 300px; margin: 5px;"/>
+  <img src="phone-05.png" style="height: 300px; margin: 5px;"/>
+  <img src="phone-06.png" style="height: 300px; margin: 5px;"/>
+  <img src="phone-07.png" style="height: 300px; margin: 5px;"/>
 </div>
 
 
