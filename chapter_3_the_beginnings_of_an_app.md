@@ -53,6 +53,7 @@ import React from 'react-native';
 let {
   View,
   Text,
+  Component,
 } = React;
 
 export default class Landing extends Component{
@@ -74,6 +75,7 @@ import React from 'react-native';
 let {
   View, 
   Text,
+  Component,
 } = React;
 
 export default class Dashboard extends Component{
