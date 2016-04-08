@@ -27,7 +27,16 @@ Alternatively, you can also open the `.xcodeproj` file in XCode with the command
 
 Thanks to the amazing team of contributors (including @gaeron) to `react-native`, recent versions enable hot loading. This makes development simply a joy -- style changes appear instantly without having to navigate to a particular component. So try it out. Open `index.ios.js` in your favorite text editor (I use `Atom`, `Sublime`, or `Vim`). First make sure LiveReload is enabled by opening up the options panel with `cmd D`. Now change the line `Welcome to React Native` to `Welcome to Assemblies`. Did you see how that changed right away? Amazing, I know :).
 
-![](phone-01.png)
+<img src="phone-01.png" style="height: 200px; margin: auto;"/>
+
+
+
+
+
+
+
+
+
 
 
 
