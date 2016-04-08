@@ -315,6 +315,9 @@ As you can see, the nice thing about `Navigator` is that we can customize how ou
 
 Okay, now it's time for another commit! Congrats on having delved into navigation with React Native. The `Navigator` API has many more options, some of which we will use in the tutorial. Please check out the [docs](https://facebook.github.io/react-native/docs/navigator.html) for specific API information.
 
+<img src="phone-03.png" style="height: 300px;"/>
+
+
 *** 
 <img src="github-logo.png" style="width: 40px;"/> [Commit 3](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.2) - "Create basic navigation with Navigator"
 
