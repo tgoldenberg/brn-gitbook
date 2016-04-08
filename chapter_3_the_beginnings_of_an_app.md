@@ -49,6 +49,7 @@ Let's build our Landing component -
 
 <pre><code>
 import React from 'react-native';
+import Dashboard from './Dashboard';
 
 let {
   View,
@@ -60,7 +61,15 @@ export default class Landing extends Component{
   render(){
     return (
       <View>
-        <Text>Landing</Text>
+        <Text>This is Landing</Text>
+        <TouchableOpacity onClick={() => {
+          this.props.navigator.push({
+            title: 'Dashboard',
+            component: Dashboard,
+          });
+        }}>
+          <Text>Go to Dashboard</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -71,6 +80,7 @@ And our Dashboard component -
 
 <pre><code>
 import React from 'react-native';
+import Landing from './Landing';
 
 let {
   View, 
@@ -82,7 +92,15 @@ export default class Dashboard extends Component{
   render(){
     return (
       <View>
-        <Text>Dashboard</Text>
+        <Text>This is Dashboard</Text>
+        <TouchableOpacity onPress={() => {
+          this.props.navigator.push({
+            title: 'Landing',
+            component: Landing,
+          });
+        }}>
+          <Text>Go to Landing</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -93,7 +111,10 @@ export default class Dashboard extends Component{
 Finally, let's connect them in our `index.ios.js` file - 
 
 
+<pre><code>
 
+
+</code></pre>
 
 
 
