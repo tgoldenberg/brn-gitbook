@@ -144,6 +144,17 @@ AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
 
 </code></pre>
 
+## Time for a commit 
+
+Well, that's a quick look at what NavigatorIOS does. If it seems appropriate for a particular app, by all means, use it. Nick and I used NavigatorIOS for our Bhagavad Gita app because we didn't understand at the time how to handle the animations for Navigator. Not to worry - we'll make sure that you don't have that situation. Let's make a commit before moving to `Navigator`.
+
+**** 
+
+<img src="github-logo.png" style="width: 40px;"/> [Commit 2]() - "Simple NavigatorIOS example"
+
+
+
+
 
 
 
