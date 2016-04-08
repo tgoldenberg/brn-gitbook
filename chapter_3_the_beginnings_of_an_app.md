@@ -208,12 +208,20 @@ class assembliesTutorial extends Component{
             return <Dashboard />
         }
       }}
+      configureScene={() => {
+        return Navigator.SceneConfigs.FadeAndroid;
+      }}
     />
   }
 }
 ...
 ```
 
+Next we redesign our 2 screens so that they route to each other and also include our navbar with a back icon. Let's look at `Landing.js`
+
+```
+
+```
 
 
 
