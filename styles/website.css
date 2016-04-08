@@ -7,4 +7,8 @@ h1, h2, h3, h4, h5, h6 {
 
 img[alt=github] {
   width: 200px;
-  }
+}
+
+img[alt=phont] {
+  height: 200px;
+}
