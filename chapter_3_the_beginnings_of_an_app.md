@@ -339,5 +339,15 @@ I've gone ahead and picked out a few routes based on the sketches that Nick has 
 </div>
 
 
+Now, these aren't the final designs that we ended up with, but they are pretty close. Nick's experience as a product manager really came in handy when it came to designing sleak, easy-to-understand interfaces. Later in the tutorial, he'll explain what exactly goes into the process of creating lo- and hi-fidelity mockups and how an app's design evolves throughout the development process. 
 
+Now that we're about to build this app, there are 2 things I want to address. 
+
+1. Why are we starting out with fake data? 
+
+This is something I'm a strong believer in. Fake it and then make it. The wireframing process helps to funnel the idea of the product into a visual representation. A developer's job is to translate that into an actual product. It's very easy to focus on the programming problems like integration with a backend system and server, scalability, and so on. However, most often, the best thing to do at this point is to make a fake product. This helps get the UI components of the product in place so that you can think of the data integration later. This is the process I use and I find it works extremely well in most bootstrapped circumstances. That said, different things work for different people, or whatever floats your boat. 
+
+2. What flavor of Flux | Redux will we be using ? 
+
+We won't be in the tutorial. I love Redux but even its creator has said that you shouldn't use it until you've felt the pain without it. I would say that this app would be a good candidate for a Flux architecture such as Redux. However, we were also able to create a good product without it. So while the production version of Assemblies may incorporate Redux, the tutorial itself won't touch on the topic.
 
