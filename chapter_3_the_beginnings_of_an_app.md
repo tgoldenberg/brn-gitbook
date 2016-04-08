@@ -216,6 +216,8 @@ class assembliesTutorial extends Component{
 ...
 ```
 
+Notice that the `configureScene` option decides what type of animation our navigation uses to transition between scenes. Feel free to experiment and try other configurations, such as `FloatFromLeft`, `HorizontalSwipeJump`, and `VerticalUpSwipeJump`.
+
 Next we redesign our 2 screens so that they route to each other and also include our navbar with a back icon. Let's look at `Landing.js`
 
 ```
