@@ -60,8 +60,8 @@ let {
 export default class Landing extends Component{
   render(){
     return (
-      <View>
-        <Text>This is Landing</Text>
+      <View style={styles.container}>
+        <Text style={styles.h1}>This is Landing</Text>
         <TouchableOpacity onClick={() => {
           this.props.navigator.push({
             title: 'Dashboard',
@@ -74,9 +74,22 @@ export default class Landing extends Component{
     );
   }
 };
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  h1: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    padding: 20,
+  },
+});
 </code></pre>
 
-And our Dashboard component - 
+And our Dashboard component (with the same styles)- 
 
 <pre><code>
 import React from 'react-native';
@@ -91,20 +104,23 @@ let {
 export default class Dashboard extends Component{
   render(){
     return (
-      <View>
-        <Text>This is Dashboard</Text>
+      <View style={styles.container}>
+        <Text style={styles.h1}>This is Dashboard</Text>
         <TouchableOpacity onPress={() => {
           this.props.navigator.push({
             title: 'Landing',
             component: Landing,
           });
         }}>
-          <Text>Go to Landing</Text>
+          <Text >Go to Landing</Text>
         </TouchableOpacity>
       </View>
     );
   }
-}
+}; 
+
+let styles = StyleSheet.create({ .... (same as previous file)
+
 </code></pre>
 
 
@@ -151,6 +167,9 @@ Well, that's a quick look at what NavigatorIOS does. If it seems appropriate for
 **** 
 
 <img src="github-logo.png" style="width: 40px;"/> [Commit 2]() - "Simple NavigatorIOS example"
+![phone](phone-02.png)
+
+
 
 
 
