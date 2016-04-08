@@ -176,7 +176,7 @@ Now we'll take our implementation with `NavigatorIOS` and switch to `Navigator`.
 
 ```npm install --save react-native-navbar react-native-vector-icons```
 
-This will install the packages to our `node_modules` folder. 
+This will install the packages to our `node_modules` folder. Now, one issue that React Native developers often face is linking NPM libraries to XCode. Most packages have instructions on how to do this the long way. Fortunately, there is a package `rnpm` which handles the linking process for us. Just install `npm install -g rnpm`, and then run `rnpm link` to link the libraries we installed. 
 
 
 
