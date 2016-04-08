@@ -1,4 +1,4 @@
-<link rel="stylesheet" src="styles/website.css" />
+<link rel="stylesheet" src="./styles/website.css" />
 # Chapter 3: The Beginnings of an App
 
 ## Create an App
