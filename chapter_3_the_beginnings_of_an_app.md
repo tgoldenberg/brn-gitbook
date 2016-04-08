@@ -66,10 +66,29 @@ export default class Landing extends Component{
 };
 </code></pre>
 
+And our Dashboard component - 
+
+<pre><code>
+import React from 'react-native';
+
+let {
+  View, 
+  Text,
+} = React;
+
+export default class Dashboard extends Component{
+  render(){
+    return (
+      <View>
+        <Text>Dashboard</Text>
+      </View>
+    );
+  }
+}
+</code></pre>
 
 
-
-
+Finally, let's connect them in our `index.ios.js` file - 
 
 
 
