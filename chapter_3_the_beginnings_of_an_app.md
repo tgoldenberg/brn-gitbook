@@ -1,6 +1,6 @@
 # Chapter 3: The Beginnings of an App
 
-## Create an App
+## 3.0 Create an App
 
 1. We're going to start a new React Native project. First create a directory where you will store all folders related to the app -- `mkdir assemblies` - `cd assemblies`
 
@@ -19,7 +19,7 @@ Alternatively, you can also open the `.xcodeproj` file in XCode with the command
 4. Now is a good time for a `git` commit. As we go through the tutorial, we'll provide commits as snapshots of the app at different phases. It's always a good habit to commit early and often. Here's a link to some pointers on good `git` hygiene. 
 
 **** 
-<img src="github-logo.png" style="width: 60px;"/> [Commit 1]() - `Initialize React native app`
+<img src="github-logo.png" style="width: 60px;"/> [Commit 1](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.0) - `Initialize React native app`
 **** 
 
 
@@ -41,7 +41,7 @@ Next we will look at one of the most important parts of an app - navigation. Thi
 
 We will be using `Navigator` for this project, because it is more widely supported and seen in complex apps. However, to get a feel for NavigatorIOS, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit. 
 
-## Using NavigatorIOS - a small example
+## 3.1 Using NavigatorIOS - a small example
 
 Now we're ready to start writing some components! First, let's setup our file directory structure. Create a folder in the root level called `application`, and within that, a folder called `components`. There we will create 2 `.js` files, `Landing.js` and `Dashboard.js`. 
 
@@ -166,12 +166,17 @@ Well, that's a quick look at what NavigatorIOS does. If it seems appropriate for
 
 <img src="phone-02.png" style="height: 300px;" />
 **** 
-<img src="github-logo.png" style="width: 40px;"/> [Commit 2]() - "Simple NavigatorIOS example"
+<img src="github-logo.png" style="width: 40px;"/> [Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/Ch3-0) - "Simple NavigatorIOS example"
 **** 
 
 
+## 3.2 Navigator - the real deal
 
+Now we'll take our implementation with `NavigatorIOS` and switch to `Navigator`. You'll notice some differences. For one, `Navigator` doesn't have a interace component. That's why we'll be using the `react-native-navbar` package by @kureev. We'll also want to install the `react-native-vector-icons` package by @oblador to use cool icons in our navbar. Type the following in the terminal 
 
+```npm install --save react-native-navbar react-native-vector-icons```
+
+This will install the packages to our `node_modules` folder. 
 
 
 
