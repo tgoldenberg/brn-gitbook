@@ -19,8 +19,9 @@ Alternatively, you can also open the `.xcodeproj` file in XCode with the command
 4. Now is a good time for a `git` commit. As we go through the tutorial, we'll provide commits as snapshots of the app at different phases. It's always a good habit to commit early and often. Here's a link to some pointers on good `git` hygiene. 
 
 **** 
-<img src="http://www.plusdoption.com/lib/img/all/github-logo.png" style="width: 100px;"/> [Commit 1](https://www.github.com/buildreactnative/assemblies-tutorial) - `Initialize React Native app`
+ [Commit 1](https://www.github.com/buildreactnative/assemblies-tutorial) - `Initialize React Native app`
 
+<img src="http://www.plusdoption.com/lib/img/all/github-logo.png" style="width: 150px;"/>
 
 
 **** 
