@@ -311,7 +311,14 @@ let styles = StyleSheet.create({
 ```
 
 
+As you can see, the nice thing about `Navigator` is that we can customize how our screen looks at any given time. We can have a navbar with `react-native-navbar` and customize it with icons, or we can use navigation in a different way. It's worth looking at the different options before deciding what's right for your app. 
 
+Okay, now it's time for another commit! Congrats on having delved into navigation with React Native. The `Navigator` API has many more options, some of which we will use in the tutorial. Please check out the [docs](https://facebook.github.io/react-native/docs/navigator.html) for specific API information.
+
+*** 
+<img src="github-logo.png" style="width: 40px;"/> [Commit 3]() - "Create basic navigation with Navigator"
+
+*** 
 
 
 
