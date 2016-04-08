@@ -19,7 +19,7 @@ Alternatively, you can also open the `.xcodeproj` file in XCode with the command
 4. Now is a good time for a `git` commit. As we go through the tutorial, we'll provide commits as snapshots of the app at different phases. It's always a good habit to commit early and often. Here's a link to some pointers on good `git` hygiene. 
 
 **** 
-![github](github-logo.png)[Commit 1]() - `Initialize React native app`
+![github](github-logo[Commit 1]() - `Initialize React native app`
 **** 
 
 
