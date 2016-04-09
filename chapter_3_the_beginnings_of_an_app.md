@@ -172,9 +172,9 @@ Well, that's a quick look at what NavigatorIOS does. If it seems appropriate for
 
 ## 3.2 Navigator - the real deal
 
-Now we'll take our implementation with `NavigatorIOS` and switch to `Navigator`. You'll notice some differences. For one, `Navigator` doesn't have a interace component. That's why we'll be using the `react-native-navbar` package by @kureev. We'll also want to install the `react-native-vector-icons` package by @oblador to use cool icons in our navbar. Type the following in the terminal 
+Now we'll take our implementation with `NavigatorIOS` and switch to `Navigator`. You'll notice some differences. For one, `Navigator` doesn't have a interace component. That's why we'll be using the `react-native-navbar` package by @kureev. We'll also want to install the `react-native-vector-icons` package by @oblador to use cool icons in our navbar. Let's also throw in `underscore` for use later in the tutorial. Type the following in the terminal 
 
-```npm install --save react-native-navbar react-native-vector-icons```
+```npm install --save react-native-navbar react-native-vector-icons underscore```
 
 This will install the packages to our `node_modules` folder. Now, one issue that React Native developers often face is linking NPM libraries to XCode. Most packages have instructions on how to do this the long way. Fortunately, there is a package `rnpm` which handles the linking process for us. Just install `npm install -g rnpm`, and then run `rnpm link` to link the libraries we installed. 
 
