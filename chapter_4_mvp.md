@@ -119,3 +119,7 @@ Here's what we have so far. Let's make a commit at this point.
 
 *** 
 
+## 4.1 Styling the Views
+
+
+
