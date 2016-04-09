@@ -257,6 +257,10 @@ Here we use the `ScrollView` component for the first time. ScrollView gives us g
 
 ## 4.2 Messages View
 
-Next let's fill in our Messages View. We'll be using our fixtures file with messages for now. One things you'll notice is that these messages include all the relevent data for rendering them, including the author name and avatarUrl. Later, when implementing our backend, we will separate some of these data points. This is because a user can change their name or profile photo. Therefore, it's better to store the `authorId` in the message and refer to the `user` object. For convenience, we'll be storing all the data in the messages object for now. 
+Next let's fill in our Messages View. We'll be using our fixtures file with messages for now. One things you'll notice is that these messages include all the relevent data for rendering them, including the author name and avatarUrl. Later, when implementing our backend, we will separate some of these data points. This is because a user can change their name or profile photo. Therefore, it's better to store the `authorId` in the message and refer to the `user` object. For convenience, we'll be storing all the data in the messages object for now. We will be using the `ListView` in this component.
+
+```
+
+```
 
 
