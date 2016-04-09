@@ -257,10 +257,39 @@ Here we use the `ScrollView` component for the first time. ScrollView gives us g
 
 ## 4.2 Messages View
 
-Next let's fill in our Messages View. We'll be using our fixtures file with messages for now. One things you'll notice is that these messages include all the relevent data for rendering them, including the author name and avatarUrl. Later, when implementing our backend, we will separate some of these data points. This is because a user can change their name or profile photo. Therefore, it's better to store the `authorId` in the message and refer to the `user` object. For convenience, we'll be storing all the data in the messages object for now. We will be using the `ListView` in this component.
+Next let's fill in our Messages View. We'll be using our fixtures file with messages for now. One things you'll notice is that these messages include all the relevent data for rendering them, including the author name and avatarUrl. Later, when implementing our backend, we will separate some of these data points. This is because a user can change their name or profile photo. Therefore, it's better to store the `authorId` in the message and refer to the `user` object. For convenience, we'll be storing all the data in the messages object for now. We will be using the `ListView` in this component. The first thing we will need to do is convert our array of messages into an array of unique conversations. We then pass this conversation array (with the first message of each conversation) to our ListView as its `DataSource`. Let's look at the constructor for `MessagesView`
+
+```
+...
+// import messages from fixture file
+import { messages } from '../../fixtures/fixtures';
+import _ from 'underscore';
+
+export default class MessagesView extends Component{
+  constructor(props){
+    super(props);
+    let conversations = {}; 
+    // store each message under a conversation key
+    messages.forEach((msg) => { 
+      let key = msg.participants.sort().join('-');
+      if (conversations[key]) { conversations[key].push(msg); }
+      else { conversations[key] = [msg]; }
+    });
+    let dataBlob = _.keys(conversations)
+                      .map((key) => conversations[key]);
+    // take the first message from each conversation
+    this.state = {
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 != r2
+      })
+      .cloneWithRows(dataBlob) 
+    };
+  }
+...
+}
 
 ```
 
-```
+
 
 
