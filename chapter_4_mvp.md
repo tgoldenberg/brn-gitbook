@@ -107,8 +107,6 @@ let styles = StyleSheet.create({
     padding: 20,
   },
 });
-
-
 ```
 
 
