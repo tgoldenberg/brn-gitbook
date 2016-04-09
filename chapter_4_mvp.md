@@ -290,6 +290,49 @@ export default class MessagesView extends Component{
 
 ```
 
+Now that we have our data, here's what the rest of the component looks like. 
+
+```
+
+  _renderRow(rowData){
+    console.log('ROW DATA', rowData);
+    return (
+      <Text>{rowData[0].text}</Text>
+    );
+  }
+  render() {
+    return (
+      <View style={{ flex: 1 }}>
+        <NavigationBar
+          title={{ title: 'Messages', tintColor: 'white' }}
+          tintColor={Colors.brandPrimary}
+        />
+        <ListView 
+          dataSource={this.state.dataSource}
+          contentInset={{ bottom: 49 }} 
+          automaticallyAdjustContentInsets={false}
+          ref='messagesList'
+          renderRow={this._renderRow.bind(this)}
+        />
+      </View>
+    );
+  }
+};
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  h1: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    padding: 20,
+  },
+});
+```
+
 
 
 
