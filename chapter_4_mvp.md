@@ -115,7 +115,7 @@ Here's what we have so far. Let's make a commit at this point.
 
 *** 
 
-<img src="github-logo.png" style="width: 40px;" /> [Commit 4]() "Implement basic tab bar navigation"
+<img src="github-logo.png" style="width: 40px;" /> [Commit 5]() "Implement basic tab bar navigation"
 
 *** 
 
