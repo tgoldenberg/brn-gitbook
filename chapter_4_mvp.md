@@ -297,7 +297,7 @@ Now that we have our data, here's what the rest of the component looks like.
   _renderRow(rowData){
     console.log('ROW DATA', rowData);
     return (
-      <Text>{rowData[0].text}</Text>
+      <Text>{rowData[0].senderName}: {rowData[0].text}</Text>
     );
   }
   render() {
