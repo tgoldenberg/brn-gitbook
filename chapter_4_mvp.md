@@ -290,7 +290,7 @@ export default class MessagesView extends Component{
 
 ```
 
-Now that we have our data, here's what the rest of the component looks like. 
+Now that we have our data, here's what the rest of the component looks like. BTW, we're using fake messages from www.hipsteripsum.co. I find it to be more fun to work with than the traditional Latin lorem ipsum.
 
 ```
 
@@ -332,7 +332,12 @@ let styles = StyleSheet.create({
   },
 });
 ```
+
+<img src='phone-12.png' style='width: 300px;'/>
+
 Once we've confirmed that the data is being processed into conversations (both through the Chrome console and our screen), we can refactor the rows into `<Conversation/>` components. Replace the `Text` component in `_renderRow` with ```<Conversation conversation={rowData} />```
+
+
 
 
 
