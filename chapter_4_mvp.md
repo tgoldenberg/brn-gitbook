@@ -110,8 +110,7 @@ let styles = StyleSheet.create({
 ```
 
 Here's what we have so far. Let's make a commit at this point.
-
-<img src="phone-09.png" style="height: 300px;" />
+<img src="phone-11.png" style="height: 300px;" />
 
 *** 
 
