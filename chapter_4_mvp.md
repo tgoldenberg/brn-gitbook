@@ -332,6 +332,7 @@ let styles = StyleSheet.create({
   },
 });
 ```
+Once we've confirmed that the data is being processed into conversations (both through the Chrome console and our screen), we can refactor the rows into `<Conversation/>` components. Replace the `Text` component in `_renderRow` with `<Conversation conversation={rowData} />
 
 
 
