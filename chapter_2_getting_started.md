@@ -44,13 +44,13 @@ So far, so good. Now let’s get a project up and running. it’s good practice 
 
 ```cd ~/Source```
 
-```react-native init assemblies```
+```react-native init assembliesTutorial```
 
 In this guide we’ll be building a community app for developers similar to Meetup called "Assembly," but you can name your project whatever you like.
 
 Now navigate to your new project’s directory:
 
-**cd Assembly**
+**cd assembliesTutorial**
 
 ## Basic Structure of a React Native Project
 
@@ -79,7 +79,7 @@ package.json
       "start": "react-native start"
   },
     "dependencies": {
-      "react-native": "^0.15.0"
+      "react-native": "^0.23.1
     }
 }
 ```
@@ -96,7 +96,7 @@ RIght now we only have one package dependency, ```react-native```, at version 0.
 
 ### iOS
 
-To check our new project on iOS, simply start Xcode from your "Applications" folder and open the ```AwesomeProject.xcodeproj``` file in your project’s **ios** folder. 
+To check our new project on iOS, simply start Xcode from your "Applications" folder and open the ```assembliesTutorial.xcodeproj``` file in your project’s **ios** folder. 
 
 Assuming you have iOS Simulator devices installed, you can simply go to Project > Run in the menu or hit ⌘-R on your keyboard. The iOS Simulator will open and if everything went according to plan, you should see this:
 
@@ -135,7 +135,7 @@ Opening up **packages.json**, we can see that moment has been added:
     },
       "dependencies": {
         "moment": "^2.10.6",
-          "react-native": "^0.15.0"
+        "react-native": "^0.23.1
       }
 }
 ```
