@@ -734,7 +734,7 @@ let styles = StyleSheet.create({
 <img src='phone-14.png' style='height: 300px;' />
 
 *** 
-<img src='github-logo.png' style='width: 40px;' /> [Commit 7]() "Style Activity view with fixture data"
+<img src='github-logo.png' style='width: 40px;' /> [Commit 7](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-4.3) "Style Activity view with fixture data"
 ***
 
 
