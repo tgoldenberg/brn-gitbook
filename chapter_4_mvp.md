@@ -740,3 +740,6 @@ let styles = StyleSheet.create({
 
 ## Summing up
 
+So far, we explored several of the UI components of React Native, navigation, and styling. We used fixture data to make this process as fast as possible. In the coming chapters we will start to flesh out the app with an external database and REST-ful read & write operations. We will also explore how to share components among different tabs and making our code more modular. The first step to this is user authentication, which we'll cover in the next chapter. 
+
+If you haven't signed up for early access to the full version of this tutorial, please do so for a discounted price now. 
