@@ -392,13 +392,26 @@ export default class Conversation extends Component{
 };
 
 let styles = StyleSheet.create({
-  center: {
-    alignItems: 'center',
-  },
   container:{
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  profile:{
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginHorizontal: 10,
+    marginVertical: 10,
+  },
+  fromContainer:{
+    justifyContent: 'center',
+    marginLeft: 10,
+    flex: 1,
+  },
+  fromText:{
+    fontSize: 12,
+    fontWeight: '700'
   },
   sentText:{
     fontSize: 12,
@@ -407,11 +420,6 @@ let styles = StyleSheet.create({
     marginLeft: 10,
     fontWeight: '300',
     marginLeft: 10
-  },
-  fromContainer:{
-    justifyContent: 'center',
-    marginLeft: 10,
-    flex: 1,
   },
   iconHolder: {
     flex: 0.5,
@@ -424,39 +432,16 @@ let styles = StyleSheet.create({
     width: deviceWidth * 0.95,
     borderBottomColor: Colors.inactive,
   },
-  fromText:{
-    fontSize: 12,
-    fontWeight: '700'
-  },
-  messageTextContainer:{
-  },
   messageText:{
     fontSize: 16,
     color: '#9B9B9B',
     fontStyle: 'italic',
     fontWeight: '300',
   },
-
-  profile:{
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginHorizontal: 10,
-    marginVertical: 10,
-  },
-
-  header: {
-    height: 70,
-    backgroundColor: Colors.brandPrimary,
-    justifyContent: 'center',
+  center: {
     alignItems: 'center',
   },
-  headerText: {
-    color: 'white',
-    fontSize: 22,
-  },
 });
-
 
 ```
 
