@@ -442,8 +442,9 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
 ```
+
+<img src='phone-13.png' style='height: 300px;' />
 
 
 
