@@ -446,6 +446,12 @@ let styles = StyleSheet.create({
 
 <img src='phone-13.png' style='height: 300px;' />
 
+*** 
+
+<img src='github-logo.png' style='width: 40px;'/> [Commit 6]() "render Messages view with fixture data"
+
+***
+
 
 
 
