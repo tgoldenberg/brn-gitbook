@@ -452,6 +452,11 @@ let styles = StyleSheet.create({
 
 ***
 
+## 4.3 Styling the Activity View
+
+So far we have a tab bar with 2 views filled in - `ProfileView` and `MessagesView`. Now let's fill in the other view, our `ActivityView`. Here's the sketch that we're using to design the screen. 
+
+
 
 
 
