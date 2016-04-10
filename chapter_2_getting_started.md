@@ -100,7 +100,7 @@ To check our new project on iOS, simply start Xcode from your "Applications" fol
 
 Assuming you have iOS Simulator devices installed, you can simply go to Project > Run in the menu or hit ⌘-R on your keyboard. The iOS Simulator will open and if everything went according to plan, you should see this:
 
-(getting-started-1.png)
+<img src="getting-started-1.png" style="height: 200px; margin: auto;"/>
 
 You’ll also notice Xcode has opened a Terminal window:
 
@@ -139,6 +139,8 @@ Opening up **packages.json**, we can see that moment has been added:
       }
 }
 ```
+
+
 
 If your prefer not to use the CLI, you can also edit ```packages.json``` directly to accomplish the same thing. 
 
