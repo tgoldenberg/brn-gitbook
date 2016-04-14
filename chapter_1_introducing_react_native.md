@@ -9,9 +9,9 @@ React Native is the second major implementation of React, which Facebook origina
 
 
 ##How it Works
-<div className="hello">
+
 React allows developers to build UIs using a consistent API that then is interpreted by the library for rendering into browser DOM components. Similarly, React Native provides a thin API that wraps native components in declarative Javascript. Basically, you define your UI using simple components like ```<View />``` and ```<Image />``` then React Native translates them into native code that renders their native representations on iOS or Android.
-</div>
+
 
 While the above describes how must developers will experience the technology and what it does, React Native is doing a lot more under the hood to make your sure your apps feel completely native. 
 
