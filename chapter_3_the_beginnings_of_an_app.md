@@ -151,7 +151,7 @@ Now we'll take our implementation with `NavigatorIOS` and switch to `Navigator`.
 
 This will install the packages to our `node_modules` folder. Now, one issue that React Native developers often face is linking NPM libraries to XCode. Most packages have instructions on how to do this the long way. Fortunately, there is a package `rnpm` which handles the linking process for us. Just install `npm install -g rnpm`, and then run `rnpm link` to link the libraries we installed. 
 
-<img src="terminal-03.png" /> `magical linking :)`
+![alt text](terminal-03.png "Logo Title Text 1")
 
 Now we can switch out `NavigatorIOS` for `Navigator` in our `index.ios.js` file. In `Navigator`, we must provide an initial route and a `renderScene` function which acts as a `switch()` statement for all of our main routes. Let's setup the Navigator for our two previous components, `Dashboard` and `Landing`.
 
