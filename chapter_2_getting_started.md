@@ -88,7 +88,7 @@ RIght now we only have one package dependency, ```react-native```, at version 0.
 
 ```node_modules```  - contains all of the packages, React Native core or otherwise, our project will use. 
 
-```index.android.js``` and ```index.ios.js``` - think of these like your **index.html **file in a web project - it’s the starting point for your application, one is for Android, and the other is for iOS.
+```index.android.js``` and ```index.ios.js``` - think of these like your `index.html` file in a web project - it’s the starting point for your application, one is for Android, and the other is for iOS.
 
 ```android``` and ```ios``` - these folders contain all of the native code the Android and iOS platforms require to run and bundle apps. We’ll introduce different aspects of each directory as we build our project
 
@@ -122,7 +122,7 @@ Installing a new package works just like it does in any other Node project. Make
 
 Here we’re installing the incredible Moment.js package which we’ll be using to format dates easily in our project. Adding the ```--save``` flag is essential, as ```npm install``` only installs the package locally - ```--save``` will add the package as a dependency in ```packages.json``` so it will get bundled with our app. 
 
-Opening up **packages.json**, we can see that moment has been added:
+Opening up `packages.json`, we can see that moment has been added:
 
 ```
 {
