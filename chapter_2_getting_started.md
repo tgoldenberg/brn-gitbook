@@ -20,15 +20,12 @@ We’re paraphrasing the requirements listed in the official React native [docum
 
 #### For iOS:
 
-Make sure you have the latest version of [Xcode](https://developer.apple.com/xcode/download/) installed. When Apple rolls out new major releases of Xcode, breaking changes are often introduced. Do yourself a favor and start out with the latest to avoid serious pain later.
+We'll begin our app on iOS since the development workflow is a bit easier. Make sure you have the latest version of [Xcode](https://developer.apple.com/xcode/download/) installed. When Apple rolls out new major releases of Xcode, breaking changes are often introduced. Do yourself a favor and start out with the latest to avoid serious pain later.
 
-#### For Android:
-
-Naturally, Android setup is a bit more involved. You’ll want to install both the latest Android SDK and a simulator to use for testing your app. We anticipate breaking changes to this as it’s still pretty new in React Native, so consult the official [Android setup guide](https://facebook.github.io/react-native/docs/android-setup.html).
 
 ## Creating your First Project
 
-Here’s where things get really exciting - we’re going to install React Native on our system and get our first project up and running on both iOS and Android.
+Here’s where things get really exciting - we’re going to install React Native on our system and get our first project up and running on iOS.
 
 ### Install the React Native Command Line Interface (CLI)
 
