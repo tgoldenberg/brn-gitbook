@@ -104,7 +104,7 @@ You’ll also notice Xcode has opened a Terminal window:
 
 ![alt text](/images/chapter-2-getting-started/react-native-packager-terminal-window.png "React native packager Terminal window")
 
-This window holds the React Native transformer’s process, which will interpret all of our Javascript code into native code Xcode can understand. 
+This window holds the React Native packager’s process, which will interpret all of our Javascript code into native code Xcode can understand. 
 
 
 ## Adding Packages
