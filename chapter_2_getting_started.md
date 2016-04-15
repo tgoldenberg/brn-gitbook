@@ -156,6 +156,6 @@ If you’ve made it this far and understood the instructions, you probably alrea
 Let's make a commit now
 
 ***
-<img src='github-logo.png' style='width: 40px;' /> [Commit 1](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.0)
+![alt text](/images/github-logo.png "GitHub logo") [Commit 1](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.0)
 ***
 
