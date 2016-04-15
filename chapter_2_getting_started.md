@@ -38,23 +38,25 @@ This should be pretty familiar if you’ve used anything like the Amazon or Expr
 
 This will install all of the React Native and React packages you need, in addition to installing all of the command line helpers you’ll use for building, running, and building your apps. You only need to do this once per system.
 
+The `-g` flag tells `npm` to install the CLI in our system's global scope, that way we'll be able to access any `react-native-cli` commands from any folder.
+
 ### Create a React Native Project
 
 So far, so good. Now let’s get a project up and running. it’s good practice to keep all of your coding projects in one place, like **~/Source**. Navigate to your working directory and create a new project:
 
 ```cd ~/Source```
 
-```react-native init assembliesTutorial```
+```react-native init assemblies```
 
-In this guide we’ll be building a community app for developers similar to Meetup called "Assembly," but you can name your project whatever you like.
+In this guide we’ll be building a community app for developers similar to Meetup called "Assemblies," but you can name your project whatever you like.
 
 Now navigate to your new project’s directory:
 
-**cd assembliesTutorial**
+`cd assembliesTutorial`
 
 ## Basic Structure of a React Native Project
 
-Before we test out our new project, let’s explain a little bit about how React Native projects are structured. This will be enormously helpful to understand later, especially when we start working on  both the iOS and Android versions of our apps simultaneously.
+Before we test out our new project, let’s explain a little bit about how React Native projects are structured. This will be enormously helpful to understand later, especially when we start working on  both the iOS and Android versions of a project simultaneously.
 
 You should see something like this:
 ```
@@ -72,7 +74,7 @@ package.json
 ```
 {
 
-  "name": "Assembly",
+  "name": "Assemblies",
   "version": "0.0.1",
   "private": true,
     "scripts": {
@@ -84,9 +86,9 @@ package.json
 }
 ```
 
-RIght now we only have one package dependency, ```react-native```, at version 0.15.0. It’s important to note this version number at the outset. React Native is incredible, but bleeding edge technology and the codebase is changing constantly. Whenever you’re debugging issues, especially with third-party libraries, conflicts created by differing ```react-native``` version dependencies are often the cause. Try and update and regular intervals so you don’t get too far behind, but play with release candidates at your own risk.
+RIght now we only have one package dependency, ```react-native```, at version 0.23.1. It’s important to note this version number at the outset. React Native is incredible, but bleeding edge technology and the codebase is changing constantly. Whenever you’re debugging issues, especially with third-party libraries, conflicts created by differing ```react-native``` version dependencies are often the cause. Try and update at regular intervals, testing in a new branch, so you don’t get too far behind, but play with release candidates at your own risk.
 
-```node_modules```  - contains all of the packages, React Native core or otherwise, our project will use. 
+```node_modules```  - contains all of the `npm` packages, React Native core or otherwise, our project will use. 
 
 ```index.android.js``` and ```index.ios.js``` - think of these like your `index.html` file in a web project - it’s the starting point for your application, one is for Android, and the other is for iOS.
 
