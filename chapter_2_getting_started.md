@@ -91,14 +91,14 @@ RIght now we only have one package dependency, ```react-native```, at version 0.
 
 ```android``` and ```ios``` - these folders contain all of the native code the Android and iOS platforms require to run and bundle apps. We’ll introduce different aspects of each directory as we build our project
 
-## Running our Project on iOS and Android
+## Running our Project on iOS
 
-### iOS
 
-To check our new project on iOS, simply start Xcode from your "Applications" folder and open the ```assembliesTutorial.xcodeproj``` file in your project’s **ios** folder. 
+To check out our new project on iOS, simply start Xcode from your "Applications" folder and open the ```assemblies.xcodeproj``` file in your project’s `ios` folder. 
 
-Assuming you have iOS Simulator devices installed, you can simply go to Project > Run in the menu or hit ⌘-R on your keyboard. The iOS Simulator will open and if everything went according to plan, you should see this:
+Assuming you have iOS Simulator devices installed, you can simply go to Project > Run in the menu or hit `⌘-R` on your keyboard. The iOS Simulator will open and if everything went according to plan, you should see this:
 
+![alt text](/images/ "Logo Title Text 1")
 <img src="getting-started-1.png" style="height: 200px; margin: auto;"/>
 
 You’ll also notice Xcode has opened a Terminal window:
@@ -107,9 +107,6 @@ You’ll also notice Xcode has opened a Terminal window:
 
 This window holds the React Native transformer’s process, which will interpret all of our Javascript code into native code Xcode can understand. 
 
-### Android
-
-Insert Android instructions for running the app here
 
 ## Adding Packages
 
