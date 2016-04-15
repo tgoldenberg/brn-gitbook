@@ -156,6 +156,6 @@ If you’ve made it this far and understood the instructions, you probably alrea
 Let's make a commit now
 
 ***
-![alt text](images/github-logo.png "Beginning React Native project screen on iOS") [Commit 1](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.0)
+[![alt text](images/github-logo.png "Beginning React Native project screen on iOS")](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.0) [Commit 1](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.0)
 ***
 
