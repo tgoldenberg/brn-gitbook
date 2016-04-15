@@ -153,9 +153,6 @@ If you’ve made it this far and understood the instructions, you probably alrea
 
 [Git on Codeacademy](https://www.codecademy.com/learn/learn-git) - everything you’ve come to expect from Codeacademy, straightforward and intuitive
 
-Let's make a commit now
-
-***
-[![alt text](images/github-logo.png "Beginning React Native project screen on iOS")](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.0) [Commit 1](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.0)
+Let's make a commit now:
 ***
 
