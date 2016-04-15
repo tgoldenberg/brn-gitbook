@@ -99,7 +99,6 @@ To check out our new project on iOS, simply start Xcode from your "Applications"
 Assuming you have iOS Simulator devices installed, you can simply go to Project > Run in the menu or hit `⌘-R` on your keyboard. The iOS Simulator will open and if everything went according to plan, you should see this:
 
 ![alt text](/images/chapter-2-getting-started/beginning-react-native-project-screen-on-ios.png "Beginning React Native project screen on iOS")
-<img src="getting-started-1.png" style="height: 200px; margin: auto;"/>
 
 You’ll also notice Xcode has opened a Terminal window:
 
