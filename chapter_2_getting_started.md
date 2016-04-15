@@ -43,7 +43,7 @@ So far, so good. Now let’s get a project up and running. it’s good practice 
 
 ```cd ~/Source```
 
-```react-native init assemblies```
+```react-native init assembliesTutorial```
 
 In this guide we’ll be building a community app for developers similar to Meetup called "Assemblies," but you can name your project whatever you like.
 
@@ -71,7 +71,7 @@ package.json
 ```
 {
 
-  "name": "Assemblies",
+  "name": "assembliesTutorial",
   "version": "0.0.1",
   "private": true,
     "scripts": {
@@ -94,7 +94,7 @@ RIght now we only have one package dependency, ```react-native```, at version 0.
 ## Running our Project on iOS
 
 
-To check out our new project on iOS, simply start Xcode from your "Applications" folder and open the ```assemblies.xcodeproj``` file in your project’s `ios` folder. 
+To check out our new project on iOS, simply start Xcode from your "Applications" folder and open the ```assembliesTutorial.xcodeproj``` file in your project’s `ios` folder. 
 
 Assuming you have iOS Simulator devices installed, you can simply go to Project > Run in the menu or hit `⌘-R` on your keyboard. The iOS Simulator will open and if everything went according to plan, you should see this:
 
@@ -109,15 +109,15 @@ This window holds the React Native packager’s process, which will interpret al
 
 ## Adding Packages
 
-One of the best things about building apps in React Native is you get access to npm, currently the largest open source library on the planet. We’ll use a lot of different npm packages through this guide for a variety of purposes. 
+One of the best things about building apps in React Native is you get access to `npm`, currently the largest open source library on the planet. We’ll use a lot of different `npm` packages throughout this guide for a variety of purposes. 
 
 Installing a new package works just like it does in any other Node project. Make sure you’re in your project’s root folder and run:
 
 ```npm install moment --save```
 
-Here we’re installing the incredible Moment.js package which we’ll be using to format dates easily in our project. Adding the ```--save``` flag is essential, as ```npm install``` only installs the package locally - ```--save``` will add the package as a dependency in ```packages.json``` so it will get bundled with our app. 
+Here we’re installing the incredible [Moment.js](http://momentjs.com/) package which we’ll be using to format dates easily in our project. Adding the `--save` flag is essential, as `npm install` only installs the package locally - ```--save``` will add the package as a dependency in `packages.json` so it will get bundled with our app. 
 
-Opening up `packages.json`, we can see that moment has been added:
+Opening up `packages.json`, we can see that `moment` has been added:
 
 ```
 {
@@ -137,7 +137,7 @@ Opening up `packages.json`, we can see that moment has been added:
 
 
 
-If your prefer not to use the CLI, you can also edit ```packages.json``` directly to accomplish the same thing. 
+If you prefer not to use the CLI, you can also edit `packages.json` directly to accomplish the same thing. Sometimes this makes it easier if you're adding many packages at once. If you do things this way, make sure to run `npm install` from you project's root directory once you've saved `packages.json` to actually download the packages.
 
 ## Setting Up a Git Repo
 
@@ -145,7 +145,9 @@ Now it’s time to set up a Git repo to version control our project and make und
 
 ```git init```
 
-If you’ve made it this far and understood the instructions, you probably already know hot to use Git. If that’s not the case, or if you just want to improve your Git-fu, these resources will help:
+If you’ve made it this far and understood the instructions, you probably already know how to use Git. If that’s not the case, or if you just want to improve your Git-fu, these resources will help:
+
+[GitHub Git Code School](https://try.github.io/levels/1/challenges/1) - fairly new and super polished tutorial from GitHub.
 
 [Atlassian GIt Tutorials](https://www.atlassian.com/git/tutorials/) - far easier to understand than the official Git docs
 
