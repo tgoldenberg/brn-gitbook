@@ -155,5 +155,5 @@ If you’ve made it this far and understood the instructions, you probably alrea
 
 Let's make a commit now:
 ***
-[![alt text](/images/github-logo.png "GitHub logo") Commit 1](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.0)
+[[![alt text](/images/github-logo.png "GitHub logo") Commit 1](https://github.com/buildreactnative/assemblies-tutorial/commit/12539ea3348aaa04983fdf052bc82df24a9ab9d7)
 
