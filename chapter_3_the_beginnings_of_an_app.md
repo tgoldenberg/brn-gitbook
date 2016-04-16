@@ -10,9 +10,13 @@ Navigation has been a topic of some confusion since the very beginning, when Rea
 
 ### NavigatorIOS
 
-`NavigatorIOS` has great performance because the animation is handled outside of the main JavaScript thread. I features a simple layout and API to support pushing and popping routes off of the stack. Downsides are that it is highly opinionated and less configurable. It can be appropriate for simple apps or when customization isn't needed.
+`NavigatorIOS` has great performance because the animation is handled outside of the main JavaScript thread. It can accomplish this because it's a thin wrapper of the native iOS navigation stack. It features a simple layout and API that lets you "push" or "pop" views off an array that builds as the user navigates through your app. 
 
-`Navigator`, on the other hand, is highly customizable. It has options for different sliding and fading transitions, and is neutral in regards to UI. Downsides are that the animation runs on the JavaScript thread, and so, this can cause performance lags. 
+It's simplicity comes at a cost though, as `NavigatorIOS` is highly opinionated and less configurable. It can be appropriate for simple, iOS-only apps, or when customization isn't needed.
+
+`Navigator`, on the other hand, is highly customizable. It has options for different sliding and fading transitions, and has a completely netural UI. 
+
+The downside of `Navigator` is that its animations run on the JavaScript thread, meaning we need to do a little extra work to minimize performance lags.
 
 We will be using `Navigator` for this project, because it is more widely supported and seen in complex apps. However, to get a feel for NavigatorIOS, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit. 
 
@@ -147,7 +151,7 @@ Well, that's a quick look at what NavigatorIOS does. If it seems appropriate for
 
 ## 3.2 Navigator - the real deal
 
-Now we'll take our implementation with `NavigatorIOS` and switch to `Navigator`. You'll notice some differences. For one, `Navigator` doesn't have a interace component. That's why we'll be using the `react-native-navbar` package by @kureev. We'll also want to install the `react-native-vector-icons` package by @oblador to use cool icons in our navbar. Let's also throw in `underscore` for use later in the tutorial. Type the following in the terminal 
+Now we'll take our implementation with `NavigatorIOS` and switch to `Navigator`. You'll notice some differences. For one, `Navigator` doesn't have an interface component. That's why we'll be using the `react-native-navbar` package by @kureev. We'll also want to install the `react-native-vector-icons` package by @oblador to use cool icons in our navbar. Let's also throw in `underscore` for use later in the tutorial. Type the following in the terminal 
 
 ```npm install --save react-native-navbar react-native-vector-icons underscore```
 
