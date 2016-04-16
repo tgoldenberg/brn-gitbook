@@ -68,7 +68,12 @@ package.json
 
 `package.json` - works like it does in any other Node project - it’s a Javascript object containing all of the npm package dependencies your project has, as well as basic metadata and any scripts that should be included. Right now it’s pretty unimpressive:
 
+```javascript
+var s = "JavaScript syntax highlighting";
+alert(s);
 ```
+
+```javascript
 {
 
   "name": "assembliesTutorial",
