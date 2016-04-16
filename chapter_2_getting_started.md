@@ -155,4 +155,5 @@ If you’ve made it this far and understood the instructions, you probably alrea
 
 Let's make a commit now:
 ***
+https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.0
 
