@@ -4,7 +4,7 @@ Complex mobile apps are comprised of many different parts - navigation, UI compo
 
 Navigation is how we tie the parts of an app together. React Native is new technology, and not as opinionated as other frameworks on how you set up navigation in your app. Let's review the different possibilities and determine which one best fits our needs.
 
-## Navigator Drama - what should I use?
+## Routing Options - NavigatorIOS vs. Navigator
 
 Navigation has been a topic of some confusion since the very beginning, when React Native came with both `NavigatorIOS` and `Navigator`. Facebook uses and maintains the `Navigator` component, but many people still prefer `NavigatorIOS` because of its superior animation performance. Let's look at the pros and cons of these two options for routing. 
 
