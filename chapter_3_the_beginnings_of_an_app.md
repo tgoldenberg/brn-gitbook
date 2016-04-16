@@ -12,7 +12,7 @@ Navigation has been a topic of some confusion since the very beginning, when Rea
 
 It's simplicity comes at a cost though, as `NavigatorIOS` is highly opinionated and less configurable. It can be appropriate for simple, iOS-only apps, or when customization isn't needed.
 
-`Navigator`, on the other hand, is highly customizable. It has options for different sliding and fading transitions, and has a completely netural UI. 
+`Navigator`, on the other hand, is highly customizable. It has options for different sliding and fading transitions, and has a neutral UI. 
 
 `Navigator` has one primary downside: it's animations are rendered on React Native's Javascript thread and thus aren't quite as smooth as those produced by `NavigatorIOS`. In order to optimize animation performance, we'll need to make a few extra tweaks.
 
@@ -20,9 +20,9 @@ We will be using `Navigator` for this project, because it is more widely support
 
 ## Using NavigatorIOS - a simple example
 
-Now we're ready to start writing some components! First, let's setup our file directory structure. Create a folder in the root level called `application`, and within that, a folder called `components`. There we will create 2 `.js` files, `Landing.js` and `Dashboard.js`. 
+Now we're ready to start writing some components! First, let's set up our file directory structure. Create a folder at the root level called `application`, and within that, a folder called `components`. There we will create 2 `.js` files, `Landing.js` and `Dashboard.js`. 
 
-Let's build our Landing component - 
+Let's build our `Landing` component - 
 
 ```
 import React from 'react-native';
