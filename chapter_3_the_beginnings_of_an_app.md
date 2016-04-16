@@ -24,7 +24,7 @@ Now we're ready to start writing some components! First, let's set up our file d
 
 Let's build our `Landing` component - 
 
-```
+```javascript
 import React from 'react-native';
 import Dashboard from './Dashboard';
 
@@ -68,7 +68,7 @@ let styles = StyleSheet.create({
 
 And our Dashboard component (with the same styles)- 
 
-```
+```javascript
 import React from 'react-native';
 import Landing from './Landing';
 
@@ -104,7 +104,7 @@ let styles = StyleSheet.create({ .... (same as previous file)
 Finally, let's connect them in our `index.ios.js` file - 
 
 
-```
+```javascript
 import React from 'react-native';
 import Landing from './application/components/Landing';
 
@@ -159,7 +159,7 @@ This will install the packages to our `node_modules` folder. Now, one issue that
 
 Now we can switch out `NavigatorIOS` for `Navigator` in our `index.ios.js` file. In `Navigator`, we must provide an initial route and a `renderScene` function which acts as a `switch()` statement for all of our main routes. Let's setup the Navigator for our two previous components, `Dashboard` and `Landing`.
 
-```
+```javascript
 import React, {
   AppRegistry,
   Component,
@@ -197,7 +197,7 @@ Notice that the `configureScene` option decides what type of animation our navig
 
 Next we redesign our 2 screens so that they route to each other and also include our navbar with a back icon. Let's look at `Landing.js`
 
-```
+```javascript
 import NavigationBar from 'react-native-navbar';
 import React, {
   View,
@@ -235,7 +235,7 @@ That should give us our first screen with the navigation bar. If there are error
 
 For the `Dashboard` component, we'll add an icon on the left of the navbar to `pop()` to the previous route. 
 
-```
+```javascript
 import NavigationBar from 'react-native-navbar';
 import Icon from 'react-native-vector-icons/Ionicons';
 import React, {
