@@ -8,19 +8,17 @@ Navigation is how we tie the parts of an app together. React Native is new techn
 
 Navigation has been a topic of some confusion since the very beginning, when React Native came with both `NavigatorIOS` and `Navigator`. Facebook uses and maintains the `Navigator` component, but many people still prefer `NavigatorIOS` because of its superior animation performance. Let's look at the pros and cons of these two options for routing. 
 
-### NavigatorIOS
-
 `NavigatorIOS` has great performance because the animation is handled outside of the main JavaScript thread. It can accomplish this because it's a thin wrapper of the native iOS navigation stack. It features a simple layout and API that lets you "push" or "pop" views off an array that builds as the user navigates through your app. 
 
 It's simplicity comes at a cost though, as `NavigatorIOS` is highly opinionated and less configurable. It can be appropriate for simple, iOS-only apps, or when customization isn't needed.
 
 `Navigator`, on the other hand, is highly customizable. It has options for different sliding and fading transitions, and has a completely netural UI. 
 
-The downside of `Navigator` is that its animations run on the JavaScript thread, meaning we need to do a little extra work to minimize performance lags.
+`Navigator` has one primary downside: it's animations are rendered on React Native's Javascript thread and thus aren't quite as smooth as those produced by `NavigatorIOS`. In order to optimize animation performance, we'll need to make a few extra tweaks.
 
-We will be using `Navigator` for this project, because it is more widely supported and seen in complex apps. However, to get a feel for NavigatorIOS, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit. 
+We will be using `Navigator` for this project, because it is more widely supported and seen in complex apps. However, to get a feel for `NavigatorIOS`, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit. 
 
-## 3.1 Using NavigatorIOS - a small example
+## Using NavigatorIOS - a simple example
 
 Now we're ready to start writing some components! First, let's setup our file directory structure. Create a folder in the root level called `application`, and within that, a folder called `components`. There we will create 2 `.js` files, `Landing.js` and `Dashboard.js`. 
 
