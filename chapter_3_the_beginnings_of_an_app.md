@@ -1,30 +1,26 @@
 # Chapter 3: The Beginnings of an App
 
-Complex mobile apps are comprised of many different parts - navigation, UI components, animations, external APIs, and more. We'll be taking you through each of them in this guide, but we'll be starting with navigation. 
+Making a mobile app has a lot of different parts - navigation, UI components, animations, integrating an external API, etc. We'll be looking first at navigation, which is how we tie different parts of the app together. The first question that people ask when they start to use React Native is, 'well, which do I use?' Since React Native is a budding technology, we will see that it is not always as opinionated as other frameworks. This means that we need to understand which option will best suit our needs.
 
-Navigation is how we tie the parts of an app together. React Native is new technology, and not as opinionated as other frameworks on how you set up navigation in your app. Let's review the different possibilities and determine which one best fits our needs.
+## Navigator Drama - what should I use?
 
-## Routing Options - NavigatorIOS vs. Navigator
+Next we will look at one of the most important parts of an app - navigation. This has been a topic of concern with React Native since the very beginning, when React Native came with both `NavigatorIOS` and `Navigator`. Facebook uses and maintains the `Navigator` component, but many people still prefer `NavigatorIOS` because it has excellent animation performance. Let's look at the pros and cons of these two options for routing. 
 
-Navigation has been a topic of some confusion since the very beginning, when React Native came with both `NavigatorIOS` and `Navigator`. Facebook uses and maintains the `Navigator` component, but many people still prefer `NavigatorIOS` because of its superior animation performance. Let's look at the pros and cons of these two options for routing. 
+### NavigatorIOS
 
-`NavigatorIOS` has great performance because the animation is handled outside of the main JavaScript thread. It can accomplish this because it's a thin wrapper of the native iOS navigation stack. It features a simple layout and API that lets you "push" or "pop" views off an array that builds as the user navigates through your app. 
+`NavigatorIOS` has great performance because the animation is handled outside of the main JavaScript thread. I features a simple layout and API to support pushing and popping routes off of the stack. Downsides are that it is highly opinionated and less configurable. It can be appropriate for simple apps or when customization isn't needed.
 
-It's simplicity comes at a cost though, as `NavigatorIOS` is highly opinionated and less configurable. It can be appropriate for simple, iOS-only apps, or when customization isn't needed.
+`Navigator`, on the other hand, is highly customizable. It has options for different sliding and fading transitions, and is neutral in regards to UI. Downsides are that the animation runs on the JavaScript thread, and so, this can cause performance lags. 
 
-`Navigator`, on the other hand, is highly customizable. It has options for different sliding and fading transitions, and has a neutral UI. 
+We will be using `Navigator` for this project, because it is more widely supported and seen in complex apps. However, to get a feel for NavigatorIOS, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit. 
 
-`Navigator` has one primary downside: it's animations are rendered on React Native's Javascript thread and thus aren't quite as smooth as those produced by `NavigatorIOS`. In order to optimize animation performance, we'll need to make a few extra tweaks.
+## 3.1 Using NavigatorIOS - a small example
 
-We will be using `Navigator` for this project, because it is more widely supported and seen in complex apps. However, to get a feel for `NavigatorIOS`, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit. 
+Now we're ready to start writing some components! First, let's setup our file directory structure. Create a folder in the root level called `application`, and within that, a folder called `components`. There we will create 2 `.js` files, `Landing.js` and `Dashboard.js`. 
 
-## Using NavigatorIOS - a simple example
+Let's build our Landing component - 
 
-Now we're ready to start writing some components! First, let's set up our file directory structure. Create a folder at the root level called `application`, and within that, a folder called `components`. There we will create 2 `.js` files, `Landing.js` and `Dashboard.js`. 
-
-Let's build our `Landing` component - 
-
-```javascript
+```
 import React from 'react-native';
 import Dashboard from './Dashboard';
 
@@ -68,7 +64,7 @@ let styles = StyleSheet.create({
 
 And our Dashboard component (with the same styles)- 
 
-```javascript
+```
 import React from 'react-native';
 import Landing from './Landing';
 
@@ -104,7 +100,7 @@ let styles = StyleSheet.create({ .... (same as previous file)
 Finally, let's connect them in our `index.ios.js` file - 
 
 
-```javascript
+```
 import React from 'react-native';
 import Landing from './application/components/Landing';
 
@@ -149,7 +145,7 @@ Well, that's a quick look at what NavigatorIOS does. If it seems appropriate for
 
 ## 3.2 Navigator - the real deal
 
-Now we'll take our implementation with `NavigatorIOS` and switch to `Navigator`. You'll notice some differences. For one, `Navigator` doesn't have an interface component. That's why we'll be using the `react-native-navbar` package by @kureev. We'll also want to install the `react-native-vector-icons` package by @oblador to use cool icons in our navbar. Let's also throw in `underscore` for use later in the tutorial. Type the following in the terminal 
+Now we'll take our implementation with `NavigatorIOS` and switch to `Navigator`. You'll notice some differences. For one, `Navigator` doesn't have a interace component. That's why we'll be using the `react-native-navbar` package by @kureev. We'll also want to install the `react-native-vector-icons` package by @oblador to use cool icons in our navbar. Let's also throw in `underscore` for use later in the tutorial. Type the following in the terminal 
 
 ```npm install --save react-native-navbar react-native-vector-icons underscore```
 
@@ -159,7 +155,7 @@ This will install the packages to our `node_modules` folder. Now, one issue that
 
 Now we can switch out `NavigatorIOS` for `Navigator` in our `index.ios.js` file. In `Navigator`, we must provide an initial route and a `renderScene` function which acts as a `switch()` statement for all of our main routes. Let's setup the Navigator for our two previous components, `Dashboard` and `Landing`.
 
-```javascript
+```
 import React, {
   AppRegistry,
   Component,
@@ -197,7 +193,7 @@ Notice that the `configureScene` option decides what type of animation our navig
 
 Next we redesign our 2 screens so that they route to each other and also include our navbar with a back icon. Let's look at `Landing.js`
 
-```javascript
+```
 import NavigationBar from 'react-native-navbar';
 import React, {
   View,
@@ -235,7 +231,7 @@ That should give us our first screen with the navigation bar. If there are error
 
 For the `Dashboard` component, we'll add an icon on the left of the navbar to `pop()` to the previous route. 
 
-```javascript
+```
 import NavigationBar from 'react-native-navbar';
 import Icon from 'react-native-vector-icons/Ionicons';
 import React, {
