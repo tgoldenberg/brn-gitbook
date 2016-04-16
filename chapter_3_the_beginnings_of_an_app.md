@@ -1,10 +1,12 @@
 # Chapter 3: The Beginnings of an App
 
-Making a mobile app has a lot of different parts - navigation, UI components, animations, integrating an external API, etc. We'll be looking first at navigation, which is how we tie different parts of the app together. The first question that people ask when they start to use React Native is, 'well, which do I use?' Since React Native is a budding technology, we will see that it is not always as opinionated as other frameworks. This means that we need to understand which option will best suit our needs.
+Complex mobile apps are comprised of many different parts - navigation, UI components, animations, external APIs, and more. We'll be taking you through each of them in this guide, but we'll be starting with navigation. 
+
+Navigation is how we tie the parts of an app together. React Native is new technology, and not as opinionated as other frameworks on how you set up navigation in your app. Let's review the different possibilities and determine which one best fits our needs.
 
 ## Navigator Drama - what should I use?
 
-Next we will look at one of the most important parts of an app - navigation. This has been a topic of concern with React Native since the very beginning, when React Native came with both `NavigatorIOS` and `Navigator`. Facebook uses and maintains the `Navigator` component, but many people still prefer `NavigatorIOS` because it has excellent animation performance. Let's look at the pros and cons of these two options for routing. 
+Navigation has been a topic of some confusion since the very beginning, when React Native came with both `NavigatorIOS` and `Navigator`. Facebook uses and maintains the `Navigator` component, but many people still prefer `NavigatorIOS` because of its superior animation performance. Let's look at the pros and cons of these two options for routing. 
 
 ### NavigatorIOS
 
