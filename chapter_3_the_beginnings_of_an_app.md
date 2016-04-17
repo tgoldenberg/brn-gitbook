@@ -1,6 +1,8 @@
 # Chapter 3: The Beginnings of an App
 
+<div>
 Making a mobile app has a lot of different parts - navigation, UI components, animations, integrating an external API, etc. We'll be looking first at navigation, which is how we tie different parts of the app together. The first question that people ask when they start to use React Native is, 'well, which do I use?' Since React Native is a budding technology, we will see that it is not always as opinionated as other frameworks. This means that we need to understand which option will best suit our needs.
+</div>
 
 ## Navigator Drama - what should I use?
 
