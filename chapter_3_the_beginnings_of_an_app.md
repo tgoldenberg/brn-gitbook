@@ -66,7 +66,7 @@ let styles = StyleSheet.create({
 
 And our Dashboard component (with the same styles)- 
 
-```
+```javascript
 import React from 'react-native';
 import Landing from './Landing';
 
@@ -102,7 +102,7 @@ let styles = StyleSheet.create({ .... (same as previous file)
 Finally, let's connect them in our `index.ios.js` file - 
 
 
-```
+```javascript
 import React from 'react-native';
 import Landing from './application/components/Landing';
 
