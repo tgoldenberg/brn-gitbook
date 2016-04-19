@@ -99,9 +99,9 @@ let styles = StyleSheet.create({ .... (same as previous file)
 
 ```
 
-Whoa, that was a lot of code! That's take a minute and look at what we did piece by piece.
+Whoa, that was a lot of code! Let's take a minute and look at what we did piece by piece.
 
-We're using Javascript's ES6 syntax throughout to wire up our views. We start by importing the dependencies of each of our components, which will always include the `import React from 'react-native;'` statement. We also pull in any components we directly reference, like `./Dashboard` or `./Landing` in this case.
+We're using Javascript's ES2015 syntax throughout to wire up our views. We start by importing the dependencies of each of our components, which will always include the `import React from 'react-native;'` statement. We also pull in any components we directly reference, like `./Dashboard` or `./Landing` in this case.
 
 Next, we declare any React Native components we'll need in our component. We'll always need `Component`, but you can find a list of available components in the [React Native docs](https://facebook.github.io/react-native/docs/getting-started.html).
 
