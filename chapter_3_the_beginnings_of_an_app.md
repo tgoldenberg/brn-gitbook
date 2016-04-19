@@ -157,7 +157,7 @@ This will install the packages to our `node_modules` folder. Now, one issue that
 
 Now we can switch out `NavigatorIOS` for `Navigator` in our `index.ios.js` file. In `Navigator`, we must provide an initial route and a `renderScene` function which acts as a `switch()` statement for all of our main routes. Let's setup the Navigator for our two previous components, `Dashboard` and `Landing`.
 
-```
+```javascript
 import React, {
   AppRegistry,
   Component,
@@ -195,7 +195,7 @@ Notice that the `configureScene` option decides what type of animation our navig
 
 Next we redesign our 2 screens so that they route to each other and also include our navbar with a back icon. Let's look at `Landing.js`
 
-```
+```javascript
 import NavigationBar from 'react-native-navbar';
 import React, {
   View,
