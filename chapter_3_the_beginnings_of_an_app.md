@@ -99,6 +99,9 @@ let styles = StyleSheet.create({ .... (same as previous file)
 
 ```
 
+Whoa, that was a lot of code! That's take a minute and look at what we did piece by piece.
+
+We're using Javascript's ES6 syntax throughout to wire up our views
 
 Finally, let's connect them in our `index.ios.js` file - 
 
