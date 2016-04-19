@@ -111,11 +111,13 @@ Think of `View` like `<div>` in the world of React for Web - it's the basic cont
 
 As we mock up our view, you can see this is just fairly familiar JSX syntax, pretty much XML with a few tweaks.
 
-Specifically, pay attention to how we style our components. We're declaring our styles with Javascript, referencing keys of a `styles` object we declare and define below. Generally, these styles work pretty closely to CSS, and use flexbox to define containers and layouts. If you're not too familiar with how flexbox works (perhaps you've spent too much time making things backwards compatible for Internet Explorer), we highlight recommend you check out the excellent guide over at [CSS Tricks](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
+Specifically, pay attention to how we style our components. We're declaring our styles with Javascript in camel case, referencing keys of a `styles` object we declare and define below. Generally, these styles work pretty closely to CSS, and use flexbox to define containers and layouts. If you're not too familiar with how flexbox works (perhaps you've spent too much time making things backwards compatible for Internet Explorer), we highlight recommend you check out the excellent guide over at [CSS Tricks](https://css-tricks.com/snippets/css/a-guide-to-flexbox/).
+
+*Note: One of the first 'gotchas' to avoid when working with flexbox is making sure you set `flex: 1` on your top-level components so they actually fill the view, otherwise you'll be very confused and frustrated when your app looks completely blank*
 
 Don't worry, we'll cover flexbox and styling in React Native in far more detail as we go.
 
-Finally, let's connect them in our `index.ios.js` file -
+Now that we have some components, let's connect them in our `index.ios.js` file -
 
 
 ```javascript
@@ -150,6 +152,11 @@ class assembliesTutorial extends Component{
 AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
 
 ```
+
+This should look pretty familiar, as we're doing many of the same things as in our two previous components. Here we import our dependencies, as well as declare what we need from React Native. Here, `AppRegistry` is simply the global container that will house our app at the top level.
+
+We set up `NavigatorIOS` by giving it it our initial route `Landing`, or the first view that will live at the bottom of our route stack. We then set a few basic options for styling, which you can find in the [React Native docs](https://facebook.github.io/react-native/docs/navigatorios.html#content).
+
 
 ## Time for a commit
 
