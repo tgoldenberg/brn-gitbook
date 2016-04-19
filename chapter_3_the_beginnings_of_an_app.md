@@ -19,7 +19,7 @@ We will be using `Navigator` for this project, because it is more widely support
 
 ## 3.1 Using NavigatorIOS - a simple example
 
-Now we're ready to start writing some components! First, let's set up our file directory structure. Create a folder in the root level called `application`, and within that, a folder called `components`. There we will create 2 `.js` files, `Landing.js` and `Dashboard.js`. 
+Now we're ready to start writing some components! First, let's set up our file directory structure. Create a folder at the root level called `application`, and within that, a folder called `components`. There we will create two `.js` files, `Landing.js` and `Dashboard.js`. 
 
 Let's build our Landing component - 
 
