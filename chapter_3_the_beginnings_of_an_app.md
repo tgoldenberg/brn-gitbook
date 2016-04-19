@@ -1,18 +1,19 @@
 # Chapter 3: The Beginnings of an App
 
-<div>
-Making a mobile app has a lot of different parts - navigation, UI components, animations, integrating an external API, etc. We'll be looking first at navigation, which is how we tie different parts of the app together. The first question that people ask when they start to use React Native is, 'well, which do I use?' Since React Native is a budding technology, we will see that it is not always as opinionated as other frameworks. This means that we need to understand which option will best suit our needs.
-</div>
+Making a mobile app has a lot of different parts - navigation, UI components, animations, integrating an external API, etc. We'll be looking first at navigation, which is how we tie different parts of the app together.
 
-## Navigator Drama - what should I use?
 
-Next we will look at one of the most important parts of an app - navigation. This has been a topic of concern with React Native since the very beginning, when React Native came with both `NavigatorIOS` and `Navigator`. Facebook uses and maintains the `Navigator` component, but many people still prefer `NavigatorIOS` because it has excellent animation performance. Let's look at the pros and cons of these two options for routing. 
+## Navigator Drama - Which Should I Use?
+
+Since React Native is a budding technology, it is not always as opinionated as other frameworks. For example, we're given two different options for setting up navigation - `NavigatorIOS` and `Navigator`.
+
+Let's look at the pros and cons of these two options for routing to see which best suits our needs.
 
 ### NavigatorIOS
+`NavigatorIOS` offers great performance because the animation displayed as we navigate throughout our app is handled outside of the main JavaScript thread. It features a simple layout and API to support pushing and popping routes off of the stack of views the user accumulates while browsing. `NavigatorIOS` is able to achieve this by very thinly wrapping the native iOS navigation stack in a Javascript component. The downside of this superficial implementation is that it is highly opinionated, tied very closely to iOS default navigation patterns, and therefore less configurable. It can be appropriate for simple apps or when customization isn't needed.
 
-`NavigatorIOS` has great performance because the animation is handled outside of the main JavaScript thread. I features a simple layout and API to support pushing and popping routes off of the stack. Downsides are that it is highly opinionated and less configurable. It can be appropriate for simple apps or when customization isn't needed.
-
-`Navigator`, on the other hand, is highly customizable. It has options for different sliding and fading transitions, and is neutral in regards to UI. Downsides are that the animation runs on the JavaScript thread, and so, this can cause performance lags. 
+### Navigator
+`Navigator`, on the other hand, is highly customizable. It has options for different sliding and fading transitions, and is completely neutral in regards to UI. The main downside is that the animation runs on the JavaScript thread, and so, this can cause performance lags. In order to keep our app running smoothly, we'll need to add some tweaks to the navigation code.
 
 We will be using `Navigator` for this project, because it is more widely supported and seen in complex apps. However, to get a feel for NavigatorIOS, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit. 
 
