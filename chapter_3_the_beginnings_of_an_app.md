@@ -15,13 +15,13 @@ Let's look at the pros and cons of these two options for routing to see which be
 ### Navigator
 `Navigator`, on the other hand, is highly customizable. It has options for different sliding and fading transitions, and is completely neutral in regards to UI. The main downside is that the animation runs on the JavaScript thread, and so, this can cause performance lags. In order to keep our app running smoothly, we'll need to add some tweaks to the navigation code.
 
-We will be using `Navigator` for this project, because it is more widely supported and seen in complex apps. However, to get a feel for NavigatorIOS, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit. 
+We will be using `Navigator` for this project, because it is more widely supported and seen in complex apps. However, to get a feel for NavigatorIOS, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit.
 
 ## 3.1 Using NavigatorIOS - a simple example
 
-Now we're ready to start writing some components! First, let's set up our file directory structure. Create a folder at the root level called `application`, and within that, a folder called `components`. There we will create two `.js` files, `Landing.js` and `Dashboard.js`. 
+Now we're ready to start writing some components! First, let's set up our file directory structure. Create a folder at the root level called `application`, and within that, a folder called `components`. There we will create two `.js` files, `Landing.js` and `Dashboard.js`.
 
-Let's build our Landing component - 
+Let's build our Landing component -
 
 ```javascript
 import React from 'react-native';
@@ -65,14 +65,14 @@ let styles = StyleSheet.create({
 });
 ```
 
-And our Dashboard component (with the same styles)- 
+And our Dashboard component (with the same styles)-
 
 ```javascript
 import React from 'react-native';
 import Landing from './Landing';
 
 let {
-  View, 
+  View,
   Text,
   Component,
 } = React;
@@ -93,7 +93,7 @@ export default class Dashboard extends Component{
       </View>
     );
   }
-}; 
+};
 
 let styles = StyleSheet.create({ .... (same as previous file)
 
@@ -101,9 +101,21 @@ let styles = StyleSheet.create({ .... (same as previous file)
 
 Whoa, that was a lot of code! That's take a minute and look at what we did piece by piece.
 
-We're using Javascript's ES6 syntax throughout to wire up our views
+We're using Javascript's ES6 syntax throughout to wire up our views. We start by importing the dependencies of each of our components, which will always include the `import React from 'react-native;'` statement. We also pull in any components we directly reference, like `./Dashboard` or `./Landing` in this case.
 
-Finally, let's connect them in our `index.ios.js` file - 
+Next, we declare any React Native components we'll need in our component. We'll always need `Component`, but you can find a list of available components in the [React Native docs](https://facebook.github.io/react-native/docs/getting-started.html).
+
+Think of `View` like `<div>` in the world of React for Web - it's the basic container for our component and something the packager can bundle and send to the view.
+
+`TouchableOpacity` is a handy component provided by React Native that lets you easily create that "touchable" feel on any elements users will be tapping or pressing. Elements wrapped in `<TouchableOpacity>` will automatically modulate their opacity values when touched. This may seem like a small thing, but it's incredibly noticeable when it's missing, as your elements just sort of respond eventually without any apparent reaction to your touch. Make your interface feel responsive to input is a big part of Apple's [Human Interface Guidelines](https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/MobileHIG/index.html?utm_source=twitterfeed&utm_medium=twitter).
+
+As we mock up our view, you can see this is just fairly familiar JSX syntax, pretty much XML with a few tweaks.
+
+Specifically, pay attention to how we style our components. We're declaring our styles with Javascript, referencing keys of a `styles` object we declare and define below. Generally, these styles work pretty closely to CSS, and use flexbox to define containers and layouts. If you're not too familiar with how flexbox works (perhaps you've spent too much time making things backwards compatible for Internet Explorer), we highlight recommend you check out the excellent guide over at [CSS Tricks](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
+
+Don't worry, we'll cover flexbox and styling in React Native in far more detail as we go.
+
+Finally, let's connect them in our `index.ios.js` file -
 
 
 ```javascript
@@ -139,23 +151,23 @@ AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
 
 ```
 
-## Time for a commit 
+## Time for a commit
 
 Well, that's a quick look at what NavigatorIOS does. If it seems appropriate for a particular app, by all means, use it. Nick and I used NavigatorIOS for our Bhagavad Gita app because we didn't understand at the time how to handle the animations for Navigator. Not to worry - we'll make sure that you don't have that situation. Let's make a commit before moving to `Navigator`.
 
 <img src="phone-02.png" style="height: 300px;" />
-**** 
+****
 <img src="github-logo.png" style="width: 40px;"/> [Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/Ch3-0) - "Simple NavigatorIOS example"
-**** 
+****
 
 
 ## 3.2 Navigator - the real deal
 
-Now we'll take our implementation with `NavigatorIOS` and switch to `Navigator`. You'll notice some differences. For one, `Navigator` doesn't have a interace component. That's why we'll be using the `react-native-navbar` package by @kureev. We'll also want to install the `react-native-vector-icons` package by @oblador to use cool icons in our navbar. Let's also throw in `underscore` for use later in the tutorial. Type the following in the terminal 
+Now we'll take our implementation with `NavigatorIOS` and switch to `Navigator`. You'll notice some differences. For one, `Navigator` doesn't have a interace component. That's why we'll be using the `react-native-navbar` package by @kureev. We'll also want to install the `react-native-vector-icons` package by @oblador to use cool icons in our navbar. Let's also throw in `underscore` for use later in the tutorial. Type the following in the terminal
 
 ```npm install --save react-native-navbar react-native-vector-icons underscore```
 
-This will install the packages to our `node_modules` folder. Now, one issue that React Native developers often face is linking NPM libraries to XCode. Most packages have instructions on how to do this the long way. Fortunately, there is a package `rnpm` which handles the linking process for us. Just install `npm install -g rnpm`, and then run `rnpm link` to link the libraries we installed. 
+This will install the packages to our `node_modules` folder. Now, one issue that React Native developers often face is linking NPM libraries to XCode. Most packages have instructions on how to do this the long way. Fortunately, there is a package `rnpm` which handles the linking process for us. Just install `npm install -g rnpm`, and then run `rnpm link` to link the libraries we installed.
 
 ![alt text](terminal-03.png "Logo Title Text 1")
 
@@ -205,7 +217,7 @@ import React, {
   View,
   Text,
   StyleSheet,
-  Component, 
+  Component,
   TouchableOpacity,
 } from 'react-native';
 
@@ -233,9 +245,9 @@ export default class Landing extends Component{
 };
 ```
 
-That should give us our first screen with the navigation bar. If there are errors compiling, it may be that you did not re-build the app after the command `rnpm link`. If so, try pressing the `stop` button on XCode and restarting. 
+That should give us our first screen with the navigation bar. If there are errors compiling, it may be that you did not re-build the app after the command `rnpm link`. If so, try pressing the `stop` button on XCode and restarting.
 
-For the `Dashboard` component, we'll add an icon on the left of the navbar to `pop()` to the previous route. 
+For the `Dashboard` component, we'll add an icon on the left of the navbar to `pop()` to the previous route.
 
 ```javascript
 import NavigationBar from 'react-native-navbar';
@@ -290,25 +302,25 @@ let styles = StyleSheet.create({
 ```
 
 
-As you can see, the nice thing about `Navigator` is that we can customize how our screen looks at any given time. We can have a navbar with `react-native-navbar` and customize it with icons, or we can use navigation in a different way. It's worth looking at the different options before deciding what's right for your app. 
+As you can see, the nice thing about `Navigator` is that we can customize how our screen looks at any given time. We can have a navbar with `react-native-navbar` and customize it with icons, or we can use navigation in a different way. It's worth looking at the different options before deciding what's right for your app.
 
 Okay, now it's time for another commit! Congrats on having delved into navigation with React Native. The `Navigator` API has many more options, some of which we will use in the tutorial. Please check out the [docs](https://facebook.github.io/react-native/docs/navigator.html) for specific API information.
 
 <img src="phone-03.png" style="height: 300px;"/>
 
 
-*** 
+***
 <img src="github-logo.png" style="width: 40px;"/> [Commit 3](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.2) - "Create basic navigation with Navigator"
 
-*** 
+***
 
 ## 3.3 Fleshing out the app
 
-One important thing to understand about an open source project like React Native is what its roadmap is. Facebook uses React Native currently in 2 apps - the Ads Manager app for iOS and Android, and partially in the Groups app. If we look at these apps, we can see where React Native's strengths are, and we should be looking to leverage them. This is why we decided to use TabBar navigation in Assemblies. Facebook uses this type of navigation in both apps and more apps are following suit. In this chapter, we will implement a simple TabBar navigation. 
+One important thing to understand about an open source project like React Native is what its roadmap is. Facebook uses React Native currently in 2 apps - the Ads Manager app for iOS and Android, and partially in the Groups app. If we look at these apps, we can see where React Native's strengths are, and we should be looking to leverage them. This is why we decided to use TabBar navigation in Assemblies. Facebook uses this type of navigation in both apps and more apps are following suit. In this chapter, we will implement a simple TabBar navigation.
 
-The interesting thing about TabBar navigation is that to accomplish it, you often need each tab to have its own `Navigator`. So we end up with `Navigator`s inside of `Navigators`... It actually creates a nice effect and makes our app easy to get around. 
+The interesting thing about TabBar navigation is that to accomplish it, you often need each tab to have its own `Navigator`. So we end up with `Navigator`s inside of `Navigators`... It actually creates a nice effect and makes our app easy to get around.
 
-I've gone ahead and picked out a few routes based on the sketches that Nick has given me. In all, there will be 5 tabs, but for now, I'll start with a Profile view, a Dashboard view, and a Messages view. Here's a look at the early sketches we used. 
+I've gone ahead and picked out a few routes based on the sketches that Nick has given me. In all, there will be 5 tabs, but for now, I'll start with a Profile view, a Dashboard view, and a Messages view. Here's a look at the early sketches we used.
 
 <div style="display: flex; align-items: center;">
   <img src="phone-04.png" style="height: 300px; margin: 5px;"/>
@@ -318,13 +330,13 @@ I've gone ahead and picked out a few routes based on the sketches that Nick has 
 </div>
 
 
-Now, these aren't the final designs that we ended up with, but they are pretty close. Nick's experience as a product manager really came in handy when it came to designing sleak, easy-to-understand interfaces. Later in the tutorial, he'll explain what exactly goes into the process of creating lo- and hi-fidelity mockups and how an app's design evolves throughout the development process. 
+Now, these aren't the final designs that we ended up with, but they are pretty close. Nick's experience as a product manager really came in handy when it came to designing sleak, easy-to-understand interfaces. Later in the tutorial, he'll explain what exactly goes into the process of creating lo- and hi-fidelity mockups and how an app's design evolves throughout the development process.
 
-Now that we're about to build this app, there are 2 things I want to address. 
+Now that we're about to build this app, there are 2 things I want to address.
 
 **1. Why are we starting out with fake data? **
 
-This is something I'm a strong believer in. Fake it and then make it. The wireframing process helps to funnel the idea of the product into a visual representation. A developer's job is to translate that into an actual product. It's very easy to focus on the programming problems like integration with a backend system and server, scalability, and so on. However, most often, the best thing to do at this point is to make a fake product. This helps get the UI components of the product in place so that you can think of the data integration later. This is the process I use and I find it works extremely well in most bootstrapped circumstances. That said, different things work for different people, or whatever floats your boat. 
+This is something I'm a strong believer in. Fake it and then make it. The wireframing process helps to funnel the idea of the product into a visual representation. A developer's job is to translate that into an actual product. It's very easy to focus on the programming problems like integration with a backend system and server, scalability, and so on. However, most often, the best thing to do at this point is to make a fake product. This helps get the UI components of the product in place so that you can think of the data integration later. This is the process I use and I find it works extremely well in most bootstrapped circumstances. That said, different things work for different people, or whatever floats your boat.
 
 **2. What flavor of Flux | Redux will we be using ? **
 
@@ -444,7 +456,7 @@ let styles = StyleSheet.create({
 });
 ```
 
-You'll notice that I reference `Colors` from a separate file now, and that some images are referenced. Feel free to download the `logo.png` and `welcome.png` images and then keeping them in a `assets/images` folder under `application`. The `colors.js` file can be in `styles/` under `application` is so far is just this 
+You'll notice that I reference `Colors` from a separate file now, and that some images are referenced. Feel free to download the `logo.png` and `welcome.png` images and then keeping them in a `assets/images` folder under `application`. The `colors.js` file can be in `styles/` under `application` is so far is just this
 ```javascript
 export default Colors = {
   brandPrimary: '#3A7BD2',
@@ -454,9 +466,8 @@ As for the styles, some stuff should be pretty self-explanatory for those famili
 
 <img src="phone-08.png" style="height: 300px;"/>
 
-### Time for a commit! 
+### Time for a commit!
 
-*** 
+***
 <img src="github-logo.png" style="width: 40px;"/> [Commit 4](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.3) - "Flesh out landing page"
-*** 
-
+***
