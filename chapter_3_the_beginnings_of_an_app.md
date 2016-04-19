@@ -162,9 +162,9 @@ We set up `NavigatorIOS` by giving it it our initial route `Landing`, or the fir
 
 Well, that's a quick look at what NavigatorIOS does. If it seems appropriate for a particular app, by all means, use it. Nick and I used NavigatorIOS for our Bhagavad Gita app because we didn't understand at the time how to handle the animations for Navigator. Not to worry - we'll make sure that you don't have that situation. Let's make a commit before moving to `Navigator`.
 
-<img src="phone-02.png" style="height: 300px;" />
+![Simple NavigatorIOS Example](images/chapter-3-the-beginnings-of-an-app/simple-navigatorios-example.png "Simple NavigatorIOS Example")
 ****
-<img src="github-logo.png" style="width: 40px;"/> [Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/Ch3-0) - "Simple NavigatorIOS example"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/Ch3-0) - "Simple NavigatorIOS example"
 ****
 
 
