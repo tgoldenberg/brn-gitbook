@@ -36,7 +36,9 @@ You can watch Tom Occhino of Facebook giving the first public demo of React Nati
 
 ## Who is this Guide For?
 
-This guide is targeted primarily at web developers/hybrid app developers who want to build great apps on iOS and Android without compromising user experience. Everyone is welcome and can derive some use from *Build React Native*, but it's probably most useful if you:
+This guide is targeted primarily at web developers/hybrid app developers who want to build great apps on iOS and Android without compromising user experience.
+
+Everyone is welcome and can derive some use from *Build React Native*, but it's probably most useful if you:
 - Are confident writing Javascript, ideally ES015/ES6 syntax
 - Have no problem building web pages using HTML5 and CSS3
 - Are familiar with basic responsive web design approaches and principles, since we'll still need to accommodate slightly different device sizes
