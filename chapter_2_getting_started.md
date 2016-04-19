@@ -68,7 +68,7 @@ package.json
 
 `package.json` - works like it does in any other Node project - it’s a Javascript object containing all of the npm package dependencies your project has, as well as basic metadata and any scripts that should be included. Right now it’s pretty unimpressive:
 
-```
+```javascript
 {
 
   "name": "assembliesTutorial",
@@ -85,7 +85,7 @@ package.json
 
 RIght now we only have one package dependency, ```react-native```, at version 0.23.1. It’s important to note this version number at the outset. React Native is incredible, but bleeding edge technology and the codebase is changing constantly. Whenever you’re debugging issues, especially with third-party libraries, conflicts created by differing ```react-native``` version dependencies are often the cause. Try and update at regular intervals, testing in a new branch, so you don’t get too far behind, but play with release candidates at your own risk.
 
-```node_modules```  - contains all of the `npm` packages, React Native core or otherwise, our project will use. 
+```node_modules```  - contains all of the `npm` packages, React Native core or otherwise, our project will use.
 
 ```index.android.js``` and ```index.ios.js``` - think of these like your `index.html` file in a web project - it’s the starting point for your application, one is for Android, and the other is for iOS.
 
@@ -94,7 +94,7 @@ RIght now we only have one package dependency, ```react-native```, at version 0.
 ## Running our Project on iOS
 
 
-To check out our new project on iOS, simply start Xcode from your "Applications" folder and open the ```assembliesTutorial.xcodeproj``` file in your project’s `ios` folder. 
+To check out our new project on iOS, simply start Xcode from your "Applications" folder and open the ```assembliesTutorial.xcodeproj``` file in your project’s `ios` folder.
 
 Assuming you have iOS Simulator devices installed, you can simply go to Project > Run in the menu or hit `⌘-R` on your keyboard. The iOS Simulator will open and if everything went according to plan, you should see this:
 
@@ -104,18 +104,18 @@ You’ll also notice Xcode has opened a Terminal window:
 
 ![alt text](/images/chapter-2-getting-started/react-native-packager-terminal-window.png "React native packager Terminal window")
 
-This window holds the React Native packager’s process, which will interpret all of our Javascript code into native code Xcode can understand. 
+This window holds the React Native packager’s process, which will interpret all of our Javascript code into native code Xcode can understand.
 
 
 ## Adding Packages
 
-One of the best things about building apps in React Native is you get access to `npm`, currently the largest open source library on the planet. We’ll use a lot of different `npm` packages throughout this guide for a variety of purposes. 
+One of the best things about building apps in React Native is you get access to `npm`, currently the largest open source library on the planet. We’ll use a lot of different `npm` packages throughout this guide for a variety of purposes.
 
 Installing a new package works just like it does in any other Node project. Make sure you’re in your project’s root folder and run:
 
 ```npm install moment --save```
 
-Here we’re installing the incredible [Moment.js](http://momentjs.com/) package which we’ll be using to format dates easily in our project. Adding the `--save` flag is essential, as `npm install` only installs the package locally - ```--save``` will add the package as a dependency in `packages.json` so it will get bundled with our app. 
+Here we’re installing the incredible [Moment.js](http://momentjs.com/) package which we’ll be using to format dates easily in our project. Adding the `--save` flag is essential, as `npm install` only installs the package locally - ```--save``` will add the package as a dependency in `packages.json` so it will get bundled with our app.
 
 Opening up `packages.json`, we can see that `moment` has been added:
 
@@ -156,4 +156,3 @@ If you’ve made it this far and understood the instructions, you probably alrea
 Let's make a commit now:
 ***
 [![GitHub logo](/images/github-logo.png "GitHub logo") Commit 1](https://github.com/buildreactnative/assemblies-tutorial/commit/12539ea3348aaa04983fdf052bc82df24a9ab9d7)
-
