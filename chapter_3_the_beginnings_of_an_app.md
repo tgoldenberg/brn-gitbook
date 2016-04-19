@@ -233,7 +233,7 @@ That should give us our first screen with the navigation bar. If there are error
 
 For the `Dashboard` component, we'll add an icon on the left of the navbar to `pop()` to the previous route. 
 
-```
+```javascript
 import NavigationBar from 'react-native-navbar';
 import Icon from 'react-native-vector-icons/Ionicons';
 import React, {
@@ -330,7 +330,7 @@ We won't be in the tutorial. I love Redux but even its creator has said that you
 
 Loosely based on the sketches, I'm going to fill in our `Landing` page. Later, this will link to a `login/signup`, but for now I'll have it go directly to the `Dashboard`. Let place an image as the screen background using the `Dimensions` module. Then let's use the `TouchableOpacity` component as a button that leads to our `Dashboard`
 
-```
+```javascript
 import NavigationBar from 'react-native-navbar';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../styles/colors';
@@ -441,7 +441,7 @@ let styles = StyleSheet.create({
 ```
 
 You'll notice that I reference `Colors` from a separate file now, and that some images are referenced. Feel free to download the `logo.png` and `welcome.png` images and then keeping them in a `assets/images` folder under `application`. The `colors.js` file can be in `styles/` under `application` is so far is just this 
-```
+```javascript
 export default Colors = {
   brandPrimary: '#3A7BD2',
 };
