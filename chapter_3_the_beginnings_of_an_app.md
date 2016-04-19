@@ -22,7 +22,7 @@ Now we're ready to start writing some components! First, let's setup our file di
 
 Let's build our Landing component - 
 
-```
+```javascript
 import React from 'react-native';
 import Dashboard from './Dashboard';
 
