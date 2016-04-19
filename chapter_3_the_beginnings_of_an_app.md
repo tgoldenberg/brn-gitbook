@@ -17,9 +17,9 @@ Let's look at the pros and cons of these two options for routing to see which be
 
 We will be using `Navigator` for this project, because it is more widely supported and seen in complex apps. However, to get a feel for NavigatorIOS, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit. 
 
-## 3.1 Using NavigatorIOS - a small example
+## 3.1 Using NavigatorIOS - a simple example
 
-Now we're ready to start writing some components! First, let's setup our file directory structure. Create a folder in the root level called `application`, and within that, a folder called `components`. There we will create 2 `.js` files, `Landing.js` and `Dashboard.js`. 
+Now we're ready to start writing some components! First, let's set up our file directory structure. Create a folder in the root level called `application`, and within that, a folder called `components`. There we will create 2 `.js` files, `Landing.js` and `Dashboard.js`. 
 
 Let's build our Landing component - 
 
