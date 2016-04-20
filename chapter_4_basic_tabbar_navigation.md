@@ -335,9 +335,9 @@ let styles = StyleSheet.create({
 });
 ```
 
-<img src='phone-12.png' style='width: 300px;'/>
+![{Messages Fixtures}](/images/chapter-4-basic-tabbar-navigation/messages-fixtures.png "Messages Fixtures")
 
-Once we've confirmed that the data is being processed into conversations (both through the Chrome console and our screen), we can refactor the rows into `<Conversation/>` components. Replace the `Text` component in `_renderRow` with ```<Conversation conversation={rowData} />```. We will also need install `moment`. `npm install --save moment`.
+Once we've confirmed that the data is being processed into conversations (both through the Chrome console React Native opens for debugging and our Simulator screen), we can refactor the rows into `Conversation` components. Replace the `Text` component in `_renderRow` with ```<Conversation conversation={rowData} />```. We'll also be using `moment` here for time/date formatting:
 
 ```javascript
 
@@ -446,19 +446,16 @@ let styles = StyleSheet.create({
 });
 ```
 
-<img src='phone-13.png' style='height: 300px;' />
-
+![{Styled Messages View}](/images/chapter-4-basic-tabbar-navigation/styled-messages-view.png "Styled Messages View")
 ***
-
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 7](https://github.com/buildreactnative/assemblies-tutorial/commit/3fe5fe1d185d1747b791b21c13b348ffbd9dc36a) - "Commit 7 - render Messages view with fixture data"
 <img src='github-logo.png' style='width: 40px;'/> [Commit 7]() "render Messages view with fixture data"
 
 ***
 
 ## 4.3 Styling the Activity View
 
-So far we have a tab bar with 2 views filled in - `ProfileView` and `MessagesView`. Now let's fill in the other view, our `ActivityView`. Here's the sketch that we're using to design the screen.
-
-<img src='phone-06.png' style='height: 300px;' />
+So far we have a tab bar with two views filled in - `ProfileView` and `MessagesView`. Now let's fill in the other view, our `ActivityView`:
 
 ```javascript
 
@@ -733,15 +730,12 @@ let styles = StyleSheet.create({
 
 ```
 
-<img src='phone-14.png' style='height: 300px;' />
-
+![{Activity View}](/images/chapter-4-basic-tabbar-navigation/activity-view.png "Activity View")
 ***
-<img src='github-logo.png' style='width: 40px;' /> [Commit 8](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-4.3) "Style Activity view with fixture data"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 7](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-4.3) - "Commit 7 - render Messages view with fixture data"
 ***
 
 
-## Summing up
+## Summing Up
 
-So far, we explored several of the UI components of React Native, navigation, and styling. We used fixture data to make this process as fast as possible. In the coming chapters we will start to flesh out the app with an external database and REST-ful read & write operations. We will also explore how to share components among different tabs and making our code more modular. The first step to this is user authentication, which we'll cover in the next chapter.
-
-If you haven't signed up for early access to the full version of this tutorial, please do so for a discounted price now.
+So far, we explored several of the UI components of React Native, navigation, and styling. We used fixture data to make this process as fast as possible. In the coming chapters we will start to flesh out the app with an external database and REST-ful read & write operations. We will also explore how to share components among different tabs and make our code more modular. The first step to this is user authentication, which we'll cover in the next chapter.
