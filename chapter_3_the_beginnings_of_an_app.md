@@ -157,12 +157,20 @@ This should look pretty familiar, as we're doing many of the same things as in o
 
 We set up `NavigatorIOS` by giving it it our initial route `Landing`, or the first view that will live at the bottom of our route stack. We then set a few basic options for styling, which you can find in the [React Native docs](https://facebook.github.io/react-native/docs/navigatorios.html#content).
 
-
-## Time for a commit
-
-Well, that's a quick look at what NavigatorIOS does. If it seems appropriate for a particular app, by all means, use it. Nick and I used NavigatorIOS for our Bhagavad Gita app because we didn't understand at the time how to handle the animations for Navigator. Not to worry - we'll make sure that you don't have that situation. Let's make a commit before moving to `Navigator`.
+Once we save our code, we should see our two-view app rendered in the iOS Simulator:
 
 ![Simple NavigatorIOS Example](images/chapter-3-the-beginnings-of-an-app/simple-navigatorios-example.png "Simple NavigatorIOS Example")
+
+Take a minute and play with the views, switching back and forth between them. Right out of the gate you can see how much smoother things are than any hybrid app you've ever tried.
+
+If you app is going to be iOS-only (as the name implies, `NavigatorIOS` only works on iOS) and only really involves simple navigation through a few views, by all means, use NavigatorIOS.
+
+We used `NavigatorIOS` for our first app ([Bhagavad Gita](https://itunes.apple.com/us/app/bhagavad-gita-app/id1065731220?mt=8)) partly because we didn't yet know how to handle the animations for Navigator, but also because it had limited navigation needs.
+
+Not to worry - we'll make sure that you don't have that situation. Let's make a commit before moving to `Navigator`.
+
+Let's commit that code now:
+
 ****
 [![GitHub logo](/images/github-logo.png "GitHub logo") Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/Ch3-0) - "Simple NavigatorIOS example"
 ****
