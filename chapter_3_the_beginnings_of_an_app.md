@@ -464,12 +464,13 @@ export default Colors = {
   brandPrimary: '#3A7BD2',
 };
 ```
-As for the styles, some stuff should be pretty self-explanatory for those familiar with styling with CSS on the web. You'll see that we use some absolute positioning as well here, but the majority of components typically use flexbox for positioning.
 
-<img src="phone-08.png" style="height: 300px;"/>
+![Landing Screen](images/chapter-3-the-beginnings-of-an-app/landing-screen.png "Landing Screen")
+
+As for the styles, some stuff should be pretty self-explanatory for those familiar with styling with CSS on the web. You'll see that we use some absolute positioning as well here, but the majority of components typically use flexbox for positioning.
 
 Time for another commit to close out this chapter on setting up navigation:
 
 ***
-<img src="github-logo.png" style="width: 40px;"/> [Commit 4](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.3) - "Flesh out landing page"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 4](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.3) - "Flesh out landing page"
 ***
