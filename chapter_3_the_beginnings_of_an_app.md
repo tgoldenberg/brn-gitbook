@@ -176,13 +176,13 @@ Let's commit that code now:
 ****
 
 
-## 3.2 Navigator - the real deal
+## 3.2 Navigator - A World of Opportunity
 
-Now we'll take our implementation with `NavigatorIOS` and switch to `Navigator`. You'll notice some differences. For one, `Navigator` doesn't have a interace component. That's why we'll be using the `react-native-navbar` package by @kureev. We'll also want to install the `react-native-vector-icons` package by @oblador to use cool icons in our navbar. Let's also throw in `underscore` for use later in the tutorial. Type the following in the terminal
+Now we'll take our implementation with `NavigatorIOS` and switch it to `Navigator`. You'll notice some differences. For one, `Navigator` doesn't have any interface components out of the box. That's why we'll be using the `react-native-navbar` package by [@kureev](https://github.com/Kureev). We'll also want to install the `react-native-vector-icons` package by [@oblador](https://github.com/oblador) to use cool icons in our navbar. Let's also throw in `underscore` for use later in the tutorial. Type the following in the terminal
 
 ```npm install --save react-native-navbar react-native-vector-icons underscore```
 
-This will install the packages to our `node_modules` folder. Now, one issue that React Native developers often face is linking NPM libraries to XCode. Most packages have instructions on how to do this the long way. Fortunately, there is a package `rnpm` which handles the linking process for us. Just install `npm install -g rnpm`, and then run `rnpm link` to link the libraries we installed.
+This will install the packages to our `node_modules` folder. Now, one issue that React Native developers often face is linking npm libraries to Xcode. Most packages have instructions on how to do this the long way. Fortunately, there is a newer package, `rnpm`, which handles the linking process for us. Just install it with `npm install -g rnpm`, and then run `rnpm link` to link the libraries we installed.
 
 ![alt text](terminal-03.png "Logo Title Text 1")
 
