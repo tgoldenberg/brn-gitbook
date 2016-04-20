@@ -1,11 +1,11 @@
-# Chapter 4: MVP 
+# Chapter 4: MVP
 ## 4.0 Putting Together the pieces
 
 Last chapter we left with the start of our project -- a working `Navigator` and a designed landing page. Next we're going to implement a TabBar navigation inside of our `Dashboard` component.
 
 Let's start with 3 tabs - Dashboard, Messages, and Profile. We'll them fill out the screens with fake data. First replace the contents of `application/components/Dashboard.js`. Notice that we use the `react-native-vector-icons` package to customize our tab bar.
 
-```
+```javascript
 import Icon, {TabBarItem} from 'react-native-vector-icons/Ionicons';
 import ProfileView from './profile/ProfileView';
 import MessagesView from './messages/MessagesView';
@@ -32,7 +32,7 @@ export default class Dashboard extends Component{
     let { selectedTab } = this.state;
     return (
       <TabBarIOS>
-        <TabBarItem 
+        <TabBarItem
           title='Activity'
           selected={ selectedTab == 'Activity' }
           iconName='clipboard'
@@ -67,7 +67,7 @@ export default class Dashboard extends Component{
 
 Now we have to create the tab components `ActivityView`, `MessagesView`, and `ProfileView`. Here's the code for `ActivityView`. Simply change the name of the component for the other 2 components.
 
-```
+```javascript
 import NavigationBar from 'react-native-navbar';
 import Colors from '../../styles/colors';
 
@@ -113,17 +113,17 @@ Here's what we have so far. Let's make a commit at this point.
 
 <img src="phone-11.png" style="height: 300px;" />
 
-*** 
+***
 
 <img src="github-logo.png" style="width: 40px;" /> [Commit 5]() "Implement basic tab bar navigation"
 
-*** 
+***
 
 ## 4.1 Styling the Views
 
 Let's take our preliminary sketches and build out the tab screens. We'll be using fixtures for this. Add [this gist](https://gist.github.com/tgoldenberg/ef3dc76063ca68ecab09840f6b3eb5ab) as a file in `application/fixtures/fixtures.js`. Let's use this fixtures file to build out our `ProfileView` component.
 
-```
+```javascript
 import NavigationBar from 'react-native-navbar';
 import Colors from '../../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -247,11 +247,11 @@ let styles = StyleSheet.create({
 });
 ```
 
-Here we use the `ScrollView` component for the first time. ScrollView gives us greater flexibility. Even though the components may fit on a certain view, using ScrollView ensures that all components will be visible on all phone sizes. As for the functionality of the `TouchableOpacity` components, we will add that in later. Now let's make a commit. 
+Here we use the `ScrollView` component for the first time. ScrollView gives us greater flexibility. Even though the components may fit on a certain view, using ScrollView ensures that all components will be visible on all phone sizes. As for the functionality of the `TouchableOpacity` components, we will add that in later. Now let's make a commit.
 
 <img src='phone-10.png' style='height: 300px;' />
 
-*** 
+***
 <img src='github-logo.png' style='width: 40px;' /> [Commit 6]() "Add fixtures file and style profile view"
 ***
 
@@ -259,7 +259,7 @@ Here we use the `ScrollView` component for the first time. ScrollView gives us g
 
 Next let's fill in our Messages View. We'll be using our fixtures file with messages for now. One things you'll notice is that these messages include all the relevent data for rendering them, including the author name and avatarUrl. Later, when implementing our backend, we will separate some of these data points. This is because a user can change their name or profile photo. Therefore, it's better to store the `authorId` in the message and refer to the `user` object. For convenience, we'll be storing all the data in the messages object for now. We will be using the `ListView` in this component. The first thing we will need to do is convert our array of messages into an array of unique conversations. We then pass this conversation array (with the first message of each conversation) to our ListView as its `DataSource`. Let's look at the constructor for `MessagesView`
 
-```
+```javascript
 ...
 // import messages from fixture file
 import { messages } from '../../fixtures/fixtures';
@@ -268,9 +268,9 @@ import _ from 'underscore';
 export default class MessagesView extends Component{
   constructor(props){
     super(props);
-    let conversations = {}; 
+    let conversations = {};
     // store each message under a conversation key
-    messages.forEach((msg) => { 
+    messages.forEach((msg) => {
       let key = msg.participants.sort().join('-');
       if (conversations[key]) { conversations[key].push(msg); }
       else { conversations[key] = [msg]; }
@@ -282,7 +282,7 @@ export default class MessagesView extends Component{
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 != r2
       })
-      .cloneWithRows(dataBlob) 
+      .cloneWithRows(dataBlob)
     };
   }
 ...
@@ -292,7 +292,7 @@ export default class MessagesView extends Component{
 
 Now that we have our data, here's what the rest of the component looks like. BTW, we're using fake messages from [www.hipsteripsum.co](www.hipsteripsum.co). I find it to be more fun to work with than the traditional Latin lorem ipsum.
 
-```
+```javascript
 
   _renderRow(rowData){
     console.log('ROW DATA', rowData);
@@ -307,9 +307,9 @@ Now that we have our data, here's what the rest of the component looks like. BTW
           title={{ title: 'Messages', tintColor: 'white' }}
           tintColor={Colors.brandPrimary}
         />
-        <ListView 
+        <ListView
           dataSource={this.state.dataSource}
-          contentInset={{ bottom: 49 }} 
+          contentInset={{ bottom: 49 }}
           automaticallyAdjustContentInsets={false}
           ref='messagesList'
           renderRow={this._renderRow.bind(this)}
@@ -337,7 +337,7 @@ let styles = StyleSheet.create({
 
 Once we've confirmed that the data is being processed into conversations (both through the Chrome console and our screen), we can refactor the rows into `<Conversation/>` components. Replace the `Text` component in `_renderRow` with ```<Conversation conversation={rowData} />```. We will also need install `moment`. `npm install --save moment`.
 
-```
+```javascript
 
 import _ from 'underscore';
 import Colors from '../../styles/colors';
@@ -446,7 +446,7 @@ let styles = StyleSheet.create({
 
 <img src='phone-13.png' style='height: 300px;' />
 
-*** 
+***
 
 <img src='github-logo.png' style='width: 40px;'/> [Commit 7]() "render Messages view with fixture data"
 
@@ -454,11 +454,11 @@ let styles = StyleSheet.create({
 
 ## 4.3 Styling the Activity View
 
-So far we have a tab bar with 2 views filled in - `ProfileView` and `MessagesView`. Now let's fill in the other view, our `ActivityView`. Here's the sketch that we're using to design the screen. 
+So far we have a tab bar with 2 views filled in - `ProfileView` and `MessagesView`. Now let's fill in the other view, our `ActivityView`. Here's the sketch that we're using to design the screen.
 
 <img src='phone-06.png' style='height: 300px;' />
 
-```
+```javascript
 
 import NavigationBar from 'react-native-navbar';
 import Colors from '../../styles/colors';
@@ -733,13 +733,13 @@ let styles = StyleSheet.create({
 
 <img src='phone-14.png' style='height: 300px;' />
 
-*** 
+***
 <img src='github-logo.png' style='width: 40px;' /> [Commit 8](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-4.3) "Style Activity view with fixture data"
 ***
 
 
 ## Summing up
 
-So far, we explored several of the UI components of React Native, navigation, and styling. We used fixture data to make this process as fast as possible. In the coming chapters we will start to flesh out the app with an external database and REST-ful read & write operations. We will also explore how to share components among different tabs and making our code more modular. The first step to this is user authentication, which we'll cover in the next chapter. 
+So far, we explored several of the UI components of React Native, navigation, and styling. We used fixture data to make this process as fast as possible. In the coming chapters we will start to flesh out the app with an external database and REST-ful read & write operations. We will also explore how to share components among different tabs and making our code more modular. The first step to this is user authentication, which we'll cover in the next chapter.
 
-If you haven't signed up for early access to the full version of this tutorial, please do so for a discounted price now. 
+If you haven't signed up for early access to the full version of this tutorial, please do so for a discounted price now.
