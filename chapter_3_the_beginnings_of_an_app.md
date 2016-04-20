@@ -336,7 +336,7 @@ This is something I'm a strong believer in. Fake it and then make it. The wirefr
 
 We won't be using either in this tutorial. We personally love Redux but even its creator has said that you shouldn't use it until you've felt the pain without it. This app would be a good candidate for an architecture using Redux. However, we were also able to create a good product without it. So while the production version of Assemblies may incorporate Redux, the tutorial itself won't touch on the topic.
 
-##### Fleshing out our Landing Page
+### Rounding out our Landing Page
 
 Now we're going to fill in our `Landing` page. Later, this will link to a `login/signup`, but for now we'll have it go directly to the `Dashboard`. Let's place an image as the screen background using the `Dimensions` module. Then let's use the `TouchableOpacity` component as a button that leads to our `Dashboard`
 
