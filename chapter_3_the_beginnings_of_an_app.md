@@ -157,32 +157,24 @@ This should look pretty familiar, as we're doing many of the same things as in o
 
 We set up `NavigatorIOS` by giving it it our initial route `Landing`, or the first view that will live at the bottom of our route stack. We then set a few basic options for styling, which you can find in the [React Native docs](https://facebook.github.io/react-native/docs/navigatorios.html#content).
 
-Once we save our code, we should see our two-view app rendered in the iOS Simulator:
+
+## Time for a commit
+
+Well, that's a quick look at what NavigatorIOS does. If it seems appropriate for a particular app, by all means, use it. Nick and I used NavigatorIOS for our Bhagavad Gita app because we didn't understand at the time how to handle the animations for Navigator. Not to worry - we'll make sure that you don't have that situation. Let's make a commit before moving to `Navigator`.
 
 ![Simple NavigatorIOS Example](images/chapter-3-the-beginnings-of-an-app/simple-navigatorios-example.png "Simple NavigatorIOS Example")
-
-Take a minute and play with the views, switching back and forth between them. Right out of the gate you can see how much smoother things are than any hybrid app you've ever tried.
-
-If you app is going to be iOS-only (as the name implies, `NavigatorIOS` only works on iOS) and only really involves simple navigation through a few views, by all means, use NavigatorIOS.
-
-We used `NavigatorIOS` for our first app ([Bhagavad Gita](https://itunes.apple.com/us/app/bhagavad-gita-app/id1065731220?mt=8)) partly because we didn't yet know how to handle the animations for Navigator, but also because it had limited navigation needs.
-
-Not to worry - we'll make sure that you don't have that situation. Let's make a commit before moving to `Navigator`.
-
-Let's commit that code now:
-
 ****
 [![GitHub logo](/images/github-logo.png "GitHub logo") Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/Ch3-0) - "Simple NavigatorIOS example"
 ****
 
 
-## 3.2 Navigator - A World of Opportunity
+## 3.2 Navigator - the real deal
 
-Now we'll take our implementation with `NavigatorIOS` and switch it to `Navigator`. You'll notice some differences. For one, `Navigator` doesn't have any interface components out of the box. That's why we'll be using the `react-native-navbar` package by [@kureev](https://github.com/Kureev). We'll also want to install the `react-native-vector-icons` package by [@oblador](https://github.com/oblador) to use cool icons in our navbar. Let's also throw in `underscore` for use later in the tutorial. Type the following in the terminal
+Now we'll take our implementation with `NavigatorIOS` and switch to `Navigator`. You'll notice some differences. For one, `Navigator` doesn't have a interace component. That's why we'll be using the `react-native-navbar` package by @kureev. We'll also want to install the `react-native-vector-icons` package by @oblador to use cool icons in our navbar. Let's also throw in `underscore` for use later in the tutorial. Type the following in the terminal
 
 ```npm install --save react-native-navbar react-native-vector-icons underscore```
 
-This will install the packages to our `node_modules` folder. Now, one issue that React Native developers often face is linking npm libraries to Xcode. Most packages have instructions on how to do this the long way. Fortunately, there is a newer package, `rnpm`, which handles the linking process for us. Just install it with `npm install -g rnpm`, and then run `rnpm link` to link the libraries we installed.
+This will install the packages to our `node_modules` folder. Now, one issue that React Native developers often face is linking NPM libraries to XCode. Most packages have instructions on how to do this the long way. Fortunately, there is a package `rnpm` which handles the linking process for us. Just install `npm install -g rnpm`, and then run `rnpm link` to link the libraries we installed.
 
 ![alt text](terminal-03.png "Logo Title Text 1")
 
@@ -224,7 +216,7 @@ class assembliesTutorial extends Component{
 
 Notice that the `configureScene` option defines which type of animation our navigation uses to transition between scenes. Feel free to experiment and try other configurations, such as `FloatFromLeft`, `HorizontalSwipeJump`, and `VerticalUpSwipeJump`.
 
-Next we redesign our two screens so that they route to each other and also include our navbar with a back icon. Let's look at `Landing.js`
+Next we redesign our 2 screens so that they route to each other and also include our navbar with a back icon. Let's look at `Landing.js`
 
 ```javascript
 import NavigationBar from 'react-native-navbar';
@@ -323,7 +315,7 @@ As you can see, the nice thing about `Navigator` is that we can customize how ou
 Okay, now it's time for another commit! Congrats on having delved into navigation with React Native. The `Navigator` API has many more options, some of which we will use in the tutorial. Please check out the [docs](https://facebook.github.io/react-native/docs/navigator.html) for specific API information.
 
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.2) - "Create basic navigation with Navigator"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 4](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.2) - "Create basic navigation with Navigator"
 ***
 
 ## 3.3 Fleshing out the App
@@ -336,11 +328,11 @@ I've gone ahead and wired up a few tabs. In all, there will be five tabs, but fo
 
 Now that we're about to build out the app, there are a couple of things I want to clarify:
 
-**Why are we starting out with fake data? **
+*Why are we starting out with fake data?*
 
 This is something I'm a strong believer in. Fake it and then make it. The wireframing process helps to funnel the idea of the product into a visual representation. A developer's job is to translate that into an actual product. It's very easy to focus on the programming problems like integration with a backend system and server, scalability, and so on. However, most often, the best thing to do at this point is to make a fake product. This helps get the UI components of the product in place so that you can think of the data integration later. This is the process I use and I find it works extremely well. That said, different things work for different people, so sue the method that works for you on your own projects.
 
-**Will you be using an architecture like Flux or Redux to manage state between components? **
+*Will you be using an architecture like Flux or Redux to manage state between components?*
 
 We won't be using either in this tutorial. We personally love Redux but even its creator has said that you shouldn't use it until you've felt the pain without it. This app would be a good candidate for an architecture using Redux. However, we were also able to create a good product without it. So while the production version of Assemblies may incorporate Redux, the tutorial itself won't touch on the topic.
 
