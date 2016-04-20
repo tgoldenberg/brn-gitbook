@@ -1,9 +1,9 @@
-# Chapter 4: MVP
-## 4.0 Putting Together the pieces
+# Chapter 4: Basic TabBar Navigation
+## 4.0 Putting Together the Pieces
 
-Last chapter we left with the start of our project -- a working `Navigator` and a designed landing page. Next we're going to implement a TabBar navigation inside of our `Dashboard` component.
+Last chapter we left with the start of our project -- a working `Navigator` and a designed landing page. Next we're going to implement `TabBar` navigation inside of our `Dashboard` component.
 
-Let's start with 3 tabs - Dashboard, Messages, and Profile. We'll them fill out the screens with fake data. First replace the contents of `application/components/Dashboard.js`. Notice that we use the `react-native-vector-icons` package to customize our tab bar.
+Let's start with three tabs - Dashboard, Messages, and Profile. We'll them fill out the screens with fake data. First replace the contents of `application/components/Dashboard.js`. Notice that we use the `react-native-vector-icons` package to customize our tab bar.
 
 ```javascript
 import Icon, {TabBarItem} from 'react-native-vector-icons/Ionicons';
@@ -65,7 +65,9 @@ export default class Dashboard extends Component{
 
 ```
 
-Now we have to create the tab components `ActivityView`, `MessagesView`, and `ProfileView`. Here's the code for `ActivityView`. Simply change the name of the component for the other 2 components.
+Basically, we're defining each tab with basic information like it's title, the icon it uses, the component it should render upon selection, and passing in the name of the selected tab to `state`, so we can respond to it if necessary.
+
+Now we have to create the tab components `ActivityView`, `MessagesView`, and `ProfileView`. Here's the code for `ActivityView`. Simply change the name of the component for the other two components.
 
 ```javascript
 import NavigationBar from 'react-native-navbar';
@@ -111,17 +113,17 @@ let styles = StyleSheet.create({
 
 Here's what we have so far. Let's make a commit at this point.
 
-<img src="phone-11.png" style="height: 300px;" />
+![Empty TabBar Views](/images/chapter-4-basic-tabbar-navigation/empty-tabbar-views.png "Empty TabBar Views")
 
 ***
 
-<img src="github-logo.png" style="width: 40px;" /> [Commit 5]() "Implement basic tab bar navigation"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 5](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - Commit 5]() "Implement basic tab bar navigation"
 
 ***
 
 ## 4.1 Styling the Views
 
-Let's take our preliminary sketches and build out the tab screens. We'll be using fixtures for this. Add [this gist](https://gist.github.com/tgoldenberg/ef3dc76063ca68ecab09840f6b3eb5ab) as a file in `application/fixtures/fixtures.js`. Let's use this fixtures file to build out our `ProfileView` component.
+Let's build out the tab screens. We'll be using fixtures for this. Add [this gist](https://gist.github.com/tgoldenberg/ef3dc76063ca68ecab09840f6b3eb5ab) as a file in `application/fixtures/fixtures.js`. Let's use this fixtures file to build out our `ProfileView` component.
 
 ```javascript
 import NavigationBar from 'react-native-navbar';
@@ -247,17 +249,18 @@ let styles = StyleSheet.create({
 });
 ```
 
-Here we use the `ScrollView` component for the first time. ScrollView gives us greater flexibility. Even though the components may fit on a certain view, using ScrollView ensures that all components will be visible on all phone sizes. As for the functionality of the `TouchableOpacity` components, we will add that in later. Now let's make a commit.
+Here we use the `ScrollView` component for the first time. ScrollView gives us greater layout flexibility then relying on a simple `View` component. Even though the components may fit on a certain view, using `ScrollView` ensures that all components will be visible on all phone sizes. As for the functionality of the `TouchableOpacity` components, we will add that in later. Now let's make a commit.
 
-<img src='phone-10.png' style='height: 300px;' />
+![{Profile TabBar View}](/images/chapter-4-basic-tabbar-navigation/profile-tabbar-view.png "Profile TabBar View")
 
 ***
-<img src='github-logo.png' style='width: 40px;' /> [Commit 6]() "Add fixtures file and style profile view"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 6](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - Commit 6]() "Add fixtures file and style profile view"
 ***
 
 ## 4.2 Messages View
 
-Next let's fill in our Messages View. We'll be using our fixtures file with messages for now. One things you'll notice is that these messages include all the relevent data for rendering them, including the author name and avatarUrl. Later, when implementing our backend, we will separate some of these data points. This is because a user can change their name or profile photo. Therefore, it's better to store the `authorId` in the message and refer to the `user` object. For convenience, we'll be storing all the data in the messages object for now. We will be using the `ListView` in this component. The first thing we will need to do is convert our array of messages into an array of unique conversations. We then pass this conversation array (with the first message of each conversation) to our ListView as its `DataSource`. Let's look at the constructor for `MessagesView`
+Next let's fill in our Messages View. We'll be using our fixtures file with messages for now. One thing you'll notice is that these messages include all the relevant data for rendering them, including the author name and avatar url. Later, when implementing our backend, we will separate some of these data points, since a user can change their name or profile photo. Therefore, it's better to store the `authorId` in the message and refer to the `user` object.
+For convenience, we'll be storing all the data in the messages object for now. We will be using the `ListView` in this component. The first thing we will need to do is convert our array of messages into an array of unique conversations. We then pass this conversation array (with the first message of each conversation) to our `ListView` as its `DataSource`. Let's look at the constructor for `MessagesView`
 
 ```javascript
 ...
@@ -290,10 +293,9 @@ export default class MessagesView extends Component{
 
 ```
 
-Now that we have our data, here's what the rest of the component looks like. BTW, we're using fake messages from [www.hipsteripsum.co](www.hipsteripsum.co). I find it to be more fun to work with than the traditional Latin lorem ipsum.
+Now that we have our data, here's what the rest of the component looks like. By the way, we're using fake messages from [www.hipsteripsum.co](www.hipsteripsum.co). I find it to be more fun to work with than the traditional Latin lorem ipsum.
 
 ```javascript
-
   _renderRow(rowData){
     console.log('ROW DATA', rowData);
     return (
