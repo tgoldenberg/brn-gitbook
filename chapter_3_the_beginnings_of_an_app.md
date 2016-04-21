@@ -1,4 +1,4 @@
-Making a mobile app has a lot of different parts - navigation, UI components, animations, integrating an external API, etc. We'll be looking first at navigation, which is how we tie different parts of the app together.
+Mobile apps are comprised of many different parts - navigation, UI components, animations, integrating an external API, etc. We'll be looking first at navigation, which is how we tie different parts of the app together.
 
 
 ## Navigator Drama - Which Should I Use?
