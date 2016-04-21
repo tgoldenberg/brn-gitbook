@@ -1,5 +1,3 @@
-# Chapter 2: Getting Started
-
 ## Installing React Native
 
 ### Basic Requirements

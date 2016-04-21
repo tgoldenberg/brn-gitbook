@@ -1,6 +1,3 @@
-# Chapter 1: Introducing React Native
-
-
 ## What is React Native?
 
 [React Native](https://facebook.github.io/react-native/) is a framework developed by Facebook that allows developers to create native apps for iOS and Android using Javascript and [React](https://facebook.github.io/react/).

@@ -1,5 +1,3 @@
-# Chapter 3: The Beginnings of an App
-
 Making a mobile app has a lot of different parts - navigation, UI components, animations, integrating an external API, etc. We'll be looking first at navigation, which is how we tie different parts of the app together.
 
 

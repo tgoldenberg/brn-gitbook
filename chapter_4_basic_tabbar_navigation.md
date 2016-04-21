@@ -1,4 +1,3 @@
-# Chapter 4: Basic TabBar Navigation
 ## 4.0 Putting Together the Pieces
 
 Last chapter we left with the start of our project -- a working `Navigator` and a designed landing page. Next we're going to implement `TabBar` navigation inside of our `Dashboard` component.
