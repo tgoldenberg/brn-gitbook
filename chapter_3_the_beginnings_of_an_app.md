@@ -157,7 +157,7 @@ We set up `NavigatorIOS` by giving it it our initial route `Landing`, or the fir
 
 Once we save our code, we should see our two-view app rendered in the iOS Simulator:
 
-![Simple NavigatorIOS Example](images/chapter-3-the-beginnings-of-an-app/simple-navigatorios-example.png "Simple NavigatorIOS Example")
+![Simple NavigatorIOS Example](/images/chapter-3-the-beginnings-of-an-app/simple-navigatorios-example.png "Simple NavigatorIOS Example")
 
 Take a minute and play with the views, switching back and forth between them. Right out of the gate you can see how much smoother things are than any hybrid app you've ever tried.
 
@@ -314,7 +314,7 @@ let styles = StyleSheet.create({
   ...
 ```
 
-![Empty Navigator](images/chapter-3-the-beginnings-of-an-app/empty-navigator.png "Empty Navigator")
+![Empty Navigator](/images/chapter-3-the-beginnings-of-an-app/empty-navigator.png "Empty Navigator")
 
 As you can see, the nice thing about `Navigator` is that we can customize how our screen looks at any given time. We can create a navbar with `react-native-navbar` and customize it with icons, or we can set up navigation in a different way. It's worth looking at the different options before deciding what's right for your app.
 
@@ -463,7 +463,7 @@ export default Colors = {
 };
 ```
 
-![Landing Screen](images/chapter-3-the-beginnings-of-an-app/landing-screen.png "Landing Screen")
+![Landing Screen](/images/chapter-3-the-beginnings-of-an-app/landing-screen.png "Landing Screen")
 
 As for the styles, some stuff should be pretty self-explanatory for those familiar with styling with CSS on the web. You'll see that we use some absolute positioning as well here, but the majority of components typically use flexbox for positioning.
 
