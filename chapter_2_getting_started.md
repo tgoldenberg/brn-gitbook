@@ -18,7 +18,7 @@ The steps that follow assume you’ve met React Native’s basic requirements, w
 
 We’re paraphrasing the requirements listed in the official React native [documentation](https://facebook.github.io/react-native/docs/getting-started.html). It’s a good idea to check the details there before getting started.
 
-Make sure you have the latest version of [Xcode](https://developer.apple.com/xcode/download/) installed. When Apple rolls out new major releases of Xcode, breaking changes are often introduced. Do yourself a favor and start out with the latest to avoid serious pain later.
+Make sure you have the latest version of [Xcode](https://developer.apple.com/xcode/download/) installed. When Apple rolls out new major releases of Xcode (and often even in minor releases), breaking changes are often introduced. Do yourself a favor and start out with the latest to avoid serious pain later.
 
 
 ## Creating your First Project
@@ -68,20 +68,20 @@ package.json
 
 ```javascript
 {
-
   "name": "assembliesTutorial",
   "version": "0.0.1",
   "private": true,
-    "scripts": {
-      "start": "react-native start"
+  "scripts": {
+    "start": "react-native start"
   },
-    "dependencies": {
-      "react-native": "^0.23.1
-    }
+  "dependencies": {
+    "react": "^0.14.8",
+    "react-native": "^0.25.1"
+  }
 }
 ```
 
-RIght now we only have one package dependency, ```react-native```, at version 0.23.1. It’s important to note this version number at the outset. React Native is incredible, but bleeding edge technology and the codebase is changing constantly. Whenever you’re debugging issues, especially with third-party libraries, conflicts created by differing ```react-native``` version dependencies are often the cause. Try and update at regular intervals, testing in a new branch, so you don’t get too far behind, but play with release candidates at your own risk.
+RIght now we only have one package dependency, ```react-native```, at version 0.25.1. It’s important to note this version number at the outset. React Native is incredible, but bleeding edge technology and the codebase is changing constantly. Whenever you’re debugging issues, especially with third-party libraries, conflicts created by differing ```react-native``` version dependencies are often the cause. Try and update at regular intervals, testing in a new branch, so you don’t get too far behind, but play with release candidates at your own risk.
 
 ```node_modules```  - contains all of the `npm` packages, React Native core or otherwise, our project will use.
 
@@ -104,6 +104,9 @@ You’ll also notice Xcode has opened a Terminal window:
 
 This window holds the React Native packager’s process, which will interpret all of our Javascript code into native code Xcode can understand.
 
+## Debugging
+
+One incredible feature of React Native is that it lets you debug your Javascript directly in Chrome as you interact with the Simulator. To turn on debugging, go to the Simulator, hit `Cmd + D`, and select "Debug JS Remotely." You'll notice a new Chrome tab open. To see console output, just open up the Chrome Developer Tools.
 
 ## Adding Packages
 
@@ -113,7 +116,7 @@ Installing a new package works just like it does in any other Node project. Make
 
 ```npm install moment --save```
 
-Here we’re installing the incredible [Moment.js](http://momentjs.com/) package which we’ll be using to format dates easily in our project. Adding the `--save` flag is essential, as `npm install` only installs the package locally - ```--save``` will add the package as a dependency in `packages.json` so it will get bundled with our app.
+Here we’re installing the marvelous [Moment.js](http://momentjs.com/) package which we’ll be using to format dates easily in our project. Adding the `--save` flag is essential, as `npm install` only installs the package locally - ```--save``` will add the package as a dependency in `packages.json` so it will get bundled with our app.
 
 Opening up `packages.json`, we can see that `moment` has been added:
 
@@ -153,4 +156,4 @@ If you’ve made it this far and understood the instructions, you probably alrea
 
 Let's make a commit now:
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 1](https://github.com/buildreactnative/assemblies-tutorial/commit/12539ea3348aaa04983fdf052bc82df24a9ab9d7)
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 1: "Initial commit"](https://github.com/buildreactnative/assemblies-tutorial/commit/12539ea3348aaa04983fdf052bc82df24a9ab9d7)
