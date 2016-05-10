@@ -1,5 +1,7 @@
 ## Installing React Native
 
+We'll begin our app on iOS since the development workflow is a bit easier, and add instructions for creating an Android version towards the end of the guide.
+
 ### Basic Requirements
 
 The steps that follow assume you’ve met React Native’s basic requirements, which are:
@@ -16,9 +18,7 @@ The steps that follow assume you’ve met React Native’s basic requirements, w
 
 We’re paraphrasing the requirements listed in the official React native [documentation](https://facebook.github.io/react-native/docs/getting-started.html). It’s a good idea to check the details there before getting started.
 
-#### For iOS:
-
-We'll begin our app on iOS since the development workflow is a bit easier. Make sure you have the latest version of [Xcode](https://developer.apple.com/xcode/download/) installed. When Apple rolls out new major releases of Xcode, breaking changes are often introduced. Do yourself a favor and start out with the latest to avoid serious pain later.
+Make sure you have the latest version of [Xcode](https://developer.apple.com/xcode/download/) installed. When Apple rolls out new major releases of Xcode, breaking changes are often introduced. Do yourself a favor and start out with the latest to avoid serious pain later.
 
 
 ## Creating your First Project
