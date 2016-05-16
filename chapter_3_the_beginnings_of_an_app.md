@@ -40,7 +40,7 @@ export default class Landing extends Component{
     return (
       <View style={styles.container}>
         <Text style={styles.h1}>This is Landing</Text>
-        <TouchableOpacity onClick={() => {
+        <TouchableOpacity onPress={() => {
           this.props.navigator.push({
             title: 'Dashboard',
             component: Dashboard,
