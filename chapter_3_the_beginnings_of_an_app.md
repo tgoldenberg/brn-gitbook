@@ -22,14 +22,18 @@ Now we're ready to start writing some components! First, let's set up our file d
 Let's build our Landing component -
 
 ```javascript
-import React from 'react-native';
-import Dashboard from './Dashboard';
-
-let {
-  View,
-  Text,
+import React, {
   Component,
-} = React;
+} from 'react';
+
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
+
+import Dashboard from './Dashboard';
 
 export default class Landing extends Component{
   render(){
@@ -66,14 +70,18 @@ let styles = StyleSheet.create({
 And our Dashboard component (with the same styles)-
 
 ```javascript
-import React from 'react-native';
-import Landing from './Landing';
-
-let {
-  View,
-  Text,
+import React, {
   Component,
-} = React;
+} from 'react';
+
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+import Landing from './Landing';
 
 export default class Dashboard extends Component{
   render(){
@@ -93,8 +101,18 @@ export default class Dashboard extends Component{
   }
 };
 
-let styles = StyleSheet.create({ .... (same as previous file)
-
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  h1: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    padding: 20,
+  },
+});
 ```
 
 Whoa, that was a lot of code! Let's take a minute and look at what we did piece by piece.
@@ -119,15 +137,17 @@ Now that we have some components, let's connect them in our `index.ios.js` file 
 
 
 ```javascript
-import React from 'react-native';
-import Landing from './application/components/Landing';
-
-let {
-  AppRegistry,
+import React, {
   Component,
+} from 'react';
+
+import {
+  AppRegistry,
   NavigatorIOS,
   StyleSheet,
-} = React;
+} from 'react-native';
+
+import Landing from './application/components/Landing';
 
 class assembliesTutorial extends Component{
   render(){
@@ -143,12 +163,12 @@ class assembliesTutorial extends Component{
           component: Landing,
           title: 'Landing',
         }}
+      />
     );
   }
 };
 
 AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
-
 ```
 
 This should look pretty familiar, as we're doing many of the same things as in our two previous components. Here we import our dependencies, as well as declare what we need from React Native. Here, `AppRegistry` is simply the global container that will house our app at the top level.
