@@ -411,19 +411,22 @@ We won't be using either in this tutorial. We personally love Redux but even its
 Now we're going to fill in our `Landing` page. Later, this will link to a `login/signup`, but for now we'll have it go directly to the `Dashboard`. Let's place an image as the screen background using the `Dimensions` module. Then let's use the `TouchableOpacity` component as a button that leads to our `Dashboard`
 
 ```javascript
-import NavigationBar from 'react-native-navbar';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Colors from '../styles/colors';
-
 import React, {
-  View,
-  Text,
-  StyleSheet,
   Component,
-  TouchableOpacity,
+} from 'react';
+
+import {
   Dimensions,
   Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
+
+import NavigationBar from 'react-native-navbar';
+import Colors from '../styles/colors';
+import Dashboard from './Dashboard';
 
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
@@ -434,7 +437,7 @@ export default class Landing extends Component{
           <View style={styles.backgroundHolder}>
             <Image style={styles.image} source={require('../assets/images/welcome.png')}/>
           </View>
-          <View style={styles.logoHolder}>
+          <View style={styles.logoContainer}>
             <Image style={styles.logo} source={require('../assets/images/logo.png')}/>
             <Text style={styles.title}>assemblies</Text>
             <Text style={styles.subTitle}>Where Developers Connect</Text>
@@ -447,7 +450,6 @@ export default class Landing extends Component{
               })
             }}
           >
-            <Icon style={styles.icon} name='person' size={36} color='white' />
             <Text style={styles.buttonText}>Go to Dashboard</Text>
           </TouchableOpacity>
         </View>
@@ -456,45 +458,12 @@ export default class Landing extends Component{
 };
 
 let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-  },
   backgroundHolder: {
     position: 'absolute',
     top: 0,
     right: 0,
     bottom: 0,
     left: 0,
-  },
-  image: {
-    height: deviceHeight,
-    width: deviceWidth,
-  },
-  logoHolder: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 80,
-  },
-  logo: {
-    height: 90,
-    width: 90,
-  },
-  title: {
-    color: 'white',
-    fontSize: 28,
-    fontWeight: '700',
-    paddingBottom: 24,
-  },
-  subTitle: {
-    color: 'white',
-    fontSize: 20,
   },
   button: {
     height: 80,
@@ -507,23 +476,52 @@ let styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  icon: {
-    position: 'absolute',
-    top: 20,
-    left: 30,
-  },
   buttonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: '700',
   },
+  container: {
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  },
+  image: {
+    height: deviceHeight,
+    width: deviceWidth,
+  },
+  logo: {
+    height: 90,
+    width: 90,
+  },
+  logoContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 50,
+  },
+  subTitle: {
+    color: 'white',
+    fontSize: 20,
+  },
+  title: {
+    color: 'white',
+    fontSize: 28,
+    fontWeight: '700',
+    paddingBottom: 24,
+  },
 });
+
 ```
 
-You'll notice that we reference `Colors` from a separate file now, and that some images are referenced. Feel free to download the `logo.png` and `welcome.png` images and place them in a `assets/images` folder under `application`. The `colors.js` file can be placed in `styles/` under `application`. So far it's just this:
+You'll notice that we reference `Colors` from a separate file now, and that some images are referenced. You can download the `logo.png` and `welcome.png` images by following the commit link below and place them in an `assets/images` folder under `application`. The `colors.js` file can be placed in `styles/` under `application`. So far it's just this:
 ```javascript
 export default Colors = {
-  brandPrimary: '#3A7BD2',
+  brandPrimary: '#3A7BD2'
 };
 ```
 
