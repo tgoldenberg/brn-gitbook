@@ -206,36 +206,49 @@ Now we can swap out `NavigatorIOS` for `Navigator` in our `index.ios.js` file. I
 
 ```javascript
 import React, {
-  AppRegistry,
   Component,
+} from 'react';
+
+import {
+  AppRegistry,
   Navigator,
-  StyleSheet,
+  StyleSheet
 } from 'react-native';
 
-import Landing from './application/components/Landing';
 import Dashboard from './application/components/Dashboard';
+import Landing from './application/components/Landing';
 
 class assembliesTutorial extends Component{
   render(){
-    <Navigator
-      style={styles.container}
-      initialRoute={{
-        name: 'Landing'
-      }}
-      renderScene={(route, navigator) => {
-        switch(route.name){
-          case 'Landing':
-            return <Landing />
-          case 'Dashboard':
-            return <Dashboard />
-        }
-      }}
-      configureScene={() => Navigator.SceneConfigs.FadeAndroid}
-      }}
-    />
+    console.log(Navigator.SceneConfigs)
+    return (
+      <Navigator
+        initialRoute={{name: 'Landing', index: 0}}
+        renderScene={(route, navigator) => {
+          switch(route.name){
+            case 'Landing':
+              return <Landing navigator={navigator} />
+              break;
+            case 'Dashboard':
+              return <Dashboard navigator={navigator} />
+              break;
+          }
+        }}
+        configureScene={() => Navigator.SceneConfigs.PushFromRight}
+      />
+    )
   }
 }
-...
+
+AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+});
 ```
 
 Notice that the `configureScene` option defines which type of animation our navigation uses to transition between scenes. Feel free to experiment and try other configurations, such as `FloatFromLeft`, `HorizontalSwipeJump`, and `VerticalUpSwipeJump`.
@@ -243,14 +256,19 @@ Notice that the `configureScene` option defines which type of animation our navi
 Next we redesign our 2 screens so that they route to each other and also include our navbar with a back icon. Let's look at `Landing.js`
 
 ```javascript
-import NavigationBar from 'react-native-navbar';
 import React, {
-  View,
-  Text,
-  StyleSheet,
   Component,
+} from 'react';
+
+import {
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View
 } from 'react-native';
+
+import NavigationBar from 'react-native-navbar';
+import Dashboard from './Dashboard';
 
 export default class Landing extends Component{
   render(){
@@ -274,6 +292,19 @@ export default class Landing extends Component{
     );
   }
 };
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  h1: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    padding: 20,
+  },
+});
 ```
 
 That should give us our first screen with the navigation bar. If there are errors compiling, it may be that you did not re-build the app after the command `rnpm link`. If so, try pressing the "stop"  button on Xcode and restarting.
@@ -281,15 +312,20 @@ That should give us our first screen with the navigation bar. If there are error
 For the `Dashboard` component, we'll add an icon on the left of the navbar to `pop()` to the previous route.
 
 ```javascript
+import React, {
+  Component,
+} from 'react';
+
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
 import NavigationBar from 'react-native-navbar';
 import Icon from 'react-native-vector-icons/Ionicons';
-import React, {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Component,
-} from 'react-native';
+import Landing from './Landing';
 
 export default class Dashboard extends Component{
   _renderBackButton(){
@@ -328,8 +364,18 @@ let styles = StyleSheet.create({
   backBtn: {
     paddingTop: 10,
     paddingHorizontal: 20,
-  }
-  ...
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  h1: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    padding: 20,
+  },
+});
 ```
 
 ![Empty Navigator](/images/chapter-3-the-beginnings-of-an-app/empty-navigator.png "Empty Navigator")
