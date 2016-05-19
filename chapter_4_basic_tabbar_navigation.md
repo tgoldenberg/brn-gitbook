@@ -1,24 +1,27 @@
-## 4.0 Putting Together the Pieces
+## Putting Together the Pieces
 
-Last chapter we left with the start of our project -- a working `Navigator` and a designed landing page. Next we're going to implement `TabBar` navigation inside of our `Dashboard` component.
+Last chapter we left off with the start of our project -- a working `Navigator` and a styled landing page. Next we're going to implement `TabBar` navigation inside of our `Dashboard` component.
 
-Let's start with three tabs - Dashboard, Messages, and Profile. We'll them fill out the screens with fake data. First replace the contents of `application/components/Dashboard.js`. Notice that we use the `react-native-vector-icons` package to customize our tab bar.
+Let's start by making three tabs - Dashboard, Messages, and Profile. We'll then fill out the screens with fake data. First replace the contents of `application/components/Dashboard.js` with the code below. Notice that we use the `react-native-vector-icons` package to customize our tab bar.
 
 ```javascript
-import Icon, {TabBarItem} from 'react-native-vector-icons/Ionicons';
+import React, {
+  Component,
+} from 'react';
+
+import {
+  Dimensions,
+  StyleSheet,
+  TabBarIOS,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+import Icon, {TabBarItemIOS} from 'react-native-vector-icons/Ionicons';
 import ProfileView from './profile/ProfileView';
 import MessagesView from './messages/MessagesView';
 import ActivityView from './activity/ActivityView';
-
-import React, {
-  View,
-  Text,
-  StyleSheet,
-  Component,
-  TouchableOpacity,
-  TabBarIOS,
-  Dimensions,
-} from 'react-native';
 
 export default class Dashboard extends Component{
   constructor(props){
@@ -31,61 +34,64 @@ export default class Dashboard extends Component{
     let { selectedTab } = this.state;
     return (
       <TabBarIOS>
-        <TabBarItem
+        <TabBarItemIOS
           title='Activity'
           selected={ selectedTab == 'Activity' }
-          iconName='clipboard'
+          iconName='ios-pulse'
           onPress={() => this.setState({ selectedTab: 'Activity' })}
         >
           <ActivityView />
-        </TabBarItem>
-        <TabBarItem
+        </TabBarItemIOS>
+        <TabBarItemIOS
           title='Messages'
           selected={ selectedTab == 'Messages' }
-          iconName='android-chat'
+          iconName='ios-chatboxes'
           onPress={() => this.setState({ selectedTab: 'Messages' })}
         >
           <MessagesView />
-        </TabBarItem>
-        <TabBarItem
+        </TabBarItemIOS>
+        <TabBarItemIOS
           title='Profile'
           selected={ selectedTab == 'Profile' }
-          iconName='gear-b'
+          iconName='ios-person'
           onPress={() => this.setState({ selectedTab: 'Profile' })}
         >
           <ProfileView />
-        </TabBarItem>
+        </TabBarItemIOS>
       </TabBarIOS>
     );
   }
 };
 
-...
-
+let styles = StyleSheet.create({
+});
 ```
 
 Basically, we're defining each tab with basic information like it's title, the icon it uses, the component it should render upon selection, and passing in the name of the selected tab to `state`, so we can respond to it if necessary.
 
-Now we have to create the tab components `ActivityView`, `MessagesView`, and `ProfileView`. Here's the code for `ActivityView`. Simply change the name of the component for the other two components.
+Now we have to create the tab components `ActivityView`, `MessagesView`, and `ProfileView`. Here's the code for `ActivityView`. Simply change the name of the component, the NavigationBar title, and text for the other two components.
 
 ```javascript
+import React, {
+  Component,
+} from 'react';
+
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
 import NavigationBar from 'react-native-navbar';
 import Colors from '../../styles/colors';
-
-import React, {
-  View,
-  Text,
-  Component,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
 
 export default class ActivityView extends Component{
   render() {
     return (
       <View style={{ flex: 1 }}>
         <NavigationBar
-          title={{ title: 'Profile', tintColor: 'white' }}
+          title={{ title: 'Activity', tintColor: 'white' }}
           tintColor={Colors.brandPrimary}
         />
         <View style={styles.container}>
@@ -116,7 +122,7 @@ Here's what we have so far. Let's make a commit at this point.
 
 ***
 
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 5](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - Commit 5]() "Implement basic tab bar navigation"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 5](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - Commit 5]() "Empty TabBar views"
 
 ***
 
