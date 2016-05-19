@@ -126,7 +126,7 @@ Here's what we have so far. Let's make a commit at this point.
 
 ***
 
-## 4.1 Styling the Views
+## Styling the Profile View
 
 Let's build out the tab screens. We'll be using fixtures for this. Add [this gist](https://gist.github.com/tgoldenberg/ef3dc76063ca68ecab09840f6b3eb5ab) as a file in `application/fixtures/fixtures.js`. Let's use this fixtures file to build out our `ProfileView` component.
 
@@ -254,7 +254,20 @@ let styles = StyleSheet.create({
 });
 ```
 
-Here we use the `ScrollView` component for the first time. ScrollView gives us greater layout flexibility then relying on a simple `View` component. Even though the components may fit on a certain view, using `ScrollView` ensures that all components will be visible on all phone sizes. As for the functionality of the `TouchableOpacity` components, we will add that in later. Now let's make a commit.
+Here we use the `ScrollView` component for the first time. ScrollView gives us greater layout flexibility then relying on a simple `View` component. Even though the components may fit on a certain view, using `ScrollView` ensures that all components will be visible on all phone sizes. As for the functionality of the `TouchableOpacity` components, we will add that in later.
+
+Note that we also added an `inactive` variable to our `colors.js` file:
+
+```javascript
+export default Colors = {
+  brandPrimary: '#3A7BD2',
+  inactive: '#EBEEF5'
+};
+```
+
+We are also referencing a `fixtures.js` file in a newly-created `application/fixtures` folder. You can download that file from GitHub by following the commit link below and add it to your project directory at the appropriate path.
+
+Now let's make a commit.
 
 ![{Profile TabBar View}](/images/chapter-4-basic-tabbar-navigation/profile-tabbar-view.png "Profile TabBar View")
 
