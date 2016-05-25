@@ -126,7 +126,7 @@ Here's what we have so far. Let's make a commit at this point.
 
 ***
 
-## Styling the Profile View
+## Building the Profile View
 
 Let's build out the tab screens. We'll be using fixtures for this. Add [this gist](https://gist.github.com/tgoldenberg/ef3dc76063ca68ecab09840f6b3eb5ab) as a file in `application/fixtures/fixtures.js`. Let's use this fixtures file to build out our `ProfileView` component.
 
@@ -275,9 +275,9 @@ Now let's make a commit.
 [![GitHub logo](/images/github-logo.png "GitHub logo") Commit 6](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - Commit 6]() "Add fixtures file and style profile view"
 ***
 
-## 4.2 Messages View
+## Building the Messages View
 
-Next let's fill in our Messages View. We'll be using our fixtures file with messages for now. One thing you'll notice is that these messages include all the relevant data for rendering them, including the author name and avatar url. Later, when implementing our backend, we will separate some of these data points, since a user can change their name or profile photo. Therefore, it's better to store the `authorId` in the message and refer to the `user` object.
+Next, let's fill in our messages view. We'll be using our fixtures file with messages for now. One thing you'll notice is that these messages include all the relevant data for rendering them, including the author name and avatar url. Later, when implementing our backend, we will separate some of these data points, since a user should be able to change their name or profile photo. Therefore, it's better to store the `authorId` in the message long-term and refer to the `user` object.
 For convenience, we'll be storing all the data in the messages object for now. We will be using the `ListView` in this component. The first thing we will need to do is convert our array of messages into an array of unique conversations. We then pass this conversation array (with the first message of each conversation) to our `ListView` as its `DataSource`. Let's look at the constructor for `MessagesView`
 
 ```javascript
@@ -355,7 +355,7 @@ let styles = StyleSheet.create({
 
 ![{Messages Fixtures}](/images/chapter-4-basic-tabbar-navigation/messages-fixtures.png "Messages Fixtures")
 
-Once we've confirmed that the data is being processed into conversations (both through the Chrome console React Native opens for debugging and our Simulator screen), we can refactor the rows into `Conversation` components. Replace the `Text` component in `_renderRow` with ```<Conversation conversation={rowData} />```. We'll also be using `moment` here for time/date formatting:
+Once we've confirmed that the data is being processed into conversations (both through the Chrome console React Native opens for debugging and our Simulator screen), we can refactor the rows into `Conversation` components. Replace the `Text` component in `_renderRow` with ```<Conversation conversation={rowData} />```. We'll also be using `moment` here for time/date formatting. Save the new `Conversation` component in your `application/components/messages` directory and be sure to import it at the top of your `MessagesView` component:
 
 ```javascript
 
