@@ -1,75 +1,70 @@
-# Chapter 5: User Accounts
+# Chapter 5: User Accounts - pt.1
 
-5. Building an Account System – Pt. 1
+Alright, so we left off with a nice prototype to build from in the last chapter. Now it’s time to flesh out the app with real dynamic data. This means we’ll be needing an **API** endpoint to send requests to.  The word **API** stands for application programming interface – it is the tool we use to interact with our data, through HTTP requests. 
 
-Alright, so we left off with a nice prototype to build from in the last chapter. Now it’s time to flesh out the app with real dynamic data. This means we’ll be needing an API endpoint to send requests to.  API stands for application programming interface – it is the tool we use to interact with our data, through HTTP requests. 
+## 5.1 Setting up Deployd 
 
-5.1 Setting up Deployd 
+The first need that we have for an API is to create and manage our users. Users should be able to create an account, login, etc. While there are several good options for user management such as **Rails** (the Devise gem), **MeteorJS**, etc., we will be using the Node package **Deployd** as our API. 
 
-The first need that we have for an API is to create and manage our users. Users should be able to create an account, login, etc. While there are several good options for user management such as Rails (the Devise gem), MeteorJS, etc., we will be using the Node package Deployd as our API. 
+**Deployd** abstracts the API creation process through an intuitive command line tool and interface. Since we want to focus on the mobile development aspects of React Native in this tutorial, we thought it would be an excellent tool to use. There are, of course, features where a more configurable API would be very useful, but we found that **Deployd** for the most part meets our needs.
 
-Deployd abstracts the API creation process through an intuitive command line tool and interface. Since we want to focus on the mobile development aspects of React Native in this tutorial, we thought it would be an excellent tool to use. There are, of course, features where a more configurable API would be very useful, but we found that Deployd for the most part meets our needs.
-
-Getting the API started is easy. As per Deployd’s documentation, we make sure that the package is installed globally on our machine. 
+Getting the API started is easy. As per **Deployd**’s documentation, we make sure that the package is installed globally on our machine. 
 
 ```npm install –g dpd```
 
-Check to make sure that the package was installed. `dpd –version`. You should see something like `0.8.7`. 
+Check to make sure that the package was installed. `dpd –version`. You should see something like this. 
 
- 
+![](Screen Shot 2016-06-27 at 9.08.20 AM.png) 
 
 Next, we can create our API with a simple command. `dpd create assemblies-api`.
 You should see instructions for opening and running the newly created API. If we `cd` into the created folder and type the command `dpd`, our API will be up and running.
 
- 
+![](Screen Shot 2016-06-27 at 9.09.26 AM.png) 
+
+![](Screen Shot 2016-06-27 at 9.12.44 AM.png)
  
 If we open our browser to `localhost:2403/dashboard`, we can see a visual representation of our API. We can use the dashboard to add resources, and it is easy to edit the fields of our collections as well. 
 
-
-
- 
-
-First of all, we know that we need a users collections, so let’s create that. By selecting the `users` options under adding resources, we can see that Deployd creates a default collection with the fields `id`, `username`, and `password`. Now, Deployd requires these fields, even if you don’t plan on having a username for your users. One way around this is to designate the `username` field for the user’s email. The only criteria is that this field be unique for all users.
+First of all, we know that we need a users collections, so let’s create that. By selecting the `users` options under adding resources, we can see that **Deployd** creates a default collection with the fields `id`, `username`, and `password`. Now, **Deployd** requires these fields, even if you don’t plan on having a username for your users. One way around this is to designate the `username` field for the user’s email. The only criteria is that this field be unique for all users.
 
 We can add other fields to our user collection. How about location? We will want to know where our users live, in order to suggest other assemblies. We will also want their first and last names, as well as some interests they have, in order to better filter the assemblies we suggest for them. Let’s create those fields. 
 
- 
+![](Screen Shot 2016-06-27 at 9.19.45 AM.png) 
 
 
 Now in our `Landing` component, let’s add two buttons in place of the previous `Go to dashboard` button - `Login` and `Signup`. 
 
 In place of the previous button on `Landing.js`, put this code: 
-```javascript
+```JavaScript
 …
 <TouchableOpacity
-            style={[styles.button, styles.loginButton]}
-            onPress={() => {
-              this.props.navigator.push({
-                name: 'Login'
-              })
-            }}
-          >
-            <Icon style={styles.icon} name='person' size={36} color={Colors.brandPrimary} />
-            <Text style={[styles.buttonText, styles.loginButtonText]}>Login</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              this.props.navigator.push({
-                name: 'Register'
-              })
-            }}
-          >
-            <Icon style={styles.icon} name='person' size={36} color='white' />
-            <Text style={styles.buttonText}>Create an account</Text>
-          </TouchableOpacity>
+  style={[styles.button, styles.loginButton]}
+  onPress={() => {
+    this.props.navigator.push({
+      name: 'Login'
+    })
+  }}
+>
+  <Icon style={styles.icon} name='person' size={36} color={Colors.brandPrimary} />
+  <Text style={[styles.buttonText, styles.loginButtonText]}>Login</Text>
+</TouchableOpacity>
+<TouchableOpacity
+  style={styles.button}
+  onPress={() => {
+    this.props.navigator.push({
+      name: 'Register'
+    })
+  }}
+>
+  <Icon style={styles.icon} name='person' size={36} color='white' />
+  <Text style={styles.buttonText}>Create an account</Text>
+</TouchableOpacity>
 …
 ```
 and add the following styles below it:
 
 ```javascript
 …
-
 loginButton: {
     bottom: 80,
     backgroundColor: Colors.inactive
@@ -79,20 +74,20 @@ loginButtonText: {
   }
 …
 ```
-Notice how we use an array of styles for two of the elements, in order to reuse the styles we already created. This is a common convention in React Native. Ideally, you would like to follow the principle of DRY – don’t repeat yourself. This means that wherever there is duplication of code, we refactor out those styles to a more general style, for example, a “button” style. 
+Notice how we use an array of styles for two of the elements, in order to reuse the styles we already created. This is a common convention in React Native. Ideally, you would like to follow the principle of **DRY** – don’t repeat yourself. This means that wherever there is duplication of code, we refactor out those styles to a more general style, for example, a “*button*” style. 
 
 However, part of the fun of building with React Native is the fast iteration. Later on, we’ll be able to assess how we can best refactor our styles for future maintainability. For now, it’s enough if we refactor styles whenever it’s convenient. This doesn’t mean that we should make a big spaghetti mess of JavaScript styles, but we want to build out our prototype quickly. Follow Nick’s advice for styling in React Native for more insight.
 
-Next, we have to create the routes for both “Register” and “Login” and create forms for our users to create an account and sign in.  In `index.ios.js` or `index.android.js` (depending on what you are building), add the following lines in the `switch` statement. Don’t forget to `import` the referenced files at the top of the file.
+Next, we have to create the routes for both “**Register**” and “**Login**” and create forms for our users to create an account and sign in.  In `index.ios.js` or `index.android.js` (depending on what you are building), add the following lines in the `switch` statement. Don’t forget to `import` the referenced files at the top of the file.
 ```javascript
 …
 import Register from './application/components/accounts/Register';
 import Login from './application/components/accounts/Login';
 …
 case 'Register':
-              return <Register navigator={navigator} />
-            case 'Login':
-              return <Login navigator={navigator} />
+  return <Register navigator={navigator} />
+case 'Login':
+  return <Login navigator={navigator} />
 …
 ```
 
@@ -126,7 +121,9 @@ let styles = {
 }
 
 export default Register;
+```
 
+```JavaScript
 application/components/accounts/Login.js
 
 import React, { Component } from 'react';
@@ -159,7 +156,8 @@ export default Login;
 
 You should see something like these screenshots when you click to either the `Login` or `Register` routes.
 
-  
+  ![](Screen Shot 2016-06-27 at 6.40.14 PM.png)
+  ![](Screen Shot 2016-06-27 at 6.40.06 PM.png)
 
 Now is probably a good time to commit our changes. 
 
