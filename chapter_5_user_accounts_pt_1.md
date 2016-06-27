@@ -161,10 +161,10 @@ You should see something like these screenshots when you click to either the `Lo
 
 Now is probably a good time to commit our changes. 
 
-Git commit –am “Add basic Login and Register routes”
+***
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 1: "Add basic Login and Register routes"]()
 
-
-5.2. Building a Login and Register Form 
+## 5.2. Building a Login and Register Form 
 
 Now that our routing works, let’s build a form for our users to fill out. For login, we’ll only need an email and password. For registration, however, we’ll need more data. Let’s start with the login form, since it’s a bit easier. 
 
@@ -360,11 +360,11 @@ let {
 } = Dimensions.get('window');
 
 let globals = StyleSheet.create({
-	twoColumnGridContainer: {
-		flex: 1,
-		flexDirection: 'row',
-		flexWrap: 'wrap',
-	},
+  twoColumnGridContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
   backButton: {
     paddingLeft: 20,
     paddingRight: 20,
@@ -374,33 +374,33 @@ let globals = StyleSheet.create({
     width: 50,
     height: 50,
   },
-	inactiveContainer: {
-		flex: 1,
-		backgroundColor: Colors.inactive
-	},
-	heading: {
-		color: Colors.bodyText,
-		fontSize: 22,
-		padding: 15
-	},
-	bodyText: {
-		color: Colors.bodyText,
-		fontSize: 16,
-		paddingHorizontal: 15
-	},
-	button: {
-		height: 60,
-		width: deviceWidth,
-		backgroundColor: Colors.brandPrimary,
-		justifyContent: 'center'
-	},
-	buttonText: {
-		color: '#ffffff',
-		textAlign: 'center'
-	},
-	inputContainer: {
-		paddingBottom: 30
-	},
+  inactiveContainer: {
+    flex: 1,
+    backgroundColor: Colors.inactive
+  },
+  heading: {
+    color: Colors.bodyText,
+    fontSize: 22,
+    padding: 15
+  },
+  bodyText: {
+    color: Colors.bodyText,
+    fontSize: 16,
+    paddingHorizontal: 15
+  },
+  button: {
+    height: 60,
+    width: deviceWidth,
+    backgroundColor: Colors.brandPrimary,
+    justifyContent: 'center'
+  },
+  buttonText: {
+    color: '#ffffff',
+    textAlign: 'center'
+  },
+  inputContainer: {
+    paddingBottom: 30
+  },
   submitButton: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -413,37 +413,37 @@ let globals = StyleSheet.create({
     fontSize: 25,
     fontWeight: '400'
   },
-	input: {
-		borderWidth: 0,
-		backgroundColor: '#ffffff',
-		height: 50,
-		paddingLeft: 12,
-		fontSize: 16,
-	},
-	textarea: {
-		borderWidth: 0,
-		backgroundColor: '#ffffff',
-		height: 100,
-		paddingTop: 10,
-		paddingLeft: 12,
-		paddingBottom: 10,
-		fontSize: 16
-	},
-	inputError: {
-		color: 'red',
-		paddingHorizontal: 12,
-		paddingBottom: 6
-	},
-	inputLabel: {
-		color: Colors.bodyText,
-		fontSize: 16,
-		paddingHorizontal: 12,
-		paddingBottom: 8
-	},
-	map: {
-		height: (deviceHeight / 3),
-		width: deviceWidth
-	}
+  input: {
+    borderWidth: 0,
+    backgroundColor: '#ffffff',
+    height: 50,
+    paddingLeft: 12,
+    fontSize: 16,
+  },
+  textarea: {
+    borderWidth: 0,
+    backgroundColor: '#ffffff',
+    height: 100,
+    paddingTop: 10,
+    paddingLeft: 12,
+    paddingBottom: 10,
+    fontSize: 16
+  },
+  inputError: {
+    color: 'red',
+    paddingHorizontal: 12,
+    paddingBottom: 6
+  },
+  inputLabel: {
+    color: Colors.bodyText,
+    fontSize: 16,
+    paddingHorizontal: 12,
+    paddingBottom: 8
+  },
+  map: {
+    height: (deviceHeight / 3),
+    width: deviceWidth
+  }
 })
 
 module.exports = globals;
@@ -455,9 +455,10 @@ module.exports = globals;
 
 Let’s make a commit here, before making the login calls to our API. 
 
-Git commit –am “Add basic login component”
+***
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 1: "Add basic login component"]()
 
-5.3 Adding the API to Login
+## 5.3 Adding the API to Login
 
 Now we’re ready to collect our user’s email and password and create a session with our API. In production, we would be pointing our requests to an API hosted on a server such as Digital Ocean, AWS, or Heroku. While in development, it’s enough to point to our localhost with the port that is running Deployd. We can set a config file with our API endpoint set to `localhost:2403`, and when we’re ready for production, we can change the endpoint to the URL of the server that is hosting our API. 
 
@@ -471,10 +472,12 @@ export const API = ‘localhost:2403’;
 
 Now we can refer to our endpoint as ‘../../config/config’ from within our components.
 
-Now, let’s think about what we want to do.  With Deployd, we first have to call the `/login` endpoint with the username and password. Our API will return the user’s ID, and a session variable (or cookie). From here, we will want to get all of the user’s information, so we will have to call to Deployd to fetch the user information for the user_id. This would be `/users/me`, once we’re logged in.
+Now, let’s think about what we want to do.  With **Deployd**, we first have to call the `/login` endpoint with the username and password. Our API will return the user’s ID, and a session variable (or cookie). From here, we will want to get all of the user’s information, so we will have to call to **Deployd** to fetch the user information for the user_id. This would be `/users/me`, once we’re logged in.
 
 If the user is not allowed to log in, we want to display a generic error message, to the effect that the email and password combination was invalid. Giving too much information in a login form can be a bad idea.
 
 To make our API calls, we’ll be using `fetch`. React Native supports the `fetch` API, which was recently introduced into most browsers, and it gives us a simple way of sending HTTP requests. For more information about `fetch` and about promises in general, check out the W3 documentation.
+
+
 
 
