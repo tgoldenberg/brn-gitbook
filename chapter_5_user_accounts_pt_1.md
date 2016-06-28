@@ -450,9 +450,6 @@ module.exports = globals;
 
 ```
 
- 
-
-
 Let’s make a commit here, before making the login calls to our API. 
 
 ***
@@ -478,6 +475,61 @@ If the user is not allowed to log in, we want to display a generic error message
 
 To make our API calls, we’ll be using `fetch`. React Native supports the `fetch` API, which was recently introduced into most browsers, and it gives us a simple way of sending HTTP requests. For more information about `fetch` and about promises in general, check out the W3 documentation.
 
+```JavaScript
+Login.js
+...
+  loginUser(){
+    if (DEV) { console.log('Logging in...'); }
+    let { email, password, updateUser } = this.state;
+    fetch(`${API}/users/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: email,
+        password: password
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status == 401 ){
+        this.setState({ errorMsg: 'Email or password was incorrect.'});
+      } else {
+        fetch(`${API}/users/me`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Set-Cookie': `sid=${data.id}`
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (DEV) { console.log('Logged in user', data); }
+          updateUser(data);
+          this.props.navigator.push({
+            name: 'Dashboard'
+          })
+        })
+        .catch(err => this.setState({ errorMsg: 'Connection error.'}))
+        .done();
+      }
+    })
+    .catch(err => {
+      if (DEV) { console.log('Login error: ', err); }
+    })
+    .done();
+  }
+...
+```
 
+Notice a few things here. First of all, we are only calling `console.log` if `DEV` is set to true. This is because often times when running the Simulator in React Native, `console.log`s can slow down performance. When we want to switch to production, it's important to make sure that these aren't being called to ensure a smooth user experience. Here, since we are debugging, we want to see these debugging messages in our browser console.
 
+The parameter to `fetch` is the URL from which we are fetching data. With ES6, we are able to use string interpolation, which feels neater than writing `API + '/users/me'`, etc. We are also specifying the type of HTTP request (usually `GET` or `POST`) and headers. As per the Deployd docs, we supply a session cookie to retrieve the user information. Try logging into the app!
+
+When you try logging in, you should see an error message like this. This is because we forgot to create a user! Luckily, Deployd makes this easy to get started.
+
+![](Screen Shot 2016-06-27 at 8.11.57 PM.png)
+
+If we open up the dashboard for Deployd in our browser window (at `localhost:2403/dashboard`), we can actually manually insert a user. Open the `users` collection, and select the `data` tab. Now start typing, and you should see the fields fill up. When filling in values that expect arrays or objects, make sure to use double quotes and not single quotes. Here is what our screen looks like. 
 
