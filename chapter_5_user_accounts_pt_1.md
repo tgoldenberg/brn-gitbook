@@ -1,12 +1,12 @@
 # Chapter 5: User Accounts - pt.1
 
-Alright, so we left off with a nice prototype to build from in the last chapter. Now it’s time to flesh out the app with real dynamic data. This means we’ll be needing an **API** endpoint to send requests to.  The word **API** stands for application programming interface – it is the tool we use to interact with our data, through HTTP requests. 
+In the last chapter we left off with a nice prototype to build from. Now it’s time to flesh out the app with real dynamic data. This means we’ll be needing an **API** endpoint to send requests to.  The word **API** stands for **application programming interface** – it's the tool we use to interact with our data, through HTTP requests. 
 
 ## 5.1 Setting up Deployd 
 
-The first need that we have for an API is to create and manage our users. Users should be able to create an account, login, etc. While there are several good options for user management such as **Rails** (the Devise gem), **MeteorJS**, etc., we will be using the Node package **Deployd** as our API. 
+One of the first concerns with just about any API is creating and managing user accounts. Users should be able to create an account, login, logout, etc. While there are several good options for user management such as **Rails** (the *Devise* gem), **MeteorJS**, etc., we will be using the Node package **Deployd** as our API. 
 
-**Deployd** abstracts the API creation process through an intuitive command line tool and interface. Since we want to focus on the mobile development aspects of React Native in this tutorial, we thought it would be an excellent tool to use. There are, of course, features where a more configurable API would be very useful, but we found that **Deployd** for the most part meets our needs.
+**Deployd** abstracts the API creation process for us through an easy-to-use command line tool and intuitive interface. Since we want to focus on the mobile development aspects of React Native in this tutorial, we thought it would be an excellent tool to use. There are, of course, situations where a more configurable API would be very useful. But we found that **Deployd** meets our needs for the most part.
 
 Getting the API started is easy. As per **Deployd**’s documentation, we make sure that the package is installed globally on our machine. 
 
@@ -23,11 +23,22 @@ You should see instructions for opening and running the newly created API. If we
 
 ![](Screen Shot 2016-06-27 at 9.12.44 AM.png)
  
-If we open our browser to `localhost:2403/dashboard`, we can see a visual representation of our API. We can use the dashboard to add resources, and it is easy to edit the fields of our collections as well. 
+If you open your browser to `localhost:2403/dashboard`, you can see a visual representation of the API. We can use the dashboard to add "resources", and it is easy to edit the fields of our resources as well. 
 
-First of all, we know that we need a users collections, so let’s create that. By selecting the `users` options under adding resources, we can see that **Deployd** creates a default collection with the fields `id`, `username`, and `password`. Now, **Deployd** requires these fields, even if you don’t plan on having a username for your users. One way around this is to designate the `username` field for the user’s email. The only criteria is that this field be unique for all users.
+We know that we need a users collection, so let’s start by creating that. By selecting the `users` options under *adding resources*, we can see that **Deployd** creates a default collection with the fields `id`, `username`, and `password`. **Deployd** requires these three fields, even if you don’t plan on having a username for your users. One way around this is to designate the `username` field for the user’s email. The only criteria is that this field be unique for all users.
 
-We can add other fields to our user collection. How about location? We will want to know where our users live, in order to suggest other assemblies. We will also want their first and last names, as well as some interests they have, in order to better filter the assemblies we suggest for them. Let’s create those fields. 
+We can add other fields to our user collection. How about location? We will want to know where our users live, in order to suggest other assemblies. We will also want their first and last names, a URL for their avatar, and some of their interests, in order to filter the assemblies we suggest for them. Here are all the fields  we'll be adding to our `users` collection, along with their data type.
+
+```JavaScript
+username    String
+id          String
+password    String
+firstName   String
+lastName    String
+location    Object
+interests   Array
+avatarUrl   String
+```
 
 ![](Screen Shot 2016-06-27 at 9.19.45 AM.png) 
 
@@ -464,12 +475,12 @@ Let’s create a file `application/config/config.js` and add the following lines
 ```javascript
 export const DEV = true;
 
-export const API = ‘localhost:2403’;
+export const API = ‘http://localhost:2403’;
 ```
 
 Now we can refer to our endpoint as ‘../../config/config’ from within our components.
 
-Now, let’s think about what we want to do.  With **Deployd**, we first have to call the `/login` endpoint with the username and password. Our API will return the user’s ID, and a session variable (or cookie). From here, we will want to get all of the user’s information, so we will have to call to **Deployd** to fetch the user information for the user_id. This would be `/users/me`, once we’re logged in.
+Now, let’s think about what we want to do.  With **Deployd**, we first have to call the `/users/login` endpoint with the username and password. Our API will return the user’s ID, and a session variable (or cookie). From here, we will want to get all of the user’s information, so we will have to call to **Deployd** to fetch the user information for the user_id. This would be `/users/me`, once we’re logged in.
 
 If the user is not allowed to log in, we want to display a generic error message, to the effect that the email and password combination was invalid. Giving too much information in a login form can be a bad idea.
 
@@ -480,7 +491,8 @@ Login.js
 ...
   loginUser(){
     if (DEV) { console.log('Logging in...'); }
-    let { email, password, updateUser } = this.state;
+    let { email, password } = this.state;
+    let { updateUser } = this.props;
     fetch(`${API}/users/login`, {
       method: 'POST',
       headers: {
@@ -523,9 +535,30 @@ Login.js
 ...
 ```
 
-Notice a few things here. First of all, we are only calling `console.log` if `DEV` is set to true. This is because often times when running the Simulator in React Native, `console.log`s can slow down performance. When we want to switch to production, it's important to make sure that these aren't being called to ensure a smooth user experience. Here, since we are debugging, we want to see these debugging messages in our browser console.
+```JavaScript
+index.ios.js
+...
+  constructor(){
+    super();
+    this.updateUser = this.updateUser.bind(this);
+    this.state = {
+      user: null
+    };
+  }
+  updateUser(user){
+    this.setState({ user: user });
+  }
+  ...
+  case 'Login':
+    return <Login navigator={navigator} updateUser={this.updateUser}/>
+  ...
+```
+
+Notice a few things here. First of all, we are only calling `console.log` if `DEV` is set to true. This is because often times when running the Simulator in React Native, `console.log`'s can slow down performance. When we want to switch to production, it's important to make sure that these aren't being called to ensure a smooth user experience. Here, since we are debugging, we want to see these debugging messages in our browser console.
 
 The parameter to `fetch` is the URL from which we are fetching data. With ES6, we are able to use string interpolation, which feels neater than writing `API + '/users/me'`, etc. We are also specifying the type of HTTP request (usually `GET` or `POST`) and headers. As per the Deployd docs, we supply a session cookie to retrieve the user information. Try logging into the app!
+
+Once we receive the user's information, we send a callback to our `<Navigator/>` component to update it's state, setting `user` to the new data. Then we navigate to the Dashboard with our logged in user, that simple.
 
 When you try logging in, you should see an error message like this. This is because we forgot to create a user! Luckily, Deployd makes this easy to get started.
 
@@ -533,3 +566,38 @@ When you try logging in, you should see an error message like this. This is beca
 
 If we open up the dashboard for Deployd in our browser window (at `localhost:2403/dashboard`), we can actually manually insert a user. Open the `users` collection, and select the `data` tab. Now start typing, and you should see the fields fill up. When filling in values that expect arrays or objects, make sure to use double quotes and not single quotes. Here is what our screen looks like. 
 
+
+![](Screen Shot 2016-06-27 at 9.18.18 PM.png)
+![](Screen Shot 2016-06-27 at 9.18.26 PM.png)
+![](Screen Shot 2016-06-27 at 9.18.32 PM.png)
+
+Now when we login with the correct email and password, we should get a response with the user information, and we can then redirect to the dashboard. Voila! Let's not forget to make a commit at this point.
+
+![](Screen Shot 2016-06-28 at 9.23.35 AM.png)
+`Git commit -am "Create user login"`
+
+## 5.4 A Real Profile View
+
+Now that we have real user data, we can start to flesh out parts of our app. Our profile view, for example, should be pretty easy to update. We just have to ensure that the user data that is passed to the `<Dashboard/>` component gets passed to our profile view. Let's see what that looks like.
+
+```JavaScript 
+application/components/profile/ProfileView.js
+...
+  // import { currentUser } from '../../fixtures/fixtures';
+...
+  // console.log('CURRENT USER', currentUser);
+  let { currentUser } = this.props;
+...
+```
+```JavaScript
+application/components/Dashboard.js
+  ...
+  let { user } = this.props;
+  ...
+  <ProfileView currentUser={user}/>
+  ...
+```
+
+Now our profile view should have real dynamic data. If we log in as a different user, we'll see entirely different information. Pretty cool!
+
+Now that we've allowed our users to log in and fleshed out our `<ProfileView/>` with real data, we still need to allow users to create their account, and logout. That will come next in chapter 6.
