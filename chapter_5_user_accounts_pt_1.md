@@ -600,4 +600,6 @@ application/components/Dashboard.js
 
 Now our profile view should have real dynamic data. If we log in as a different user, we'll see entirely different information. Pretty cool!
 
+![](Screen Shot 2016-06-28 at 10.14.17 AM.png)
+
 Now that we've allowed our users to log in and fleshed out our `<ProfileView/>` with real data, we still need to allow users to create their account, and logout. That will come next in chapter 6.
