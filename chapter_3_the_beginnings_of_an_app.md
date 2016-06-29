@@ -26,9 +26,7 @@ Now we're ready to start writing some components! First, let's set up our file d
 Let's build our Landing component -
 
 ```javascript
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 
 import {
   StyleSheet,
@@ -74,9 +72,7 @@ let styles = StyleSheet.create({
 And our Dashboard component (with the same styles)-
 
 ```javascript
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 
 import {
   StyleSheet,
@@ -141,9 +137,7 @@ Now that we have some components, let's connect them in our `index.ios.js` file 
 
 
 ```javascript
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 
 import {
   AppRegistry,
@@ -209,18 +203,9 @@ This will install the packages to our `node_modules` folder. Now, one issue that
 Now we can swap out `NavigatorIOS` for `Navigator` in our `index.ios.js` file. In `Navigator`, we must provide an initial route and a `renderScene` function which acts as a `switch()` statement for all of our main routes. Let's set up the `Navigator` for our two previous components, `Dashboard` and `Landing`.
 
 ```javascript
-import React, {
-  Component,
-} from 'react';
-
-import {
-  AppRegistry,
-  Navigator,
-  StyleSheet
-} from 'react-native';
-
+...
 import Dashboard from './application/components/Dashboard';
-import Landing from './application/components/Landing';
+
 
 class assembliesTutorial extends Component{
   render(){
@@ -243,16 +228,7 @@ class assembliesTutorial extends Component{
     )
   }
 }
-
-AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
-});
+...
 ```
 
 Notice that the `configureScene` option defines which type of animation our navigation uses to transition between scenes. Feel free to experiment and try other configurations, such as `FloatFromLeft`, `HorizontalSwipeJump`, and `VerticalUpSwipeJump`.
@@ -260,30 +236,20 @@ Notice that the `configureScene` option defines which type of animation our navi
 Next we redesign our 2 screens so that they route to each other and also include our navbar with a back icon. Let's look at `Landing.js`
 
 ```javascript
-import React, {
-  Component,
-} from 'react';
-
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+...
 
 import NavigationBar from 'react-native-navbar';
-import Dashboard from './Dashboard';
 
 export default class Landing extends Component{
   render(){
     return (
-      <View style={{flex: 1}}>
+      <View style={styles.outerContainer}>
         <NavigationBar
           title={{title: 'Landing', tintColor: 'white'}}
           tintColor='#3A7BD2'
         />
         <View style={styles.container}>
-          <Text style={styles.h1}>This is Landing</Text>
+          <Text style={styles.h1}>This is the Landing</Text>
           <TouchableOpacity onPress={() => {
             this.props.navigator.push({
               name: 'Dashboard'
@@ -298,17 +264,10 @@ export default class Landing extends Component{
 };
 
 let styles = StyleSheet.create({
-  container: {
+  outerContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  h1: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    padding: 20,
-  },
-});
+ ...
 ```
 
 That should give us our first screen with the navigation bar. If there are errors compiling, it may be that you did not re-build the app after the command `rnpm link`. If so, try pressing the "stop"  button on Xcode and restarting.
@@ -343,7 +302,7 @@ export default class Dashboard extends Component{
   }
   render(){
     return (
-      <View style={{flex: 1}}>
+      <View style={styles.outerContainer}>
         <NavigationBar
           title={{title: 'Dashboard', tintColor: 'white'}}
           tintColor='#3A7BD2'
@@ -365,21 +324,14 @@ export default class Dashboard extends Component{
 };
 
 let styles = StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+  },
   backBtn: {
     paddingTop: 10,
     paddingHorizontal: 20,
   },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  h1: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    padding: 20,
-  },
-});
+  ...
 ```
 
 ![Empty Navigator](/images/chapter-3-the-beginnings-of-an-app/empty-navigator.png "Empty Navigator")
