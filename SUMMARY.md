@@ -6,4 +6,5 @@
 * [Chapter 3: The Beginnings of an App](chapter_3_the_beginnings_of_an_app.md)
 * [Chapter 4: MVP](chapter4_mvp.md)
 * [Chapter 5: User Accounts Pt. 1](chapter5_md.md)
+* Chapter 6: User Accounts Pt. 2
 
