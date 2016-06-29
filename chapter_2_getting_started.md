@@ -72,16 +72,16 @@ package.json
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "react-native start"
+    "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
-    "react": "^0.14.8",
-    "react-native": "^0.25.1"
+    "react": "15.1.0",
+    "react-native": "^0.28.0"
   }
 }
 ```
 
-RIght now we only have one package dependency, ```react-native```, at version 0.25.1. It’s important to note this version number at the outset. React Native is incredible, but bleeding edge technology and the codebase is changing constantly. Whenever you’re debugging issues, especially with third-party libraries, conflicts created by differing ```react-native``` version dependencies are often the cause. Try and update at regular intervals, testing in a new branch, so you don’t get too far behind, but play with release candidates at your own risk.
+Right now we only two package dependencies, `react-native` and `react`, at version 0.28.0 and 15.1.0, respectively. It’s important to note this version number at the outset. React Native is incredible, but bleeding edge technology and the codebase is changing constantly. Whenever you’re debugging issues, especially with third-party libraries, conflicts created by differing ```react-native``` version dependencies are often the cause. Try and update at regular intervals, testing in a new branch, so you don’t get too far behind, but play with release candidates at your own risk.
 
 ```node_modules```  - contains all of the `npm` packages, React Native core or otherwise, our project will use.
 
@@ -126,13 +126,14 @@ Opening up `packages.json`, we can see that `moment` has been added:
   "name": "Assembly",
   "version": "0.0.1",
   "private": true,
-    "scripts": {
-      "start": "react-native start"
-    },
-      "dependencies": {
-        "moment": "^2.10.6",
-        "react-native": "^0.23.1
-      }
+   "scripts": {
+      "start": "node node_modules/react-native/local-cli/cli.js start"
+   },
+   "dependencies": {
+     "moment": "^2.13.0",
+     "react": "15.1.0",
+     "react-native": "^0.28.0"
+   }
 }
 ```
 
