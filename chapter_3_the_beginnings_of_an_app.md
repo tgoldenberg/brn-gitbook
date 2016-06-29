@@ -3,17 +3,21 @@ Mobile apps are comprised of many different parts - navigation, UI components, a
 
 ## Navigator Drama - Which Should I Use?
 
-Since React Native is a budding technology, it is not always as opinionated as other frameworks. For example, we're given two different options for setting up navigation - `NavigatorIOS` and `Navigator`.
+Since React Native is a budding technology, it is not always as opinionated as other frameworks. For example, we're given three different options for setting up navigation - `NavigatorIOS`,  `Navigator`, and `NavigationExperimental`.
 
-Let's look at the pros and cons of these two options for routing to see which best suits our needs.
+Let's look at the pros and cons of these three options for routing to see which best suits our needs.
 
 ### NavigatorIOS
-`NavigatorIOS` offers great performance because the animation displayed as we navigate throughout our app is handled outside of the main JavaScript thread. It features a simple layout and API to support pushing and popping routes off of the stack of views the user accumulates while browsing. `NavigatorIOS` is able to achieve this by very thinly wrapping the native iOS navigation stack in a Javascript component. The downside of this superficial implementation is that it is highly opinionated, tied very closely to iOS default navigation patterns, and therefore less configurable. It can be appropriate for simple apps or when customization isn't needed.
+`NavigatorIOS` offers great performance because the animation displayed as we navigate throughout our app is handled outside of the main JavaScript thread. It features a simple layout and API to support pushing and popping routes off of the stack of views the user accumulates while browsing. `NavigatorIOS` is able to achieve this by very thinly wrapping the native iOS navigation stack in a Javascript component. The downside of this superficial implementation is that it is highly opinionated, tied very closely to iOS default navigation patterns, and therefore less configurable. It can be appropriate for simple apps or when customization isn't needed. It also is not actively maintained by the core React Native team at Facebook.
 
 ### Navigator
 `Navigator`, on the other hand, is highly customizable. It has options for different sliding and fading transitions, and is completely neutral in regards to UI. The main downside is that the animation runs on the JavaScript thread, and so, this can cause performance lags. In order to keep our app running smoothly, we'll need to add some tweaks to the navigation code.
 
-We will be using `Navigator` for this project, because it is more widely supported and seen in complex apps. However, to get a feel for NavigatorIOS, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit.
+### NavigationExperimental
+
+`NavigationExperimental` was introduced to offer a single-state approach to navigation. This is because many development teams use the library `redux` to manage their application state. However, learning `redux` with React and React Native can be overwhelming, so we will be sticking with `Navigator`.
+
+Even though `Navigator` and `NavigatorExperimental` are flexible for complex apps, `NavigatorIOS` can be very useful in simple applications. In order to get a feel for NavigatorIOS, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit.
 
 ## 3.1 Using NavigatorIOS - a Simple Example
 
