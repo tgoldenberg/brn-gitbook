@@ -366,13 +366,13 @@ Once we've confirmed that the data is being processed into conversations (both t
 
 ```javascript
 
-import _ from 'underscore';
 import Colors from '../../styles/colors';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { currentUser, FAKE_USERS } from '../../fixtures/fixtures';
 
-import React, {
+import React, { Component } from 'react';
+import {
   Component,
   StyleSheet,
   View,
@@ -389,12 +389,9 @@ export default class Conversation extends Component{
     let { conversation } = this.props;
     let msg = conversation[0].text;
     let date = new Date(conversation[0].createdAt);
-    let user = _.find(FAKE_USERS, (usr) => {
-      return (
-        _.contains(conversation[0].participants, usr.id) &&
-        usr.id != currentUser.id
-      )
-    });
+    let otherUser = conversation[0].participants.filter(p => p != currentUser.id)[0];
+    let otherUserIdx = FAKE_USERS.map(u => u.id).indexOf(otherUser);
+    let user = FAKE_USERS[otherUserIdx]
     return (
       <TouchableOpacity style={{ flex: 1 }}>
         <View style={styles.container}>
@@ -586,9 +583,6 @@ export default class ActivityView extends Component{
             styles.rightInactiveTab
           ]}>
             <Text style={styles.inactiveTabText}>Notifications</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.infoIcon}>
-            <Icon name='information-circled' color='white' size={30} />
           </TouchableOpacity>
         </View>
         {this._renderScrollView()}
