@@ -188,7 +188,7 @@ Not to worry - we'll make sure that you don't have that situation. Let's make a 
 Let's commit that code now:
 
 ****
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/Ch3-0) - "Simple NavigatorIOS example"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/Ch3-0) - Simple NavigatorIOS example
 ****
 
 
@@ -345,7 +345,8 @@ Okay, now it's time for another commit! Congrats on having delved into navigatio
 Note: If you are interested in using `NavigationExperimental`, please refer to the appendix. There we show how to structure an app with `NavigationExperimental`, including how to store state with `redux`. Honestly, the transition from `Navigator` to `NavigationExperimental` will feel very easy.
 
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 4](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.2) - "Create basic navigation with Navigator"
+![GitHub logo](/images/github-logo.png "GitHub logo") 
+[Commit 3](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.2) - Create basic navigation with Navigator
 ***
 
 ## 3.3 Fleshing out the App
@@ -489,5 +490,5 @@ As for the styles, some stuff should be pretty self-explanatory for those famili
 Time for another commit to close out this chapter on setting up navigation:
 
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 4](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.3) - "Flesh out landing page"
+![GitHub logo](/images/github-logo.png "GitHub logo") [Commit 4](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.3) - Flesh out landing page
 ***
