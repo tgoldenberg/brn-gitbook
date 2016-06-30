@@ -487,12 +487,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import { notifications, upcomingEvent } from '../../fixtures/fixtures';
 
-import React, {
+import React, { Component } from 'react';
+import {
   ScrollView,
   View,
   Text,
-  Component,
   StyleSheet,
+  InteractionManager,
   TouchableOpacity,
   Image,
   Dimensions,
@@ -502,6 +503,18 @@ import React, {
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 export default class ActivityView extends Component{
+  constructor(){
+    super();
+    this.state = {
+      ready: false
+    }
+  }
+  componentDidMount(){
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({ ready: true })
+    })
+  }
+
   _renderNotification(notification){
     return (
       <View style={styles.notificationsContainer}>
@@ -523,13 +536,28 @@ export default class ActivityView extends Component{
       </View>
     );
   }
-  _renderScrollView(){
+  _renderMapView(){
     const mapRegion = {
       latitude: upcomingEvent.location.lat,
       longitude: upcomingEvent.location.lng,
       latitudeDelta: 0.01,
       longitudeDelta: 0.01,
     };
+    return (
+      <MapView
+        style={styles.map}
+        region={mapRegion}
+        annotations={[{latitude: mapRegion.latitude, longitude: mapRegion.longitude}]}
+      />
+    )
+  }
+  _renderMapFiller(){
+    return (
+      <View style={styles.map} />
+    )
+  }
+  _renderScrollView(){
+    let { ready } = this.state;
     return (
       <ScrollView
         contentContainerStyle={styles.scrollView}
@@ -544,11 +572,7 @@ export default class ActivityView extends Component{
           </View>
           <Text style={styles.dateText}>{moment(new Date(upcomingEvent.start)).format('dddd MMM Do, h:mm a')}</Text>
         </View>
-        <MapView
-          style={styles.map}
-          region={mapRegion}
-          annotations={[{latitude: mapRegion.latitude, longitude: mapRegion.longitude}]}
-        />
+        {ready ? this._renderMapView() : this._renderMapFiller() }
         <View>
           <Text style={styles.bodyText}>Notifications</Text>
           <View style={styles.break}/>
@@ -658,6 +682,7 @@ let styles = StyleSheet.create({
     color: 'white',
   },
   map: {
+    backgroundColor: Colors.inactive,
 		height: (deviceHeight / 3),
 		width: deviceWidth
 	},
@@ -746,7 +771,6 @@ let styles = StyleSheet.create({
     fontWeight: '300',
   },
 });
-
 ```
 
 ![{Activity View}](/images/chapter-4-basic-tabbar-navigation/activity-view.png "Activity View")
@@ -754,6 +778,7 @@ let styles = StyleSheet.create({
 [![GitHub logo](/images/github-logo.png "GitHub logo") Commit 7](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-4.3) - "Commit 7 - render Messages view with fixture data"
 ***
 
+Notice we use the `InteractionManager` module. This prevents animation frames from dropping on navigator transitions, since the `MapView` can take up memory to render the map. Therefore, we ask the `InteractionManager` to wait until the navigator transtion is over before setting `ready` to `true`, which then renders our `MapView`.
 
 ## Summing Up
 
