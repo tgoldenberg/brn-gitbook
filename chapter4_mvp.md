@@ -124,7 +124,7 @@ Here's what we have so far. Let's make a commit at this point.
 
 ***
 
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 5](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - Commit 5]() "Empty TabBar views"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 5](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - Commit 5]() "Create empty TabBar views"
 
 ***
 
