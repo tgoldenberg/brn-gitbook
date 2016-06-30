@@ -273,7 +273,7 @@ Now let's make a commit.
 ![{Profile TabBar View}](/images/chapter-4-basic-tabbar-navigation/profile-tabbar-view.png "Profile TabBar View")
 
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 6](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - Commit 6]() "Add fixtures file and style profile view"
+![GitHub logo](/images/github-logo.png "GitHub logo")(https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - Commit 6 - "Add fixtures file and style profile view"
 ***
 
 ## Building the Messages View
@@ -360,7 +360,7 @@ let styles = StyleSheet.create({
 });
 ```
 
-![{Messages Fixtures}](/images/chapter-4-basic-tabbar-navigation/messages-fixtures.png "Messages Fixtures")
+![{Message Fixtures}](/images/chapter-4-basic-tabbar-navigation/messages-fixtures.png "Messages Fixtures")
 
 Once we've confirmed that the data is being processed into conversations (both through the Chrome console React Native opens for debugging and our Simulator screen), we can refactor the rows into `Conversation` components. Replace the `Text` component in `_renderRow` with ```<Conversation conversation={rowData} />```. We'll also be using `moment` here for time/date formatting. Save the new `Conversation` component in your `application/components/messages` directory and be sure to import it at the top of your `MessagesView` component:
 
