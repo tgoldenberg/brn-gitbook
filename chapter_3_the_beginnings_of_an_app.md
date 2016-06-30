@@ -342,6 +342,8 @@ As you can see, the nice thing about `Navigator` is that we can customize how ou
 
 Okay, now it's time for another commit! Congrats on having delved into navigation with React Native. The `Navigator` API has many more options, some of which we will use in the tutorial. Please check out the [docs](https://facebook.github.io/react-native/docs/navigator.html) for specific API information.
 
+Note: If you are interested in using `NavigationExperimental`, please refer to the appendix. There we show how to structure an app with `NavigationExperimental`, including how to store state with `redux`. Honestly, the transition from `Navigator` to `NavigationExperimental` will feel very easy.
+
 ***
 [![GitHub logo](/images/github-logo.png "GitHub logo") Commit 4](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.2) - "Create basic navigation with Navigator"
 ***
@@ -358,20 +360,18 @@ Now that we're about to build out the app, there are a couple of things I want t
 
 *Why are we starting out with fake data?*
 
-This is something I'm a strong believer in. Fake it and then make it. The wireframing process helps to funnel the idea of the product into a visual representation. A developer's job is to translate that into an actual product. It's very easy to focus on the programming problems like integration with a backend system and server, scalability, and so on. However, most often, the best thing to do at this point is to make a fake product. This helps get the UI components of the product in place so that you can think of the data integration later. This is the process I use and I find it works extremely well. That said, different things work for different people, so sue the method that works for you on your own projects.
+This is something were are strong believers in. Fake it and then make it. The wireframing process helps to funnel the idea of the product into a visual representation. A developer's job is to translate that into an actual product. It's very easy to focus on the programming problems like integration with a backend system and server, scalability, and so on. However, most often, the best thing to do at this point is to make a fake product. This helps get the UI components of the product in place so that you can think of the data integration later. This is the process I use and I find it works extremely well. That said, different things work for different people, so sue the method that works for you on your own projects.
 
 *Will you be using an architecture like Flux or Redux to manage state between components?*
 
-We won't be using either in this tutorial. We personally love Redux but even its creator has said that you shouldn't use it until you've felt the pain without it. This app would be a good candidate for an architecture using Redux. However, we were also able to create a good product without it. So while the production version of Assemblies may incorporate Redux, the tutorial itself won't touch on the topic.
+We won't be using either in this tutorial. We personally love Redux but even its creator has said that you shouldn't use it until you've felt the pain without it. This app would be a good candidate for an architecture using Redux. However, we were also able to create a good product without it. So while the production version of Assemblies may incorporate Redux, the tutorial itself won't touch on the topic. We address how to structure a React Native app with `redux` in the Appendix section of the tutorial.
 
 ### Rounding out our Landing Page
 
-Now we're going to fill in our `Landing` page. Later, this will link to a `login/signup`, but for now we'll have it go directly to the `Dashboard`. Let's place an image as the screen background using the `Dimensions` module. Then let's use the `TouchableOpacity` component as a button that leads to our `Dashboard`
+Now we're going to fill in our `Landing` page. Later, this will link to a `login/signup`, but for now we'll have it go directly to the `Dashboard`. Let's place an image as the screen background using the `Dimensions` module. Then let's use the `TouchableOpacity` component as a button that leads to our `Dashboard`. You can download the image assets from the [open-source repository](https://github.com/buildreactnative/assemblies/tree/master/application/assets/images). Create a folder under `application` called `assets`, and an `images` folder in that. That is where we'll store our images for the tutorial.
 
 ```javascript
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 
 import {
   Dimensions,
@@ -384,7 +384,6 @@ import {
 
 import NavigationBar from 'react-native-navbar';
 import Colors from '../styles/colors';
-import Dashboard from './Dashboard';
 
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
