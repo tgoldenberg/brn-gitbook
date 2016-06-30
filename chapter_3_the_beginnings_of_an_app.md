@@ -189,7 +189,7 @@ Let's commit that code now:
 
 ****
 ![GitHub logo](/images/github-logo.png "GitHub logo") 
-[Commit 1](https://github.com/buildreactnative/assemblies-tutorial/tree/Ch3-0) - Simple NavigatorIOS example
+[Commit 1](https://github.com/buildreactnative/assemblies-tutorial/tree/5c1f1e5ab6453a29fe43274cfb668d1714743da7) - Simple NavigatorIOS example
 ****
 
 
@@ -347,7 +347,7 @@ Note: If you are interested in using `NavigationExperimental`, please refer to t
 
 ***
 ![GitHub logo](/images/github-logo.png "GitHub logo") 
-[Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.2) - Create basic navigation with Navigator
+[Commit 2](https://github.com/buildreactnative/assemblies-tutorial/blob/586b07b1c14518c26f8d8909863c1d4b068c63ec/application/components/Dashboard.js) - Create basic navigation with Navigator
 ***
 
 ## 3.3 Fleshing out the App
@@ -492,5 +492,5 @@ Time for another commit to close out this chapter on setting up navigation:
 
 ***
 ![GitHub logo](/images/github-logo.png "GitHub logo") 
-[Commit 3](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.3) - Flesh out landing page
+[Commit 3](https://github.com/buildreactnative/assemblies-tutorial/tree/fff577ae852f38feb087f550f35cec433737bc42) - Flesh out landing page
 ***
