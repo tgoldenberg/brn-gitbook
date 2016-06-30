@@ -2,6 +2,8 @@
 
 Last chapter we left off with the start of our project -- a working `Navigator` and a styled landing page. Next we're going to implement `TabBar` navigation inside of our `Dashboard` component.
 
+While we'll be using the `TabBarIOS` component that comes with React Native, you can also components that are compatible with Android, such as [this package](https://github.com/alinz/react-native-tabbar). While it might not be possible to have 100% of your code be the same across iOS and Android, we can come pretty close, especially as contributors bridge the gaps. For now, we'll be focusing on our iOS app. See the Appendix for more information about sharing code across platforms.
+
 Let's start by making three tabs - Dashboard, Messages, and Profile. We'll then fill out the screens with fake data. First replace the contents of `application/components/Dashboard.js` with the code below. Notice that we use the `react-native-vector-icons` package to customize our tab bar.
 
 ```javascript
@@ -131,15 +133,14 @@ Here's what we have so far. Let's make a commit at this point.
 Let's build out the tab screens. We'll be using fixtures for this. Add [this gist](https://gist.github.com/tgoldenberg/ef3dc76063ca68ecab09840f6b3eb5ab) as a file in `application/fixtures/fixtures.js`. Let's use this fixtures file to build out our `ProfileView` component.
 
 ```javascript
-import NavigationBar from 'react-native-navbar';
-import Colors from '../../styles/colors';
+...
 import Icon from 'react-native-vector-icons/Ionicons';
 import { currentUser } from '../../fixtures/fixtures';
 
-import React, {
+import React, { Component } from 'react';
+import {
   View,
   Text,
-  Component,
   ScrollView,
   Image,
   StyleSheet,
@@ -277,27 +278,33 @@ Now let's make a commit.
 
 ## Building the Messages View
 
-Next, let's fill in our messages view. We'll be using our fixtures file with messages for now. One thing you'll notice is that these messages include all the relevant data for rendering them, including the author name and avatar url. Later, when implementing our backend, we will separate some of these data points, since a user should be able to change their name or profile photo. Therefore, it's better to store the `authorId` in the message long-term and refer to the `user` object.
+Next, let's fill in our messages view. We'll be using our fixtures file with messages for now. One thing you'll notice is that these messages include all the relevant data for rendering them, including the author name and avatar url. Later, when implementing our back-end API, we will separate some of these data points, since a user should be able to change their name or profile photo. Therefore, it's better to store the `authorId` in the message long-term and refer to the `user` object.
 For convenience, we'll be storing all the data in the messages object for now. We will be using the `ListView` in this component. The first thing we will need to do is convert our array of messages into an array of unique conversations. We then pass this conversation array (with the first message of each conversation) to our `ListView` as its `DataSource`. Let's look at the constructor for `MessagesView`
 
 ```javascript
 ...
+import {
+  StyleSheet,
+  ListView,
+  View,
+  Image,
+  Text,
+  TouchableOpacity
+} from 'react-native';
 // import messages from fixture file
 import { messages } from '../../fixtures/fixtures';
-import _ from 'underscore';
 
 export default class MessagesView extends Component{
   constructor(props){
     super(props);
     let conversations = {};
     // store each message under a conversation key
-    messages.forEach((msg) => {
+    messages.forEach(msg => {
       let key = msg.participants.sort().join('-');
       if (conversations[key]) { conversations[key].push(msg); }
       else { conversations[key] = [msg]; }
     });
-    let dataBlob = _.keys(conversations)
-                      .map((key) => conversations[key]);
+    let dataBlob = Object.keys(conversations).map(key => conversations[key]);
     // take the first message from each conversation
     this.state = {
       dataSource: new ListView.DataSource({
