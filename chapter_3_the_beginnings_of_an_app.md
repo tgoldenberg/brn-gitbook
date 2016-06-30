@@ -188,7 +188,8 @@ Not to worry - we'll make sure that you don't have that situation. Let's make a 
 Let's commit that code now:
 
 ****
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/Ch3-0) - Simple NavigatorIOS example
+![GitHub logo](/images/github-logo.png "GitHub logo") 
+[Commit 1](https://github.com/buildreactnative/assemblies-tutorial/tree/Ch3-0) - Simple NavigatorIOS example
 ****
 
 
@@ -346,7 +347,7 @@ Note: If you are interested in using `NavigationExperimental`, please refer to t
 
 ***
 ![GitHub logo](/images/github-logo.png "GitHub logo") 
-[Commit 3](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.2) - Create basic navigation with Navigator
+[Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.2) - Create basic navigation with Navigator
 ***
 
 ## 3.3 Fleshing out the App
@@ -490,5 +491,6 @@ As for the styles, some stuff should be pretty self-explanatory for those famili
 Time for another commit to close out this chapter on setting up navigation:
 
 ***
-![GitHub logo](/images/github-logo.png "GitHub logo") [Commit 4](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.3) - Flesh out landing page
+![GitHub logo](/images/github-logo.png "GitHub logo") 
+[Commit 3](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.3) - Flesh out landing page
 ***
