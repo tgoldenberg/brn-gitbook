@@ -778,7 +778,7 @@ let styles = StyleSheet.create({
 ![{Activity View}](/images/chapter-4-basic-tabbar-navigation/activity-view.png "Activity View")
 ***
 ![GitHub log](/images/github-logo.png "GitHub logo") 
-[Commit 7]() - render Messages view with fixture data"
+[Commit 7]() - render Activity view with fixture data"
 ***
 
 Notice we use the `InteractionManager` module. This prevents animation frames from dropping on navigator transitions, since the `MapView` can take up memory to render the map. Therefore, we ask the `InteractionManager` to wait until the navigator transtion is over before setting `ready` to `true`, which then renders our `MapView`.
