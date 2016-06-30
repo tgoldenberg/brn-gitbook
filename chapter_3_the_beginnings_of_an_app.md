@@ -266,6 +266,7 @@ export default class Landing extends Component{
 let styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
+    backgroundColor: 'white'
   },
  ...
 ```
@@ -326,6 +327,7 @@ export default class Dashboard extends Component{
 let styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
+    backgroundColor: 'white'
   },
   backBtn: {
     paddingTop: 10,
