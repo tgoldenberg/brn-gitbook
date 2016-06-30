@@ -5,9 +5,7 @@ Last chapter we left off with the start of our project -- a working `Navigator` 
 Let's start by making three tabs - Dashboard, Messages, and Profile. We'll then fill out the screens with fake data. First replace the contents of `application/components/Dashboard.js` with the code below. Notice that we use the `react-native-vector-icons` package to customize our tab bar.
 
 ```javascript
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 
 import {
   Dimensions,
@@ -33,7 +31,7 @@ export default class Dashboard extends Component{
   render() {
     let { selectedTab } = this.state;
     return (
-      <TabBarIOS>
+      <TabBarIOS style={styles.outerContainer}>
         <TabBarItemIOS
           title='Activity'
           selected={ selectedTab == 'Activity' }
@@ -64,7 +62,11 @@ export default class Dashboard extends Component{
 };
 
 let styles = StyleSheet.create({
-});
+  outerContainer: {
+    backgroundColor: 'white'
+  },
+  ...
+...
 ```
 
 Basically, we're defining each tab with basic information like it's title, the icon it uses, the component it should render upon selection, and passing in the name of the selected tab to `state`, so we can respond to it if necessary.
@@ -72,9 +74,7 @@ Basically, we're defining each tab with basic information like it's title, the i
 Now we have to create the tab components `ActivityView`, `MessagesView`, and `ProfileView`. Here's the code for `ActivityView`. Simply change the name of the component, the NavigationBar title, and text for the other two components.
 
 ```javascript
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 
 import {
   StyleSheet,
@@ -95,7 +95,7 @@ export default class ActivityView extends Component{
           tintColor={Colors.brandPrimary}
         />
         <View style={styles.container}>
-          <Text style={styles.h1}>This is ActivityView</Text>
+          <Text style={styles.h1}>This is the ActivityView</Text>
         </View>
       </View>
     );
