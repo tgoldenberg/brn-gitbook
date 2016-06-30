@@ -125,7 +125,7 @@ Here's what we have so far. Let's make a commit at this point.
 ***
 
 [![GitHub logo](/images/github-logo.png "GitHub logo") ](https://github.com/buildreactnative/assemblies-tutorial/commit/3fe5fe1d185d1747b791b21c13b348ffbd9dc36a) 
-[Commit 5]() - Create empty TabBar views
+[Commit 4]() - Create empty TabBar views
 
 ***
 
@@ -275,7 +275,7 @@ Now let's make a commit.
 
 ***
 [![GitHub logo](/images/github-logo.png "GitHub logo") ](https://github.com/buildreactnative/assemblies-tutorial/commit/3fe5fe1d185d1747b791b21c13b348ffbd9dc36a) 
-[Commit 6](() - render Messages view with fixture data"
+[Commit 5](() - render Messages view with fixture data"
 ***
 
 ## Building the Messages View
@@ -473,7 +473,7 @@ let styles = StyleSheet.create({
 ![{Styled Messages View}](/images/chapter-4-basic-tabbar-navigation/styled-messages-view.png "Styled Messages View")
 ***
 [![GitHub logo](/images/github-logo.png "GitHub logo") ](https://github.com/buildreactnative/assemblies-tutorial/commit/3fe5fe1d185d1747b791b21c13b348ffbd9dc36a) 
-[Commit 7]() - render Messages view with fixture data"
+[Commit 6]() - render Messages view with fixture data"
 
 ***
 
@@ -777,7 +777,8 @@ let styles = StyleSheet.create({
 
 ![{Activity View}](/images/chapter-4-basic-tabbar-navigation/activity-view.png "Activity View")
 ***
-![GitHub log](/images/github-logo.png "GitHub logo") [Commit 8]() - render Messages view with fixture data"
+![GitHub log](/images/github-logo.png "GitHub logo") 
+[Commit 7]() - render Messages view with fixture data"
 ***
 
 Notice we use the `InteractionManager` module. This prevents animation frames from dropping on navigator transitions, since the `MapView` can take up memory to render the map. Therefore, we ask the `InteractionManager` to wait until the navigator transtion is over before setting `ready` to `true`, which then renders our `MapView`.
