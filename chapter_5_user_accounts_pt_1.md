@@ -52,7 +52,7 @@ In place of the previous button on `Landing.js`, put this code:
   style={[styles.button, styles.loginButton]}
   onPress={() => {
     this.props.navigator.push({
-      name: 'Login'
+      name: 'Login' 
     })
   }}
 >
