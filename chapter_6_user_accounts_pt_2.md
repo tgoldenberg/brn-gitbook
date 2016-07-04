@@ -166,7 +166,7 @@ Let's make a commit there, and now we can add in some of the form content.
 
 [Commit]() - Add autocomplete package and refactor LeftButton for navigation bar 
 
-## 6.3 Using Location Autocomplete
+## 6.3 Using Google Places Autocomplete
 
 ```javascript
 ...
@@ -317,6 +317,85 @@ Alright, so that was the toughest part of building the first part of our registr
 
 ```javascript
 application/components/accounts/Register.js
+...
+<Text style={styles.h4}>* Email</Text>
+  <View ref="email" style={styles.formField}>
+    <TextInput
+      ref="emailField"
+      returnKeyType="next"
+      onSubmitEditing={() => this.refs.passwordField.focus()}
+      onChangeText={(text) => this.setState({email: text})}
+      keyboardType="email-address"
+      autoCapitalize="none"
+      maxLength={144}
+      placeholderTextColor='#bbb'
+      style={styles.input}
+      placeholder="Your email address"
+    />
+  </View>
+  <Text style={styles.h4}>* Password</Text>
 
+  <View style={styles.formField} ref="password">
+    <TextInput
+      ref="passwordField"
+      returnKeyType="next"
+      onSubmitEditing={() => this.refs.firstNameField.focus()}
+      onChangeText={(text) => this.setState({password: text})}
+      secureTextEntry={true}
+      autoCapitalize="none"
+      maxLength={20}
+      placeholderTextColor='#bbb'
+      style={styles.input}
+      placeholder="Your password"
+    />
+  </View>
+  <Text style={styles.h4}>* First Name</Text>
+  <View style={styles.formField} ref="firstName">
+    <TextInput
+      ref="firstNameField"
+      returnKeyType="next"
+      onSubmitEditing={() => this.refs.lastNameField.focus()}
+      maxLength={20}
+      onChangeText={(text) => this.setState({ firstNameError: ''})}
+      placeholderTextColor='#bbb'
+      style={styles.input}
+      placeholder="Your first name"
+    />
+  </View>
+  <Text style={styles.h4}>* Last name</Text>
+  <View style={styles.formField} ref="lastName">
+    <TextInput
+      returnKeyType="next"
+      maxLength={20}
+      ref="lastNameField"
+      onChangeText={(text) => this.setState({lastName: text})}
+      placeholderTextColor='#bbb'
+      style={styles.input}
+      placeholder="Your last name"
+    />
+ </View>
+</ScrollView>
+<TouchableOpacity style={Globals.submitButton} onPress={()=>{
+  this.props.navigator.push({
+    name: 'RegisterConfirm',
+    email: this.state.email,
+    password: this.state.password,
+    firstName: this.state.firstName,
+    lastName: this.state.lastName,
+    location: this.state.location,
+  })
+}}>
+  <Text style={Globals.submitButtonText}>Next</Text>
+</TouchableOpacity>
+</View>
+...
 ```
 
+The page should now look something like this: 
+![](Screen Shot 2016-07-04 at 2.27.50 PM.png)
+
+Notice also that we have to define a new route in our `index.ios.js` file, with the name `RegisterConfirm`.
+
+```javascript
+
+```
