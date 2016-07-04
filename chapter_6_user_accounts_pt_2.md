@@ -434,3 +434,16 @@ case 'RegisterConfirm':
   );
 ...
 ```
+
+Now when you press `Next` on the `Register.js` screen, you should be directed to a screen that looks like this: 
+![](Screen Shot 2016-07-04 at 2.45.14 PM.png)
+
+Also notice that by passing in `{...route}` to our component, we pass it as `props` all the variable that the `route` object contains. This means that we'll have access to the `email`, `password`, and other values from the first part of the registration form.
+
+Now let's fill in `RegisterConfirm` component. We want to ask the user for their interests, i.e. which technologies they are interested in. We also want to ask them for an avatar, an image we can display about them. Finally we want to display any errors on submission.
+
+```javascript
+application/components/accounts/RegisterConfirm.js
+
+
+```
