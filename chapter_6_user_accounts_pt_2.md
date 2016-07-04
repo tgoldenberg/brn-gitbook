@@ -70,6 +70,81 @@ Let’s flesh out step 1 of our user registration process.
 ```javascript
 application/components/accounts/Register.js
 
+import React, { Component } from 'react';
+import {
+  Text,
+  View,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  Dimensions
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import NavigationBar from 'react-native-navbar';
+import Colors from '../../styles/colors';
+import Globals from '../../styles/globals';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import {DEV} from '../../config';
+
+const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+
+const LeftBtnConfig = ({ navigator }) => {
+  return (
+    <TouchableOpacity style={Globals.backButton} onPress={()=>{
+      navigator.pop();
+    }}>
+      <Icon name="ios-arrow-back" size={25} color="#ccc" />
+    </TouchableOpacity>
+  );
+};
+
+
+class Register extends Component{
+  constructor(){
+    super();
+    this.state = {
+      email: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      location: null
+    }
+  }
+  render(){
+    let { navigator } = this.props;
+    let titleConfig = { title: 'Create Account', tintColor: 'white' };
+    return (
+      <View style={styles.container}>
+        <NavigationBar title={titleConfig} tintColor={Colors.brandPrimary} leftButton={<LeftBtnConfig navigator={navigator}/>} />
+        <ScrollView>
+        </ScrollView>
+      </View>
+    )
+  }
+}
+
+let styles = {
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  }
+}
+
+export default Register;
 ```
+
+Here we introduce a new `npm` package, `react-native-google-places-autocomplete`. To avoid errors, we have to install it. Remember, `npm install --save react-native-google-places-autocomplete`, and then `rnpm link` to make sure the new package is linked to our iOS and Android code.
+
+Also, you may notice that we refactor the left button of our navigation to a stateless functional component. These are components that have no local state (i.e., no `constructor(){}` method). These components render faster than state-ful components, so we'll try to use them more frequently. If you'll notice the ` ({ navigator }) ` syntax is a way of destructuring our props, and reduces the amount of code.
+
+Now we can add in some of the form content.
+
+```javascript
+...
+
+
+...
+```
+
 
 
