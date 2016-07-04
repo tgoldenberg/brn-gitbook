@@ -164,7 +164,7 @@ export default LeftButton;
 
 Let's make a commit there, and now we can add in some of the form content.
 
-
+[Commit]() - Add autocomplete package and refactor LeftButton for navigation bar 
 
 ```javascript
 ...
