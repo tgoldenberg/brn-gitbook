@@ -267,5 +267,16 @@ const autocompleteStyles = StyleSheet.create({
 ...
 ```
 
+You'll notice a few things here. In our `react-native-google-places-autocomplete` package, we need an API key. To do this, go to the website for [Google's Places services](https://developers.google.com/places/). From there, you will want to select the `Google Places API Web Service`, which is an `HTML` button. From there you can follow the steps to get your API key (You will have to create a project, and then access your credentials to get the API key).
+
+Once we have the API key, where do we store it? Well, we want to make sure that we don't store it in our `git` repository, especially if our code will be hosted on a service like Github. 
+
+We'll be using the [`react-native-config`](https://github.com/luggg/react-native-config) package to manage these environment variables.
+
+`npm install --save react-native-config`
+`rnpm link`
+
+
+
 
 
