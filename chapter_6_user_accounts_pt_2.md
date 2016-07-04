@@ -1027,6 +1027,8 @@ Let's commit there and call it a wrap!
 
 ## Summing Up
 
+In this chapter, we learned how to build a complex form and create accounts for our users. In the process, we used the `Google Places Autocomplete` API, as well as packages such as `react-native-image-picker` and `react-native-selectme`. There is much more to learn about forms, and our forms can be much improved. But this is a good start, and now we are able to register, login, and logout users. 
 
+In the next few chapters, we will use our newly created users to create groups, events, messages, and comments. We will also look at establishing a database schema for our entire app.
 
 
