@@ -135,10 +135,34 @@ export default Register;
 
 Here we introduce a new `npm` package, `react-native-google-places-autocomplete`. To avoid errors, we have to install it. Remember, `npm install --save react-native-google-places-autocomplete`, and then `rnpm link` to make sure the new package is linked to our iOS and Android code.
 
-Also, you may notice that we refactor the left button of our navigation to a stateless functional component. These are components that have no local state (i.e., no `constructor(){}` method). These components render faster than state-ful components, so we'll try to use them more frequently. If you'll notice the ` ({ navigator }) ` syntax is a way of destructuring our props, and reduces the amount of code.
+Also, you may notice that we refactor the left button of our navigation to a stateless functional component. These are components that have no local state (i.e., no `constructor(){}` method). These components render faster than state-ful components, so we'll try to use them more frequently. If you'll notice the ` ({ navigator }) ` syntax is a way of destructuring our props, and reduces the amount of code. We can now refactor this to its own file and use it in both `Register.js` and `Login.js`. Remember to `import` the file in both components.
 
+![](Screen Shot 2016-07-04 at 12.45.33 PM.png)
+Here's what the refactored component would look like: 
 
-Now we can add in some of the form content.
+```javascript
+import React from 'react';
+import {
+  TouchableOpacity
+} from 'react-native';
+
+import Icon from 'react-native-vector-icons/Ionicons';
+import Globals from '../../styles/globals';
+
+const LeftButton = ({ navigator }) => {
+  return (
+    <TouchableOpacity style={Globals.backButton} onPress={()=>{
+      navigator.pop();
+    }}>
+      <Icon name="ios-arrow-back" size={25} color="#ccc" />
+    </TouchableOpacity>
+  );
+};
+
+export default LeftButton;
+```
+
+Let's make a commit there, and now we can add in some of the form content.
 
 ```javascript
 ...
