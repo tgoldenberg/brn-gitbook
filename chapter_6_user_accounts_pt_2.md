@@ -397,5 +397,40 @@ The page should now look something like this:
 Notice also that we have to define a new route in our `index.ios.js` file, with the name `RegisterConfirm`.
 
 ```javascript
+application/components/accounts/RegisterConfirm.js
+import React, { Component } from 'react';
+import {
+  View,
+  Text
+} from 'react-native';
 
+export default class RegisterConfirm extends Component{
+  render(){
+    return (
+      <View style={styles.container}>
+        <Text>RegisterConfirm</Text>
+      </View>
+    )
+  }
+}
+
+let styles = {
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+}
+```
+
+and let's reference it in our `index.ios.js` file:
+```javascript
+...
+import RegisterConfirm from './application/components/accounts/RegisterConfirm';
+...
+case 'RegisterConfirm':
+  return (
+    <RegisterConfirm navigator={navigator} {...route} />
+  );
+...
 ```
