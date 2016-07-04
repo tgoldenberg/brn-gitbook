@@ -137,6 +137,7 @@ Here we introduce a new `npm` package, `react-native-google-places-autocomplete`
 
 Also, you may notice that we refactor the left button of our navigation to a stateless functional component. These are components that have no local state (i.e., no `constructor(){}` method). These components render faster than state-ful components, so we'll try to use them more frequently. If you'll notice the ` ({ navigator }) ` syntax is a way of destructuring our props, and reduces the amount of code.
 
+
 Now we can add in some of the form content.
 
 ```javascript
