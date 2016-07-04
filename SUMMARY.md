@@ -7,4 +7,5 @@
 * [Chapter 4: MVP](chapter_4_basic_tabbar_navigation.md)
 * [Chapter 5: User Accounts Pt. 1](chapter_5_user_accounts_pt_1.md)
 * [Chapter 6: User Accounts Pt. 2](chapter_6_user_accounts_pt_2.md)
+* Chapter 7: Establishing a Database Schema
 
