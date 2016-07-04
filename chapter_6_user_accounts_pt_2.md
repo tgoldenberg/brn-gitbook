@@ -1012,5 +1012,21 @@ case 'RegisterConfirm':
       updateUser={this.updateUser}
     />
   );
-  ```
-  
+```
+After filling out the form, you should be directed to the `Dashboard` again with the newly created user. If we check on `localhost:2403/dashboard`, we should see our new user in the `data` section of the `users` collection.
+![](Screen Shot 2016-07-04 at 7.17.09 PM.png)
+
+
+
+
+![](Screen Shot 2016-07-04 at 7.18.04 PM.png)
+
+Let's commit there and call it a wrap!
+
+[Commit]() - Create user registration and redirect to Dashboard
+
+## Summing Up
+
+
+
+
