@@ -166,10 +166,104 @@ Let's make a commit there, and now we can add in some of the form content.
 
 [Commit]() - Add autocomplete package and refactor LeftButton for navigation bar 
 
+## 6.3 Using Location Autocomplete
+
 ```javascript
 ...
+<ScrollView style={styles.formContainer}>
+  <TouchableOpacity onPress={()=> navigator.push({ name: 'Login' })}>
+    <Text style={styles.h5}>
+      Already have an account? <Text style={styles.technologyList}>Login</Text>
+    </Text>
+  </TouchableOpacity>
+  <Text style={styles.h4}>{"* Where are you looking for assemblies?"}</Text>
+  <View ref="location" style={{flex: 1,}}>
+    <GooglePlacesAutocomplete
+      styles={autocompleteStyles}
+      placeholder='Your city'
+      minLength={2}
+      autoFocus={false}
+      fetchDetails={true}
+      onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+        if (DEV) {console.log(data);}
+        if (DEV) {console.log(details);}
+        this.setState({
+          location: _.extend({}, details.geometry.location, {
+            city: _.find(details.address_components, (c) => c.types[0] == 'locality'),
+            state: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_1'),
+            county: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_2'),
+            formattedAddress: details.formatted_address,
+          })
+        });
+      }}
+      getDefaultValue={() => {return '';}}
+      query={{
+        key       : 'YOUR_GOOGLE_PLACES_AUTOCOMPLETE_API_KEY',
+        language  : 'en', // language of the results
+        types     : '(cities)', // default: 'geocode'
+      }}
+      currentLocation={false}
+      currentLocationLabel="Current location"
+      nearbyPlacesAPI='GooglePlacesSearch'
+      GoogleReverseGeocodingQuery={{}}
+      GooglePlacesSearchQuery={{rankby: 'distance',}}
+      filterReverseGeocodingByTypes={['street_address']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+      predefinedPlaces={[]}>
+    </GooglePlacesAutocomplete>
+  </View>
+</ScrollView>
+...
 
-
+const autocompleteStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  textInputContainer: {
+    backgroundColor: 'white',
+    height: 44,
+    borderTopColor: 'white',
+    borderBottomColor: 'white',
+  },
+  textInput: {
+    backgroundColor: 'white',
+    height: 28,
+    borderRadius: 5,
+    paddingTop: 4.5,
+    paddingBottom: 4.5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginTop: 7.5,
+    marginLeft: 8,
+    marginRight: 8,
+    fontSize: 18,
+  },
+  poweredContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.inactive,
+  },
+  powered: {
+    marginTop: 15,
+  },
+  row: {
+    padding: 13,
+    height: 44,
+    flexDirection: 'row',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: 'white',
+  },
+  loader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    height: 20,
+  },
+  androidLoader: {
+    marginRight: -15,
+  },
+});
 ...
 ```
 
