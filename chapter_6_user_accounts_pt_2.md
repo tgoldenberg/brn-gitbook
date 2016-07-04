@@ -57,7 +57,7 @@ logout(){
 
 Let’s commit at this point.
 
-## 6.2 Registration
+## 6.2 Registration Form - pt. 1
 
 Now we’re left with the most complex part of user accounts – registration. This doesn’t have to be complicated; we could just ask for our users email and a password. After all, that’s enough information to create a user with Deployd. However, we want more information about our users. We want to know what city they live in, so we can suggest nearby meetups. We want to know what technologies they are interested in, for similar reasons. We want their first and last name, since many “assemblies” require a person’s real name to be admitted to the venue location. Finally, we want an avatar for our users so that our users are able to know each other a little better.
 
@@ -276,7 +276,40 @@ We'll be using the [`react-native-config`](https://github.com/luggg/react-native
 `npm install --save react-native-config`
 `rnpm link`
 
+Then create a `.env` file with your API key variable:
+```
+GOOGLE_PLACES_API_KEY=abcdefghijk
+```
+now add this filename to your `.gitignore` file
+
+```
+.env
+...
+```
+If you check `git` with `git status`, you'll see that your file doesn't appear, which means it has effectively been ignored. Now we can access the variable in our `Register.js` file.
+```javascript
+...
+import Config from 'react-native-config'
+...
+key       :  Config.GOOGLE_PLACES_API_KEY,
+...
+```
+You might have to restart all of the `node` processes to get this to work properly.
 
 
+![](Screen Shot 2016-07-04 at 2.05.02 PM.png)
 
+Another you may notice is that the package we use for `react-native-google-places-autocomplete` is a little buggy. That is, it works, but it throws a few warnings when we use it. If you'd like to use a version without these warnings, follow these steps.
+
+* Run `npm uninstall --save react-native-google-places-autocomplete`
+* Add this line to your `package.json` file under `dependencies`: 
+
+```    
+"react-native-google-places-autocomplete": "https://github.com/tgoldenberg/react-native-google-places-autocomplete/tarball/master",
+```
+* Run `npm install` and restart the `node` processes.
+
+[Commit]() - Add environment variables and Google Places Autocomplete to registration form
+
+## 6.4
 
