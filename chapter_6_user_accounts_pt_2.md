@@ -88,7 +88,7 @@ import {DEV} from '../../config';
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-const LeftBtnConfig = ({ navigator }) => {
+const LeftButton = ({ navigator }) => {
   return (
     <TouchableOpacity style={Globals.backButton} onPress={()=>{
       navigator.pop();
@@ -115,7 +115,7 @@ class Register extends Component{
     let titleConfig = { title: 'Create Account', tintColor: 'white' };
     return (
       <View style={styles.container}>
-        <NavigationBar title={titleConfig} tintColor={Colors.brandPrimary} leftButton={<LeftBtnConfig navigator={navigator}/>} />
+        <NavigationBar title={titleConfig} tintColor={Colors.brandPrimary} leftButton={<LeftButton navigator={navigator}/>} />
         <ScrollView>
         </ScrollView>
       </View>
@@ -163,6 +163,8 @@ export default LeftButton;
 ```
 
 Let's make a commit there, and now we can add in some of the form content.
+
+
 
 ```javascript
 ...
