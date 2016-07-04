@@ -440,6 +440,8 @@ Now when you press `Next` on the `Register.js` screen, you should be directed to
 
 Also notice that by passing in `{...route}` to our component, we pass it as `props` all the variable that the `route` object contains. This means that we'll have access to the `email`, `password`, and other values from the first part of the registration form.
 
+## 6.5 Adding User Avatars
+
 Now let's fill in `RegisterConfirm` component. We want to ask the user for their interests, i.e. which technologies they are interested in. We also want to ask them for an avatar, an image we can display about them. Finally we want to display any errors on submission.
 
 ```javascript
@@ -637,3 +639,9 @@ Notice here that we use an external library for selecting images - `react-native
 npm install --save react-native-image-picker
 rnpm link
 ```
+Then you should be able to select photos.![](Screen Shot 2016-07-04 at 3.34.10 PM.png)
+![](Screen Shot 2016-07-04 at 3.34.15 PM.png)
+![](Screen Shot 2016-07-04 at 3.34.58 PM.png)
+
+## 6.6 Adding User Technologies
+
