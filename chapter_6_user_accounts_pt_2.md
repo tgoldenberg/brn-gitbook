@@ -1,6 +1,6 @@
 # Chapter 6: User Accounts Pt. 2
 
-At the end of the last chapter, we had created a user through Deployd, logged into the dashboard and fleshed out the Profile view with real data. However, there are two important things that we neglected related to user accounts. These are logging out and registering an account. 
+At the end of the last chapter, we had created a user through **Deployd**, logged into the dashboard and fleshed out the Profile view with real data. However, there are two important things that we neglected related to user accounts. These are logging out and registering an account. 
 
 ## 6.1 Logging Out
 
@@ -311,5 +311,12 @@ Another you may notice is that the package we use for `react-native-google-place
 
 [Commit]() - Add environment variables and Google Places Autocomplete to registration form
 
-## 6.4
+## 6.4 Finishing the Registration Form pt.1 
+
+Alright, so that was the toughest part of building the first part of our registration form. Let's fill in the rest.
+
+```javascript
+application/components/accounts/Register.js
+
+```
 
