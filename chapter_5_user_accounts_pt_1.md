@@ -126,6 +126,7 @@ class Register extends Component{
 let styles = {
   container: {
     flex: 1,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center'
   }
@@ -157,6 +158,7 @@ let styles = {
   container: {
     flex: 1,
     justifyContent: 'center',
+    backgroundColor: 'white',
     alignItems: 'center'
   }
 }
