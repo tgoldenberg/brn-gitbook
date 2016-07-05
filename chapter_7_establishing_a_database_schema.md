@@ -262,7 +262,13 @@ export default class MessagesView extends Component{
     }
   }
   componentDidMount(){
-    fetch(`${API}/conversations`, {
+    let conversationQuery = {
+      $or: [
+        {user1Id: currentUser.id},
+        {user2Id: currentUser.id}
+      ]
+    };
+    fetch(`${API}/conversations?${JSON.stringify(conversationQuery)}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -271,8 +277,10 @@ export default class MessagesView extends Component{
     .then(response => response.json())
     .then(conversations => {
       let userIds = _.uniq(_.flatten(conversations.map(d => ([d.user1Id, d.user2Id]))));
-      console.log('USER IDS', userIds);
-      fetch(`${API}/users`, {
+      let userQuery = {
+        id: { $in: userIds }
+      }
+      fetch(`${API}/users?${userQuery}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -331,6 +339,8 @@ let styles = StyleSheet.create({
 ```
 ![](Screen Shot 2016-07-05 at 9.58.43 AM.png)
 Here you can see that we are first fetching the conversations that are relevant to the user. Then we collect the userID’s that are relevant and fetch the user data for those IDs. This data then gets passed on to the `Conversations` component. 
+
+Also notice that we are using queries to fetch our data. In Deployd, we can add these Mongo queries at the end of our API call, preceded by a `?`. In the first query, we are asking for all conversations where the `user1Id` or the `user2Id` is equal to the current user's `id`. In the second we are fetching all users who have an `id` that is contained in the array of `userId`s. 
 
 We also have to slightly modify our `Conversations.js` component.
 
