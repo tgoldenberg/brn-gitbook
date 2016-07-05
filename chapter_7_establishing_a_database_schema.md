@@ -94,3 +94,8 @@ Now let's create these collections from our Deployd interface at `localhost:2403
 
 ![](Screen Shot 2016-07-04 at 8.06.53 PM.png)
 
+## 7.2 Deployd in Production
+
+While all this is well and good for local development, what about when we want our app to go live? At that point we will need to deploy Deployd to an actual server. For full instructions on this, please read the Deployment chapter in the appendix.
+
+## 7.3 Creating Messages
