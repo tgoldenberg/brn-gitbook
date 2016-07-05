@@ -427,11 +427,9 @@ Finally, we have to modify our `ConversationRow` component.
 ```
 
 Let’s create another user and another conversation and see how the UI changes. 
+![](Screen Shot 2016-07-05 at 7.54.10 PM.png)
 
-![](Screen Shot 2016-07-05 at 10.02.46 AM.png)
-
-![](Screen Shot 2016-07-05 at 10.03.10 AM.png)
-
+![](Screen Shot 2016-07-05 at 7.54.14 PM.png)
 
 And now is a good time to make a commit.
 
@@ -441,6 +439,44 @@ And now is a good time to make a commit.
 
 Now that we at least have real `conversation` objects, we need to add routing to an individual `conversation` component. 
 
+Let's modify the file `application/components/messages/ConversationRow.js`
 
+```javascript
+...
+  render(){
+    let { conversation, user, handlePress } = this.props;
+    let msg = conversation.lastMessageText;
+    let date = new Date(conversation.lastMessageDate);
+    return (
+      <TouchableOpacity style={{ flex: 1 }} onPress={handlePress}>
+...
+```
+
+Then let's define our new `handlePress` prop in the parent component, `Conversations`.
+
+```javascript
+...
+_renderRow(rowData){
+    console.log('ROW DATA', rowData);
+    let { users, currentUser, navigator } = this.props;
+    let otherUserId = rowData.user1Id == currentUser.id ? rowData.user2Id : rowData.user1Id;
+    let otherUserIdx = users.map(u => u.id).indexOf(otherUserId);
+    let otherUser = users[otherUserIdx];
+    return (
+      <ConversationRow
+        conversation={rowData}
+        user={otherUser}
+        handlePress={() => {
+          navigator.push({
+            name: 'Conversation',
+            conversation={rowData}
+            user={otherUser}
+          });
+        }}
+      />
+    );
+  }
+...
+```
 
 
