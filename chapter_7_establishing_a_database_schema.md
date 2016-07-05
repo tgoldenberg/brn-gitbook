@@ -90,3 +90,7 @@ Now let's create these collections from our Deployd interface at `localhost:2403
 
 ![](Screen Shot 2016-07-04 at 8.04.43 PM.png)
 
+![](Screen Shot 2016-07-04 at 8.08.22 PM.png)
+
+![](Screen Shot 2016-07-04 at 8.06.53 PM.png)
+
