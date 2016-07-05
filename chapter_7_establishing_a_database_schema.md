@@ -88,4 +88,5 @@ likes: Object of userId Strings
 
 Now let's create these collections from our Deployd interface at `localhost:2403`. This should be a straight-forward process of creating a collection and then editing its fields in the `properties` tab.
 
+![](Screen Shot 2016-07-04 at 8.04.43 PM.png)
 
