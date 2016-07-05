@@ -233,6 +233,8 @@ user2Id: String
 ```
 We can also create a fake conversation in the `data` tab of the collection, at `localhost:2403/dashboard`. Once we have a conversation in the database, we can work on fetching the data from the `MessagesView`. 
 
+
+
 ```javascript
 application/components/messages/MessagesView.js
 
