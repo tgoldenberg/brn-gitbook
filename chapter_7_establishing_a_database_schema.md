@@ -231,9 +231,10 @@ lastMessageDate: Integer
 user1Id: String
 user2Id: String
 ```
+
 We can also create a fake conversation in the `data` tab of the collection, at `localhost:2403/dashboard`. Once we have a conversation in the database, we can work on fetching the data from the `MessagesView`. 
 
-
+![](Screen Shot 2016-07-05 at 9.32.33 AM.png)
 
 ```javascript
 application/components/messages/MessagesView.js
@@ -328,6 +329,7 @@ let styles = StyleSheet.create({
 })
 
 ```
+![](Screen Shot 2016-07-05 at 9.58.43 AM.png)
 Here you can see that we are first fetching the conversations that are relevant to the user. Then we collect the userID’s that are relevant and fetch the user data for those IDs. This data then gets passed on to the `Conversations` component. 
 
 We also have to slightly modify our `Conversations.js` component.
@@ -416,10 +418,17 @@ Finally, we have to modify our `ConversationRow` component.
 
 Let’s create another user and another conversation and see how the UI changes. 
 
+![](Screen Shot 2016-07-05 at 10.02.46 AM.png)
+
+![](Screen Shot 2016-07-05 at 10.03.10 AM.png)
+
+
 And now is a good time to make a commit.
 
 [commit]() – Fetch conversation data and render in Conversations component
 
 ## 7.5 Adding routing to our Messages View
+
+
 
 
