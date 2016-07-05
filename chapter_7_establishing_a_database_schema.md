@@ -469,8 +469,8 @@ _renderRow(rowData){
         handlePress={() => {
           navigator.push({
             name: 'Conversation',
-            conversation={rowData}
-            user={otherUser}
+            conversation: rowData,
+            user: otherUser
           });
         }}
       />
