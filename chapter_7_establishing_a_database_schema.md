@@ -99,3 +99,325 @@ Now let's create these collections from our Deployd interface at `localhost:2403
 While all this is well and good for local development, what about when we want our app to go live? At that point we will need to deploy Deployd to an actual server. For full instructions on this, please read the Deployment chapter in the appendix.
 
 ## 7.3 Creating Messages
+
+Now that we have our data models in place, we can start to replace our fixture data with real data. We also have to consider what we want our `MessagesView` to contain.
+
+Currently `MessagesView.js` displays a list of conversations with the last message sent displayed. Intuitively, if we press on one of these conversations, we should be directed to a conversation view, where we can scroll through all the messages and create new messages. We also may want to be able to direct to a Profile View for when any of the user’s avatars is pressed. 
+
+Therefore, we have to replace the static component of `MessagesView` and replace it with a new `Navigator` with the routes `Conversations`, `Conversation`, and `Profile`. While the `Conversations` and `Conversation` route will be specific to the `MessagesView`, we will reuse the `Profile` view in other parts of our app. We will also reuse the other components, for example, when a user wants to message another user from a different part of our app.
+
+Let’s move the contents of `MessagesView.js` to another file, `Conversations.js`, and fill in `MessagesView.js` with a new `Navigator` component.
+
+```javascript
+application/components/messages/MessagesView.js
+import React, { Component } from 'react';
+import {
+  StyleSheet,
+  View,
+  Navigator,
+  Dimensions
+} from 'react-native';
+import Conversations from './Conversations';
+import Conversation from './Conversation';
+import UserProfile from '../profile/UserProfile';
+
+export default class MessagesView extends Component{
+  constructor(){
+    super();
+    this.state = {
+      conversations: []
+    }
+  }
+  render(){
+    let { conversations } = this.state;
+    return (
+      <Navigator
+        style={styles.container}
+        initialRoute={{
+          name: 'Conversations'
+        }}
+        renderScene={(route, navigator) => {
+          switch(route.name){
+            case 'Conversations':
+              return (
+                <Conversations conversations={conversations} />
+              );
+            case 'Conversation':
+              return (
+                <Conversation conversation={route.conversation} />
+              );
+            case 'Profile':
+              return (
+                <Profile user={route.user} />
+              );
+          }
+        }}
+      />
+    )
+  }
+};
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1
+  }
+})
+
+```
+
+Now we have to create the components `UserProfile` and `Conversation`. For now we can just create simple components, as we usually start with.
+
+```javascript
+application/components/profile/UserProfile.js
+import React, { Component } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet
+} from 'react-native';
+
+export default class UserProfile extends Component{
+  render(){
+    <View style={styles.container}>
+      <Text>USER PROFILE</Text>
+    </View>
+  }
+};
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+})
+
+application/components/messages/Conversation.js
+import React, { Component } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet
+} from 'react-native';
+
+export default class Conversation extends Component{
+  render(){
+    <View style={styles.container}>
+      <Text>CONVERSATION</Text>
+    </View>
+  }
+};
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+})
+
+```
+If done correctly, the Messages View should look exactly the same as before! Don’t worry, we have a long way to go. Let’s commit here.
+
+[Commit]() – "Refactor MessagesView into a Navigation component and create simple Conversation and UserProfile components"
+
+## 7.4 Fetching Message Data
+
+Now we will want to replace our `FAKE_USERS` and `FAKE_MESSAGES` data for real data. First we will create a collection called `conversations`. This will make the data fetching easier. Our collection will have the following fields
+
+```
+lastMessageText: String
+lastMessageDate: Integer
+user1Id: String
+user2Id: String
+```
+We can also create a fake conversation in the `data` tab of the collection, at `localhost:2403/dashboard`. Once we have a conversation in the database, we can work on fetching the data from the `MessagesView`. 
+
+```javascript
+application/components/messages/MessagesView.js
+
+import React, { Component } from 'react';
+import {
+  StyleSheet,
+  View,
+  Navigator,
+  Dimensions
+} from 'react-native';
+import Conversations from './Conversations';
+import Conversation from './Conversation';
+import UserProfile from '../profile/UserProfile';
+import { DEV, API } from '../../config';
+import _ from 'underscore';
+
+export default class MessagesView extends Component{
+  constructor(){
+    super();
+    this.state = {
+      conversations: [],
+      users: [],
+      ready: false,
+    }
+  }
+  componentDidMount(){
+    fetch(`${API}/conversations`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(conversations => {
+      let userIds = _.uniq(_.flatten(conversations.map(d => ([d.user1Id, d.user2Id]))));
+      console.log('USER IDS', userIds);
+      fetch(`${API}/users`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(users => {
+        this.setState({ conversations, users });
+      })
+      .catch(err => { console.log('ERR: ', err)})
+      .done();
+    })
+    .catch(err => { console.log('ERR:', err)})
+    .done();
+  }
+  render(){
+    let { conversations, users } = this.state;
+    return (
+      <Navigator
+        style={styles.container}
+        initialRoute={{
+          name: 'Conversations'
+        }}
+        renderScene={(route, navigator) => {
+          switch(route.name){
+            case 'Conversations':
+              return (
+                <Conversations
+                  {...this.props}
+                  {...route}
+                  conversations={conversations}
+                  users={users}
+                />
+              );
+            case 'Conversation':
+              return (
+                <Conversation conversation={route.conversation} />
+              );
+            case 'Profile':
+              return (
+                <Profile user={route.user} />
+              );
+          }
+        }}
+      />
+    )
+  }
+};
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1
+  }
+})
+
+```
+Here you can see that we are first fetching the conversations that are relevant to the user. Then we collect the userID’s that are relevant and fetch the user data for those IDs. This data then gets passed on to the `Conversations` component. 
+
+We also have to slightly modify our `Conversations.js` component.
+
+```javascript
+
+import React, { Component } from 'react';
+
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ListView,
+  Image,
+} from 'react-native';
+
+import NavigationBar from 'react-native-navbar';
+import Colors from '../../styles/colors';
+import ConversationRow from './ConversationRow';
+
+import { messages } from '../../fixtures';
+
+export default class Conversations extends Component{
+  _renderRow(rowData){
+    console.log('ROW DATA', rowData);
+    let { users, currentUser } = this.props;
+    let otherUserId = rowData.user1Id == currentUser.id ? rowData.user2Id : rowData.user1Id;
+    let otherUserIdx = users.map(u => u.id).indexOf(otherUserId);
+    let otherUser = users[otherUserIdx];
+    return (
+      <ConversationRow conversation={rowData} user={otherUser}/>
+    );
+  }
+  render() {
+    let { conversations, users } = this.props;
+    return (
+      <View style={{ flex: 1 }}>
+        <NavigationBar
+          title={{ title: 'Messages', tintColor: 'white' }}
+          tintColor={Colors.brandPrimary}
+        />
+        <ListView
+          dataSource={new ListView.DataSource({
+              rowHasChanged: (r1,r2) => r1 != r2
+            })
+            .cloneWithRows(conversations)
+          }
+          enableEmptySections={true}
+          contentInset={{ bottom: 49 }}
+          automaticallyAdjustContentInsets={false}
+          ref='messagesList'
+          renderRow={this._renderRow.bind(this)}
+        />
+      </View>
+    );
+  }
+};
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  h1: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    padding: 20,
+  },
+});
+
+```
+
+Finally, we have to modify our `ConversationRow` component.
+
+```javascript
+…
+
+  render(){
+    let { conversation, user } = this.props;
+    let msg = conversation.lastMessageText;
+    let date = new Date(conversation.lastMessageDate);
+…
+```
+
+Let’s create another user and another conversation and see how the UI changes. 
+
+And now is a good time to make a commit.
+
+[commit]() – Fetch conversation data and render in Conversations component
+
+## 7.5 Adding routing to our Messages View
+
+
