@@ -33,7 +33,7 @@ Now what other collections will we need? We certainly need a `messages` collecti
 **messages**
 
 id: String
-createdAt: Date
+createdAt: Integer
 participants: Array of Strings
 text: String
 senderName: String
@@ -44,7 +44,7 @@ recipientId: String
 **groups**
 
 id: String,
-createdAt: Date
+createdAt: Integer
 memberIds: Array of Strings
 members: Array of Objects {
   userId: String,
@@ -60,7 +60,7 @@ image: String
 
 id: String
 groupId: String
-createdAt: Date
+createdAt: Integer
 start: Integer
 end: Integer
 location: Object {
@@ -80,7 +80,7 @@ capacity: Integer
 **comments**
 id: String
 eventId: String
-createdAt: Date
+createdAt: Integer
 text: String
 likes: Object of userId Strings
 
