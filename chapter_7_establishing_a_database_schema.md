@@ -439,6 +439,8 @@ And now is a good time to make a commit.
 
 ## 7.5 Adding routing to our Messages View
 
+Now that we at least have real `conversation` objects, we need to add routing to an individual `conversation` component. 
+
 
 
 
