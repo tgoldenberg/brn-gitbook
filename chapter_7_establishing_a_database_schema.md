@@ -202,15 +202,18 @@ import {
 
 export default class Conversation extends Component{
   render(){
-    <View style={styles.container}>
-      <Text>CONVERSATION</Text>
-    </View>
+    return (
+      <View style={styles.container}>
+        <Text>CONVERSATION</Text>
+      </View>
+    );
   }
 };
 
 let styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center'
   }
@@ -485,3 +488,14 @@ _renderRow(rowData){
 ```
 
 
+You should now get directed to our `Conversation` screen when you press on a conversation. Now we need to flesh out that view. Ideally we want to have all the messages in reverse chronological order, along with an input field on the bottom to send a new message.
+
+Let's create a few messages in Deployd to get started. Here is some data to get started: 
+
+```
+senderId: 15f9d0d11a023b8a
+recipientId: ![](Screen Shot 2016-07-05 at 8.10.32 PM.png)b0d4dc1d8fd13a7d
+
+c8c0cfa404ee1838
+
+```
