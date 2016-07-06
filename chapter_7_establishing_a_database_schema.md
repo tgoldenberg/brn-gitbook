@@ -519,5 +519,200 @@ text: "I don't know. You tell me."
 Now we can query the related messages in the `componentWillMount` phase of our `Conversation` component and then render the messages in reverse chronological order.
 
 ```javascript
+application/components/messages/Conversation.js
 
+import React, { Component } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  Dimensions
+} from 'react-native';
+import Globals from '../../styles/globals';
+import Colors from '../../styles/colors';
+import NavigationBar from 'react-native-navbar';
+import LeftButton from '../accounts/LeftButton';
+
+const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+
+export default class Conversation extends Component{
+  constructor(){
+    super();
+    this.createMessage = this.createMessage.bind(this);
+    this.state = {
+      msg: ''
+    }
+  }
+  componentWillMount(){
+    /* TODO: fetch all messages */
+  }
+  createMessage(msg){
+     /* TODO: save message */
+  }
+  render(){
+    let { user, navigator } = this.props;
+    let { msg } = this.state;
+    let titleConfig = { title: `${user.firstName} ${user.lastName}`, tintColor: 'white' };
+    return(
+      <View style={styles.container}>
+        <NavigationBar
+          tintColor={Colors.brandPrimary}
+          title={titleConfig}
+          leftButton={<LeftButton navigator={navigator}/>}
+        />
+
+        <View style={styles.inputBox}>
+          <TextInput
+            multiline={true}
+            value={this.state.newMessage}
+            placeholder='Say something...'
+            placeholderTextColor={Colors.bodyTextLight}
+            onChange={(e) => this.setState({msg: e.nativeEvent.text})}
+            style={styles.input}
+          />
+          <TouchableOpacity
+            style={ msg ? styles.buttonActive : styles.buttonInactive }
+            underlayColor='#D97573'
+            onPress={this.createMessage}>
+            <Text style={ msg ? styles.submitButtonText : styles.inactiveButtonText }>Send</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+};
+
+let styles = StyleSheet.create({
+  inputBox: {
+    marginBottom: 50,
+    height: 60,
+    left: 0,
+    right: 0,
+    backgroundColor: '#F3EFEF',
+    backgroundColor: Colors.inactive,
+    flexDirection: 'row',
+  },
+  input: {
+    height: 40,
+    padding: 8,
+    flex: 1,
+    marginRight: 5,
+    fontSize: 14,
+    borderColor: '#E0E0E0',
+    margin: 10,
+    borderColor: '#b4b4b4',
+    borderRadius: 8,
+    color: Colors.bodyText,
+    backgroundColor: 'white',
+  },
+  buttonActive: {
+    flex: 0.4,
+    backgroundColor: "#E0514B",
+    backgroundColor: Colors.brandPrimary,
+    borderRadius: 6,
+    justifyContent: 'center',
+    margin: 10,
+  },
+  buttonInactive: {
+    flex: 0.4,
+    backgroundColor: "#eeeeee",
+    borderWidth: 1,
+    borderColor: '#ffffff',
+    borderRadius: 6,
+    justifyContent: 'center',
+    margin: 10,
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 16,
+  },
+  centering: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: deviceHeight,
+  },
+  sentText:{
+    fontSize: 14,
+    padding: 10,
+    marginRight: 15,
+    fontWeight: '300',
+  },
+  backButton: {
+    position: 'absolute',
+    left: 20,
+  },
+  backButtonText: {
+    color: 'white',
+  },
+  fromContainer:{
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  fromText:{
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  messageTextContainer:{
+    flex: 1,
+  },
+  messageText:{
+    fontSize: 18,
+    fontWeight: '300',
+    paddingHorizontal: 15,
+  },
+  messageContainer:{
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  profile:{
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginHorizontal: 10,
+    marginVertical: 10,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'white'
+  },
+  header: {
+    height: 70,
+    backgroundColor: Colors.brandPrimary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerText: {
+    color: 'white',
+    fontSize: 22,
+  },
+  submitButtonText: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: '400',
+    color: 'white',
+  },
+  inactiveButtonText: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#999'
+  }
+});
+
+```
+
+We use two new libraries here: `react-native-invertible-scroll-view`, and `react-native-keyboard-spacer`. The first one allows to keep the screen at the bottom of our list of messages. This way when we add a new message, it is easy to scroll to the bottom with `this.refs.scrollView.scroll(0)`. The other package allows us to raise the input field just above the phone's keyboard, which provides a better user experience.
+
+Now let's fetch our messages, and save new messages.
+
+```javascript
+...
+
+...
 ```
