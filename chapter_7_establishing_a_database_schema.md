@@ -313,11 +313,16 @@ export default class MessagesView extends Component{
                   {...route}
                   conversations={conversations}
                   users={users}
+                  navigator={navigator}
                 />
               );
             case 'Conversation':
               return (
-                <Conversation conversation={route.conversation} />
+                <Conversation 
+                  {...this.props}
+                  {...route}
+                  navigator={navigator}
+                />
               );
             case 'Profile':
               return (
