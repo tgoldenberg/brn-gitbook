@@ -514,3 +514,10 @@ createdAt: 1467764227276
 text: "I don't know. You tell me."
 
 ```
+![](Screen Shot 2016-07-05 at 8.20.44 PM.png)
+
+Now we can query the related messages in the `componentWillMount` phase of our `Conversation` component and then render the messages in reverse chronological order.
+
+```javascript
+
+```
