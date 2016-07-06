@@ -487,15 +487,30 @@ _renderRow(rowData){
 ...
 ```
 
-
+![](Screen Shot 2016-07-05 at 8.10.32 PM.png)
 You should now get directed to our `Conversation` screen when you press on a conversation. Now we need to flesh out that view. Ideally we want to have all the messages in reverse chronological order, along with an input field on the bottom to send a new message.
 
-Let's create a few messages in Deployd to get started. Here is some data to get started: 
+Let's create a few messages in Deployd to get started. Here is some data to get started (replace the userIds with the appropriate ones from your Deployd database): 
 
 ```
 senderId: 15f9d0d11a023b8a
-recipientId: ![](Screen Shot 2016-07-05 at 8.10.32 PM.png)b0d4dc1d8fd13a7d
+recipientId: b0d4dc1d8fd13a7d
+createdAt: 1467764227276
+text: "How are you?"
 
-c8c0cfa404ee1838
+senderId: b0d4dc1d8fd13a7d
+recipientId: 15f9d0d11a023b8a
+createdAt: 1467764227276
+text: "Fine, and you?"
+
+senderId: 15f9d0d11a023b8a
+recipientId: c8c0cfa404ee1838
+createdAt: 1467764227276
+text: "So what's going on tonight?"
+
+senderId: c8c0cfa404ee1838
+recipientId: 15f9d0d11a023b8a
+createdAt: 1467764227276
+text: "I don't know. You tell me."
 
 ```
