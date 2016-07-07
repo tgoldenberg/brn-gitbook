@@ -504,11 +504,11 @@ createdAt: 1467764227276
 text: "Fine, and you?"
 
 senderId: 15f9d0d11a023b8a
-recipientId: c8c0cfa404ee1838
+recipientId: c8c0cfa404ee1831
 createdAt: 1467764227276
 text: "So what's going on tonight?"
 
-senderId: c8c0cfa404ee1838
+senderId: c8c0cfa404ee1831
 recipientId: 15f9d0d11a023b8a
 createdAt: 1467764227276
 text: "I don't know. You tell me."
@@ -534,6 +534,11 @@ import Globals from '../../styles/globals';
 import Colors from '../../styles/colors';
 import NavigationBar from 'react-native-navbar';
 import LeftButton from '../accounts/LeftButton';
+import InvertibleScrollView from 'react-native-invertible-scroll-view';
+import moment from 'moment';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { DEV, API } from '../../config';
+
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
@@ -810,12 +815,13 @@ Now let's fetch our messages, and save new messages.
       $or: [
         { user1Id: user.id, user2Id: currentUser.id },
         { user2Id: user.id, user1Id: currentUser.id }
-      ]
-    }
-    let sort = {
-      sort: { createdAt: -1 }
-    }
-    fetch(`${API}/messages?${query}${sort}`)
+      ],
+      $sort: {
+        createdAt: -1
+      },
+      $limit: 10
+    };
+    fetch(`${API}/messages?${JSON.stringify(query)}`)
     .then(response => response.json())
     .then(messages => this.setState({ messages }))
     .catch(err => console.log('ERR:', err))
@@ -844,3 +850,45 @@ Now let's fetch our messages, and save new messages.
   }
 ...
 ```
+
+## 7.6 (optional) Callback to update Conversations
+
+One cool thing about Deployd is that we can set callback hooks from within our REST-ful actions. For example, once we send a new message, we should update the relevant `conversation` with the latest message and timestamp. Using the `Events` tab in our Deployd dashboard, this is done easily. Under `POST`, add the following lines.
+```javascript
+console.log('MESSAGE CREATED', this);
+var text = this.text;
+var senderId = this.senderId;
+var recipientId = this.recipientId;
+var createdAt = this.createdAt;
+
+dpd.conversations.get({
+    $or: [
+        {user1Id: senderId, user2Id: recipientId},
+        {user2Id: senderId, user1Id: recipientId}
+    ]
+})
+.then(function(data){
+    console.log('DATA', data);
+    if (data.length) {
+        dpd.conversations.put(data.id, {
+            lastMessageText: text,
+            lastMessageDate: createdAt
+        });
+    } else {
+        dpd.conversations.post({
+            user1Id: senderId,
+            user2Id: recipientId,
+            lastMessageText: text,
+            lastMessageDate: createdAt
+        });
+    }
+});
+```
+
+Notice how we can use this hooks to log statements and to update other collections.
+
+## Conclusion
+
+In this chapter, we built out a message view for our users. We created a user-friendly way to share messages between two users. While this is a feature of numerous mobile applications, our work is not yet done. We still have a lot of features to build out - Calendar View, more Profile customizations, creating and editing Groups and Events, etc. 
+
+If you're interested in improving your messaging view even further, you can explore options like creating a real-time connection for live chat. This can be done in a number of ways - through a 3rd-party service such as Firebase or Pusher, through establishing a websocket connection with our Deployd API, or by using a real-time framework such as MeteorJS. In any case, congratulations and continue the good work!
