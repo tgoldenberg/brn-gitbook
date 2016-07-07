@@ -803,7 +803,7 @@ Now let's fetch our messages, and save new messages.
 
 ```javascript
 ...
-componentWillMount(){
+ componentWillMount(){
     /* TODO: fetch all messages */
     let { user, currentUser } = this.props;
     let query = {
@@ -818,6 +818,27 @@ componentWillMount(){
     fetch(`${API}/messages?${query}${sort}`)
     .then(response => response.json())
     .then(messages => this.setState({ messages }))
+    .catch(err => console.log('ERR:', err))
+    .done();
+  }
+  createMessage(){
+    /* TODO: create message */
+    let { msg } = this.state;
+    let { currentUser, user } = this.props;
+    fetch(`${API}/messages`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        senderId: currentUser.id,
+        recipientId: user.id,
+        text: msg,
+        createdAt: new Date().valueOf()
+      })
+    })
+    .then(response => response.json())
+    .then(data => this.setState({ msg: '', messages: [ data, ...this.state.messages ]}))
     .catch(err => console.log('ERR:', err))
     .done();
   }
