@@ -552,8 +552,8 @@ export default class Conversation extends Component{
      /* TODO: save message */
   }
   render(){
-    let { user, navigator } = this.props;
-    let { msg } = this.state;
+    let { user, navigator, currentUser } = this.props;
+    let { msg, messages } = this.state;
     let titleConfig = { title: `${user.firstName} ${user.lastName}`, tintColor: 'white' };
     return(
       <View style={styles.container}>
@@ -562,6 +562,19 @@ export default class Conversation extends Component{
           title={titleConfig}
           leftButton={<LeftButton navigator={navigator}/>}
         />
+        <InvertibleScrollView
+          inverted={true}
+          contentContainerStyle={{paddingTop: 10}}
+          ref="scroll">
+          {messages.map((msg, idx) => (
+            <Message
+              message={msg}
+              user={msg.senderId === currentUser.id ? currentUser : user}
+              key={idx}
+              navigator={navigator}
+            />
+          ))}
+        </InvertibleScrollView>
 
         <View style={styles.inputBox}>
           <TextInput
@@ -579,8 +592,10 @@ export default class Conversation extends Component{
             <Text style={ msg ? styles.submitButtonText : styles.inactiveButtonText }>Send</Text>
           </TouchableOpacity>
         </View>
+        <KeyboardSpacer topSpacing={-50}/>
       </View>
     )
+    
   }
 };
 
@@ -709,10 +724,102 @@ let styles = StyleSheet.create({
 
 We use two new libraries here: `react-native-invertible-scroll-view`, and `react-native-keyboard-spacer`. The first one allows to keep the screen at the bottom of our list of messages. This way when we add a new message, it is easy to scroll to the bottom with `this.refs.scrollView.scroll(0)`. The other package allows us to raise the input field just above the phone's keyboard, which provides a better user experience.
 
+Let's place our `Message` component in the same file below.
+
+```javascript
+const Message = ({ user, message, navigator }) => {
+  return (
+    <View style={messageStyles.container}>
+      <TouchableOpacity>
+        <Image
+          style={messageStyles.icon}
+          source={{uri: user.avatar? user.avatar : DefaultAvatar }}
+        />
+      </TouchableOpacity>
+      <View style={messageStyles.messageBox}>
+        <View style={messageStyles.row}>
+          <Text style={messageStyles.author}>{`${user.firstName} ${user.lastName}`}</Text>
+          <Text style={messageStyles.sent}>{moment(new Date(message.createdAt)).fromNow()}</Text>
+        </View>
+        <View style={messageStyles.messageView}>
+          <Text style={messageStyles.messageText}>{message.text}</Text>
+        </View>
+      </View>
+    </View>
+  )
+};
+
+let messageStyles = StyleSheet.create({
+  container:{
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    paddingVertical: 10,
+    backgroundColor: 'white',
+  },
+  icon: {
+    marginTop: 10,
+    marginLeft: 13,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  messageBox: {
+    flex: 1,
+    alignItems: 'stretch',
+    padding: 10,
+  },
+  row: {
+    flexDirection: 'row',
+    marginBottom: 2,
+    marginTop: 10
+  },
+  messageView: {
+    backgroundColor: 'white',
+    flex: 1,
+    paddingRight: 15
+  },
+  messageText: {
+    fontSize: 16,
+    fontWeight: '300',
+  },
+  author:{
+    fontSize: 12,
+    fontWeight: '700'
+  },
+  sent:{
+    fontSize: 12,
+    fontWeight: '300',
+    color: '#9B9B9B',
+    marginLeft: 10,
+    color: '#9B9B9B',
+    fontWeight: '300',
+    marginLeft: 10
+  }
+})
+```
+
 Now let's fetch our messages, and save new messages.
 
 ```javascript
 ...
-
+componentWillMount(){
+    /* TODO: fetch all messages */
+    let { user, currentUser } = this.props;
+    let query = {
+      $or: [
+        { user1Id: user.id, user2Id: currentUser.id },
+        { user2Id: user.id, user1Id: currentUser.id }
+      ]
+    }
+    let sort = {
+      sort: { createdAt: -1 }
+    }
+    fetch(`${API}/messages?${query}${sort}`)
+    .then(response => response.json())
+    .then(messages => this.setState({ messages }))
+    .catch(err => console.log('ERR:', err))
+    .done();
+  }
 ...
 ```
