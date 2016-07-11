@@ -1,8 +1,8 @@
 # Chapter 8: Creating Groups
 
-In the last chapter, we built out a messaging feature. We were able to fetch messages related to a group of users and create new messages. Now we’ll focus on adding some new features to our tabbar-navigation – Groups and Calendar.
+In the last chapter, we built out a messaging feature. We were able to fetch messages related to a group of users and create new messages. Now we’ll focus on adding some new features to our tab-bar navigation – `Groups` and `Calendar`.
 
-First we need to add these components to our tabbar navigation. Let’s edit `Dashboard.js` and add the two files `application/calendar/CalendarView.js` and `application/groups/GroupsView.js`. 
+First we need to add these components to our tab-bar navigation. Let’s edit `Dashboard.js` and add the two files `application/calendar/CalendarView.js` and `application/groups/GroupsView.js`. 
 
 ```javascript
 application/components/Dashboard.js
@@ -11,21 +11,21 @@ import CalendarView from './calendar/CalendarView';
 import GroupsView from './groups/GroupsView';
 …
 <TabBarItemIOS
-          title='Groups'
-          selected={ selectedTab == 'Groups' }
-          iconName=''
-          onPress={() => this.setState({ selectedTab: 'Groups' })}
-        >
-          <GroupsView {...this.props}/>
-        </TabBarItemIOS>
-        <TabBarItemIOS
-          title='Calendar'
-          selected={ selectedTab == 'Calendar' }
-          iconName=''
-          onPress={() => this.setState({ selectedTab: 'Calendar '})}
-        >
-          <CalendarView {...this.props}/>
-        </TabBarItemIOS>
+  title='Groups'
+  selected={ selectedTab == 'Groups' }
+  iconName=''
+  onPress={() => this.setState({ selectedTab: 'Groups' })}
+>
+  <GroupsView {...this.props}/>
+</TabBarItemIOS>
+<TabBarItemIOS
+  title='Calendar'
+  selected={ selectedTab == 'Calendar' }
+  iconName=''
+  onPress={() => this.setState({ selectedTab: 'Calendar '})}
+>
+  <CalendarView {...this.props}/>
+</TabBarItemIOS>
 …
 
 application/components/calendar/CalendarView.js
@@ -172,7 +172,7 @@ users: [
             "email": true
         }
     }
-    ]
+]
 userIds: [ “15f9d0d11a023b8a” ]
 image: “”,
 technologies: [“React Native” ]
@@ -220,6 +220,7 @@ description: “Meetup for Python enthusiasts”
 title: “Ruby NYC”
 description: “Meetup for Ruby enthusiasts”
 ```
+![groups fixtures](Screen Shot 2016-07-09 at 9.31.13 PM.png)
 
 Now we’re ready to fetch these groups and render them in our `GroupsView` page!
 
@@ -468,5 +469,33 @@ let styles = StyleSheet.create({
 });
 
 export default Groups;
+
+```
+
+![groups](Screen Shot 2016-07-10 at 10.14.39 PM.png)
+
+## 8.3 Fetching Groups
+
+Now let's replace our fixture data with an actual API call. Let's fill in our `loadGroups` function in `GroupsView.js`.
+
+```javascript
+loadGroups(userId){
+  /* TODO: load user groups and suggested groups */
+  let query = {
+    members: {
+      $elemMatch: {
+        user_id: userId
+      }
+    }
+  };
+  fetch(`${API}/groups/?${JSON.stringify(query)}`)
+  .then(response => response.json())
+  .then(groups => this.setState({ groups, ready: true }))
+  .catch(err => {
+    console.log('ERR:', err);
+    this.setState({ ready: true });
+  })
+  .done();
+}
 
 ```
