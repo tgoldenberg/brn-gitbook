@@ -583,3 +583,4 @@ let styles = StyleSheet.create({
 
 export default Loading;
 ```
+Now we can reference our new component in both files as `import Loading from '../utilities/Loading'`, and delete our code in the those specific files.
