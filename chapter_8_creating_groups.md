@@ -482,24 +482,35 @@ Now let's replace our fixture data with an actual API call. Let's fill in our `l
 ...
 import { API, DEV } from '../../config';
 ...
-loadGroups(userId){
-  /* TODO: load user groups and suggested groups */
-  let query = {
-    members: {
-      $elemMatch: {
-        user_id: userId
+  loadGroups(currentUser){
+    /* TODO: load user groups and suggested groups */
+    let query = {
+      members: {
+        $elemMatch: {
+          user_id: currentUser.id
+        }
       }
-    }
-  };
-  fetch(`${API}/groups/?${JSON.stringify(query)}`)
-  .then(response => response.json())
-  .then(groups => this.setState({ groups, ready: true }))
-  .catch(err => {
-    console.log('ERR:', err);
-    this.setState({ ready: true });
-  })
-  .done();
-}
+    };
+    fetch(`${API}/groups/?${JSON.stringify(query)}`)
+    .then(response => response.json())
+    .then(groups => {
+      this.setState({ groups, ready: true });
+      let suggestedGroupsQuery = {
+        id: { $nin: groups.map(group => group.id) },
+        'location.city.long_name': currentUser.location.city.long_name
+      };
+      fetch(`${API}/groups/?${JSON.stringify(suggestedGroupsQuery)}`)
+      .then(response => response.json())
+      .then(suggestedGroups => this.setState({ suggestedGroups }))
+      .catch(err => { console.log('ERR:', err)})
+      .done();
+    })
+    .catch(err => {
+      console.log('ERR:', err);
+      this.setState({ ready: true });
+    })
+    .done();
+  }
 
 ```
 
@@ -584,3 +595,376 @@ let styles = StyleSheet.create({
 export default Loading;
 ```
 Now we can reference our new component in both files as `import Loading from '../utilities/Loading'`, and delete our code in the those specific files.
+
+## 8.4 Creating Groups
+
+Out of the four operations of `create`, `read`, `update`, and `delete`, we have accomplished the `read` part of our `groups` collection. Now what about creating groups? 
+
+Well, we can certainly reuse elements from our user login and registration forms to make it easier. What information are we looking for? 
+
+```
+name: String
+description: String
+location: Object
+technologies: Array
+color: String
+image: String
+```
+
+The last two fields are really optional, but we can include them in our form too. Let's design another two-part form to create a feed, somewhat similar to our user registration process. We will need routes in our parent-level `GroupsView` component for both `CreateFeed` and `CreateFeedConfirm`. Let's add those in.
+
+```javascript
+application/components/groups/GroupsView.js
+...
+import CreateGroup from './CreateGroup';
+import CreateGroupConfirm from './CreateGroupConfirm';
+...
+switch(route.name){
+  case 'Groups':
+    return (
+      <Groups {...route} {...this.props} {...this.state} naviagator={navigator}/>
+    );
+  case 'CreateGroup':
+    return (
+      <CreateGroup {...this.props} navigator={navigator}/>
+    );
+  case 'CreateGroupConfirm':
+    return (
+      <CreateGroupConfirm {...this.props} {...route} navigator={navigator}/>
+    )
+}
+...
+```
+
+Now of course we have to define `CreateGroup.js` and `CreateGroupConfirm.js`.
+
+```javascript
+application/components/groups/CreateGroup.js
+
+import React, { Component } from 'react';
+
+import {
+  View,
+  Text,
+  StyleSheet
+} from 'react-native';
+
+const CreateGroup = () => (
+  <View style={styles.container}>
+    <Text>CREATE GROUP</Text>
+  </View>
+);
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+});
+
+export default CreateGroup;
+
+application/components/groups/CreateGroupConfirm.js
+
+import React, { Component } from 'react';
+
+import {
+  View,
+  Text,
+  StyleSheet
+} from 'react-native';
+
+const CreateGroupConfirm = (props) => (
+  <View style={styles.container}>
+    <Text>CREATE GROUP CONFIRM</Text>
+  </View>
+);
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+});
+
+export default CreateGroupConfirm;
+```
+
+Now we can link to our new routes when a user presses the `Add Group` button in `Groups.js`.
+
+```javascript
+...
+const EmptyGroupBoxes = ({ navigator }) => (
+  <View style={styles.assemblyBoxContainer}>
+    <View style={styles.groupsContainer}>
+      <AddGroupBox navigator={navigator}/>
+      <EmptyGroupBox />
+    </View>
+  </View>
+);
+
+const AddGroupBox = ({ navigator }) => (
+  <TouchableOpacity
+    onPress={()=> {
+      navigator.push({ name: 'CreateGroup' })
+    }}
+    style={styles.groupImage}>
+    <View style={[styles.group, {backgroundColor: Colors.inactive,}]} >
+      <Icon name="add-circle" size={60} color={Colors.brandPrimary} />
+    </View>
+  </TouchableOpacity>
+);
+...
+_renderAddButton(){
+  return (
+    <TouchableOpacity style={styles.navButton} onPress={()=>{
+      this.props.navigator.push({
+        name: 'CreateGroup'
+      })
+    }}>
+      <Icon name="add-circle" size={25} color="#ccc" />
+    </TouchableOpacity>
+  )
+}
+render(){
+    let { groups, suggestedGroups, ready, navigator } = this.props;
+...
+    {groups.length ? <GroupBoxes groups={groups} /> : <EmptyGroupBoxes navigator={navigator}/>}
+...
+```
+Now when you press the `Add Group` button, you should see a simple screen like this: 
+![create group](Screen Shot 2016-07-11 at 9.36.05 AM.png)
+
+Now we need to flesh out the form a bit.
+
+```javascript
+application/components/groups/CreateGroup.js
+import React, { Component } from 'react';
+import Icon from 'react-native-vector-icons/Ionicons';
+import NavigationBar from 'react-native-navbar';
+import Colors from '../../styles/colors';
+import Globals from '../../styles/globals';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import LeftButton from '../accounts/LeftButton';
+import Config from 'react-native-config';
+import _ from 'underscore';
+import { autocompleteStyles } from '../accounts/Register';
+
+import {
+  ScrollView,
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Dimensions
+} from 'react-native';
+
+const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+
+class CreateGroup extends Component{
+  constructor(){
+    super();
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handlePress = this.handlePress.bind(this);
+    this.state = {
+      name: '',
+      description: '',
+      location: null,
+      errorMsg: ''
+    }
+  }
+  handleSubmit(){
+    let { name, location, summary } = this.state;
+    this.props.navigator.push({
+      name        : 'CreateGroupConfirm',
+      groupName   : name,
+      location,
+      summary
+    })
+  }
+  handlePress(data, details){
+    this.setState({
+      location: _.extend({}, details.geometry.location, {
+        city: _.find(details.address_components, (c) => c.types[0] == 'locality'),
+        state: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_1'),
+        county: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_2'),
+        formattedAddress: details.formatted_address,
+      })
+    })
+  }
+  render(){
+    let { navigator } = this.props;
+    let titleConfig = {title: 'Create Assembly', tintColor: 'white'}
+    let leftButtonConfig = <LeftButton navigator={navigator}/>
+    return (
+      <View style={styles.container}>
+        <NavigationBar
+          title={titleConfig}
+          tintColor={Colors.brandPrimary}
+          leftButton={leftButtonConfig}
+        />
+        <ScrollView
+          style={styles.formContainer}
+          contentContainerStyle={styles.scrollView}>
+          <Text style={styles.h4}>* Name of your assembly</Text>
+          <View style={styles.formField}>
+            <TextInput
+              ref="name"
+              returnKeyType="next"
+              autofocus={true}
+              onChangeText={(text)=> this.setState({name: text})}
+              placeholderTextColor='#bbb'
+              style={styles.input}
+              placeholder="Name of your assembly"
+            />
+          </View>
+          <Text style={styles.h4}>* Where is your group located?</Text>
+          <GooglePlacesAutocomplete
+            styles={autocompleteStyles}
+            placeholder='Your city'
+            minLength={2} // minimum length of text to search
+            autoFocus={false}
+            ref="location"
+            fetchDetails={true}
+            onPress={this.handlePress}
+            getDefaultValue={() => { return ''; }}
+            query={{
+              key       : Config.GOOGLE_PLACES_API_KEY,
+              language  : 'en', // language of the results
+              types     : '(cities)', // default: 'geocode'
+            }}
+            currentLocation={false} // Will add a 'Current location' button at the top of the predefined places list
+            currentLocationLabel="Current location"
+            nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+            GoogleReverseGeocodingQuery={{}}
+            GooglePlacesSearchQuery={{ rankby: 'distance',}}
+            filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+            predefinedPlaces={[]}
+          />
+          <Text style={styles.h4}>Who should join and why?</Text>
+          <TextInput
+            ref="summary"
+            returnKeyType="next"
+            blurOnSubmit={true}
+            clearButtonMode='always'
+            onChangeText={(text)=> this.setState({summary: text})}
+            placeholderTextColor='#bbb'
+            style={styles.largeInput}
+            multiline={true}
+            placeholder="Type a message to get people interested in your group..."
+          />
+        </ScrollView>
+        <TouchableOpacity
+          onPress={this.handleSubmit}
+          style={[Globals.submitButton, {marginBottom: 50}]}>
+          <Text style={Globals.submitButtonText}>Next</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+}
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white'
+  },
+  backButton: {
+    paddingLeft: 20,
+    backgroundColor: 'transparent',
+    paddingBottom: 10,
+  },
+  formContainer: {
+    backgroundColor: Colors.inactive,
+    flex: 1,
+    paddingTop: 25,
+  },
+  submitButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.brandPrimary,
+    height: 80,
+    marginBottom: 50,
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 25,
+    fontWeight: '400'
+  },
+  h4: {
+    fontSize: 20,
+    fontWeight: '300',
+    color: 'black',
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+  },
+  formField: {
+    backgroundColor: 'white',
+    height: 50,
+    paddingTop: 5,
+  },
+  largeFormField: {
+    backgroundColor: 'white',
+    height: 100,
+  },
+  addPhotoContainer: {
+    backgroundColor: 'white',
+    marginVertical: 15,
+    marginHorizontal: (deviceWidth - 200) / 2,
+    borderRadius: 30,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  photoText: {
+    fontSize: 18,
+    paddingHorizontal: 10,
+    color: Colors.brandPrimary
+  },
+  technologyList:{
+    textAlign: 'left',
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.brandPrimary,
+    paddingHorizontal: 20,
+    paddingVertical: 4,
+  },
+  input: {
+    color: '#777',
+    fontSize: 18,
+    fontWeight: '300',
+    height: 40,
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+  },
+  avatar: {
+    height: 200,
+    width: deviceWidth,
+    borderRadius: 3,
+    padding: 20,
+  },
+  largeInput: {
+    color: '#777',
+    fontSize: 18,
+    backgroundColor: 'white',
+    fontWeight: '300',
+    height: 120,
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+  },
+});
+
+export default CreateGroup;
+
+```
+![create group form](Screen Shot 2016-07-11 at 9.52.46 AM.png)
+
+
+You'll notice that this first part is very similar to the forms we created for user registration. In the second part, we want our user to select a possible background image, a color, and technologies for their group. Here we will have to be a little more creative.
