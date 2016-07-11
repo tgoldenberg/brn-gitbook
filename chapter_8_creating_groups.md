@@ -529,3 +529,57 @@ const Loading = () => (
     if (! ready ) { return <Loading /> }
 ...
 ```
+
+Let's add this functionality to our Messages view as well. Just edit `application/components/messages/Conversations.js`.
+
+```javascript
+...
+import React, { Component } from 'react';
+
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ListView,
+  Image,
+  ActivityIndicator
+} from 'react-native';
+
+const Loading = () => (
+  <View style={styles.loadingContainer}>
+    <ActivityIndicator size='large'/>
+  </View>
+)
+...
+render() {
+    let { conversations, users, ready } = this.props;
+    if (! ready ) { return <Loading /> }
+```
+
+Now is actually a good time to refactor this `<Loading/>` component to a separate file, where it can be referenced by the `Groups` view and the `Messages` view. Let's make a `utilities` folder and add it as `Loading.js`.
+
+```javascript
+import React from 'react';
+import {
+  View,
+  ActivityIndicator
+} from 'react-native';
+
+const Loading = () => (
+  <View style={styles.loadingContainer}>
+    <ActivityIndicator size='large'/>
+  </View>
+);
+
+let styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white'
+  }
+})
+
+export default Loading;
+```
