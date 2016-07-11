@@ -502,3 +502,9 @@ loadGroups(userId){
 }
 
 ```
+
+Now you should see the groups appearing as before. However, there's one problem -- a problem we didn't really address with our `Messages` component. We aren't displaying a `loading` state while the data is being fetched. Let's make sure that our component renders a loader while the `ready` field is set to `false`. Here's what that looks like in `application/components/groups/Groups.js`.
+
+```javascript
+
+```
