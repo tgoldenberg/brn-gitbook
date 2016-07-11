@@ -479,6 +479,9 @@ export default Groups;
 Now let's replace our fixture data with an actual API call. Let's fill in our `loadGroups` function in `GroupsView.js`.
 
 ```javascript
+...
+import { API, DEV } from '../../config';
+...
 loadGroups(userId){
   /* TODO: load user groups and suggested groups */
   let query = {
