@@ -1647,3 +1647,8 @@ export default Group;
 
 ```
  
+## Wrapping Up
+
+So far in this chapter, we rendered groups that belong to a user and that are nearby. We created a form for making new groups and rendered individual groups. Next we have to add the ability to join different groups and create events for them. 
+
+![group](Screen Shot 2016-07-11 at 11.17.18 PM.png)
