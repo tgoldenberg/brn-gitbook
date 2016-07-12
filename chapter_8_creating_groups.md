@@ -1288,32 +1288,32 @@ Now all we have to do is pass all of our data to the `handleSubmit` function and
 
 ```javascript
 handleSubmit(){
-    let { color, image, technologies } = this.state;
-    let { name, description, location, updateGroups, navigator } = this.props;
-    if (! location ){
-      this.setState({ errorMsg: 'You must provide a location.'})
-    } else if (! name ){
-      this.setState({ errorMsg: 'You must provide a name.'})
-    } else if (! description){
-      this.setState({ errorMsg: 'You must provide a description.'})
-    } else {
-      let group = { color, image, technologies, name, description, location };
-      fetch(`${API}/groups`, {
-        method: 'POST',
-        body: JSON.stringify(group);
+  let { color, image, technologies } = this.state;
+  let { name, description, location, updateGroups, navigator } = this.props;
+  if (! location ){
+    this.setState({ errorMsg: 'You must provide a location.'})
+  } else if (! name ){
+    this.setState({ errorMsg: 'You must provide a name.'})
+  } else if (! description){
+    this.setState({ errorMsg: 'You must provide a description.'})
+  } else {
+    let group = { color, image, technologies, name, description, location };
+    fetch(`${API}/groups`, {
+      method: 'POST',
+      body: JSON.stringify(group);
+    })
+    .then(response => response.json())
+    .then(group => {
+      updateGroups(group);
+      navigator.push({
+        name: 'Group',
+        group: group
       })
-      .then(response => response.json())
-      .then(group => {
-        updateGroups(group);
-        navigator.push({
-          name: 'Group',
-          group: group
-        })
-      })
-      .catch(err => console.log('ERR:', err))
-      .done();
-    }
+    })
+    .catch(err => console.log('ERR:', err))
+    .done();
   }
+}
 ```
 
 Notice that we invoke a function `updateGroups` after the successful submission. This is because we want to update the `groups` array that we have in our parent `GroupsView` component. We then use `navigator` to navigate to our newly created `group`. Let’s make sure we create the function `updateGroups` and that we add a new route `Group` with a corresponding component.
@@ -1324,30 +1324,30 @@ application/components/groups/GroupsView.js
 import Group from './Group';
 …
 constructor(){
-    super();
-    this.addGroup = this.addGroup.bind(this);
+  super();
+  this.addGroup = this.addGroup.bind(this);
 …
-  addGroup(group){
-    this.setState({ groups: this.state.groups.concat(group)})
-  }
+addGroup(group){
+  this.setState({ groups: this.state.groups.concat(group)})
+}
 …
 case 'CreateGroupConfirm':
-              return (
-                <CreateGroupConfirm 
-                  {...this.props} 
-                  {...route} 
-                  navigator={navigator}
-                  addGroup={this.addGroup}
-                />
-              );
+  return (
+    <CreateGroupConfirm 
+      {...this.props} 
+      {...route} 
+      navigator={navigator}
+      addGroup={this.addGroup}
+    />
+  );
 case 'Group':
-              return (
-                <Group 
-                  {...this.props}
-                  {...route}
-                  navigator={navigator}
-                />
-              )
+  return (
+    <Group 
+      {...this.props}
+      {...route}
+      navigator={navigator}
+    />
+  )
 ```
 Now let’s create the file `application/components/groups/Group.js`. Like usual, we’ll start off with a very simple component.
 
