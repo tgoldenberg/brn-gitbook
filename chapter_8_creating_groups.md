@@ -1378,6 +1378,18 @@ export default Group;
 
 ```
 
-Now when we create a new group, we should be directed to a blank screen with the group name.
+Now when we create a new group, we should be directed to a blank screen with the group name. If we refresh, we will see the new group in our `Groups` view.
+![meteor ny](Screen Shot 2016-07-11 at 10.30.00 PM.png)
 
+
+![new groups](Screen Shot 2016-07-11 at 10.52.07 PM.png)
+
+
+## 8.5 Viewing a Group
+
+Now that we're able to create groups, we want to flesh out our `Group` view. Ideally, we want to show the group's background image, information on how many users it has, and a list of events. Let's edit `application/components/groups/Group.js`.
+
+```javascript
+
+```
  
