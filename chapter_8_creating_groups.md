@@ -1387,9 +1387,39 @@ Now when we create a new group, we should be directed to a blank screen with the
 
 ## 8.5 Viewing a Group
 
-Now that we're able to create groups, we want to flesh out our `Group` view. Ideally, we want to show the group's background image, information on how many users it has, and a list of events. Let's edit `application/components/groups/Group.js`.
+Now that we're able to create groups, we want to flesh out our `Group` view. Ideally, we want to show the group's background image, information on how many users it has, and a list of events. Let's edit `application/components/groups/Group.js`. We should also change `Groups.js` to make each group box link to `Group`. 
 
 ```javascript
+application/components/groups/Groups.js
+
+...
+const GroupBoxes = ({ groups, navigator }) => (
+  <View style={{justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap'}}>
+    {groups.map((group, idx) => {
+      if (!group) { return <EmptyGroupBox key={idx}/>}
+      return (
+        <TouchableOpacity
+          key={idx}
+          style={styles.groupsContainer}
+          onPress={() => navigator.push({
+            name: 'Group',
+            group
+          })}
+        >
+          <Image source={{uri: group.image}} style={styles.groupImage}>
+            <View style={[styles.group, {backgroundColor: group.color,}]} >
+              <Text style={styles.groupText}>{group.name}</Text>
+            </View>
+          </Image>
+        </TouchableOpacity>
+      )
+    })}
+  </View>
+);
+...
+
+application/components/Group.js
+
 
 ```
  
