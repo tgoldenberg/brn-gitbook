@@ -3,17 +3,21 @@ Mobile apps are comprised of many different parts - navigation, UI components, a
 
 ## Navigator Drama - Which Should I Use?
 
-Since React Native is a budding technology, it is not always as opinionated as other frameworks. For example, we're given two different options for setting up navigation - `NavigatorIOS` and `Navigator`.
+Since React Native is a budding technology, it is not always as opinionated as other frameworks. For example, we're given three different options for setting up navigation - `NavigatorIOS`,  `Navigator`, and `NavigationExperimental`.
 
-Let's look at the pros and cons of these two options for routing to see which best suits our needs.
+Let's look at the pros and cons of these three options for routing to see which best suits our needs.
 
 ### NavigatorIOS
-`NavigatorIOS` offers great performance because the animation displayed as we navigate throughout our app is handled outside of the main JavaScript thread. It features a simple layout and API to support pushing and popping routes off of the stack of views the user accumulates while browsing. `NavigatorIOS` is able to achieve this by very thinly wrapping the native iOS navigation stack in a Javascript component. The downside of this superficial implementation is that it is highly opinionated, tied very closely to iOS default navigation patterns, and therefore less configurable. It can be appropriate for simple apps or when customization isn't needed.
+`NavigatorIOS` offers great performance because the animation displayed as we navigate throughout our app is handled outside of the main JavaScript thread. It features a simple layout and API to support pushing and popping routes off of the stack of views the user accumulates while browsing. `NavigatorIOS` is able to achieve this by very thinly wrapping the native iOS navigation stack in a Javascript component. The downside of this superficial implementation is that it is highly opinionated, tied very closely to iOS default navigation patterns, and therefore less configurable. It can be appropriate for simple apps or when customization isn't needed. It also is not actively maintained by the core React Native team at Facebook.
 
 ### Navigator
 `Navigator`, on the other hand, is highly customizable. It has options for different sliding and fading transitions, and is completely neutral in regards to UI. The main downside is that the animation runs on the JavaScript thread, and so, this can cause performance lags. In order to keep our app running smoothly, we'll need to add some tweaks to the navigation code.
 
-We will be using `Navigator` for this project, because it is more widely supported and seen in complex apps. However, to get a feel for NavigatorIOS, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit.
+### NavigationExperimental
+
+`NavigationExperimental` was introduced to offer a single-state approach to navigation. This is because many development teams use the library `redux` to manage their application state. However, learning `redux` with React and React Native can be overwhelming, so we will be sticking with `Navigator`.
+
+Even though `Navigator` and `NavigatorExperimental` are flexible for complex apps, `NavigatorIOS` can be very useful in simple applications. In order to get a feel for NavigatorIOS, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit.
 
 ## 3.1 Using NavigatorIOS - a Simple Example
 
@@ -22,9 +26,7 @@ Now we're ready to start writing some components! First, let's set up our file d
 Let's build our Landing component -
 
 ```javascript
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 
 import {
   StyleSheet,
@@ -70,9 +72,7 @@ let styles = StyleSheet.create({
 And our Dashboard component (with the same styles)-
 
 ```javascript
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 
 import {
   StyleSheet,
@@ -137,9 +137,7 @@ Now that we have some components, let's connect them in our `index.ios.js` file 
 
 
 ```javascript
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 
 import {
   AppRegistry,
@@ -190,7 +188,8 @@ Not to worry - we'll make sure that you don't have that situation. Let's make a 
 Let's commit that code now:
 
 ****
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/Ch3-0) - "Simple NavigatorIOS example"
+![GitHub logo](/images/github-logo.png "GitHub logo") 
+[Commit 1](https://github.com/buildreactnative/assemblies-tutorial/tree/5c1f1e5ab6453a29fe43274cfb668d1714743da7) - Simple NavigatorIOS example
 ****
 
 
@@ -205,18 +204,9 @@ This will install the packages to our `node_modules` folder. Now, one issue that
 Now we can swap out `NavigatorIOS` for `Navigator` in our `index.ios.js` file. In `Navigator`, we must provide an initial route and a `renderScene` function which acts as a `switch()` statement for all of our main routes. Let's set up the `Navigator` for our two previous components, `Dashboard` and `Landing`.
 
 ```javascript
-import React, {
-  Component,
-} from 'react';
-
-import {
-  AppRegistry,
-  Navigator,
-  StyleSheet
-} from 'react-native';
-
+...
 import Dashboard from './application/components/Dashboard';
-import Landing from './application/components/Landing';
+
 
 class assembliesTutorial extends Component{
   render(){
@@ -239,16 +229,7 @@ class assembliesTutorial extends Component{
     )
   }
 }
-
-AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
-});
+...
 ```
 
 Notice that the `configureScene` option defines which type of animation our navigation uses to transition between scenes. Feel free to experiment and try other configurations, such as `FloatFromLeft`, `HorizontalSwipeJump`, and `VerticalUpSwipeJump`.
@@ -256,30 +237,20 @@ Notice that the `configureScene` option defines which type of animation our navi
 Next we redesign our 2 screens so that they route to each other and also include our navbar with a back icon. Let's look at `Landing.js`
 
 ```javascript
-import React, {
-  Component,
-} from 'react';
-
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+...
 
 import NavigationBar from 'react-native-navbar';
-import Dashboard from './Dashboard';
 
 export default class Landing extends Component{
   render(){
     return (
-      <View style={{flex: 1}}>
+      <View style={styles.outerContainer}>
         <NavigationBar
           title={{title: 'Landing', tintColor: 'white'}}
           tintColor='#3A7BD2'
         />
         <View style={styles.container}>
-          <Text style={styles.h1}>This is Landing</Text>
+          <Text style={styles.h1}>This is the Landing</Text>
           <TouchableOpacity onPress={() => {
             this.props.navigator.push({
               name: 'Dashboard'
@@ -294,17 +265,11 @@ export default class Landing extends Component{
 };
 
 let styles = StyleSheet.create({
-  container: {
+  outerContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: 'white'
   },
-  h1: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    padding: 20,
-  },
-});
+ ...
 ```
 
 That should give us our first screen with the navigation bar. If there are errors compiling, it may be that you did not re-build the app after the command `rnpm link`. If so, try pressing the "stop"  button on Xcode and restarting.
@@ -339,7 +304,7 @@ export default class Dashboard extends Component{
   }
   render(){
     return (
-      <View style={{flex: 1}}>
+      <View style={styles.outerContainer}>
         <NavigationBar
           title={{title: 'Dashboard', tintColor: 'white'}}
           tintColor='#3A7BD2'
@@ -361,21 +326,15 @@ export default class Dashboard extends Component{
 };
 
 let styles = StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: 'white'
+  },
   backBtn: {
     paddingTop: 10,
     paddingHorizontal: 20,
   },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  h1: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    padding: 20,
-  },
-});
+  ...
 ```
 
 ![Empty Navigator](/images/chapter-3-the-beginnings-of-an-app/empty-navigator.png "Empty Navigator")
@@ -384,8 +343,11 @@ As you can see, the nice thing about `Navigator` is that we can customize how ou
 
 Okay, now it's time for another commit! Congrats on having delved into navigation with React Native. The `Navigator` API has many more options, some of which we will use in the tutorial. Please check out the [docs](https://facebook.github.io/react-native/docs/navigator.html) for specific API information.
 
+Note: If you are interested in using `NavigationExperimental`, please refer to the appendix. There we show how to structure an app with `NavigationExperimental`, including how to store state with `redux`. Honestly, the transition from `Navigator` to `NavigationExperimental` will feel very easy.
+
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 4](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.2) - "Create basic navigation with Navigator"
+![GitHub logo](/images/github-logo.png "GitHub logo") 
+[Commit 2](https://github.com/buildreactnative/assemblies-tutorial/blob/586b07b1c14518c26f8d8909863c1d4b068c63ec/application/components/Dashboard.js) - Create basic navigation with Navigator
 ***
 
 ## 3.3 Fleshing out the App
@@ -400,20 +362,18 @@ Now that we're about to build out the app, there are a couple of things I want t
 
 *Why are we starting out with fake data?*
 
-This is something I'm a strong believer in. Fake it and then make it. The wireframing process helps to funnel the idea of the product into a visual representation. A developer's job is to translate that into an actual product. It's very easy to focus on the programming problems like integration with a backend system and server, scalability, and so on. However, most often, the best thing to do at this point is to make a fake product. This helps get the UI components of the product in place so that you can think of the data integration later. This is the process I use and I find it works extremely well. That said, different things work for different people, so sue the method that works for you on your own projects.
+This is something were are strong believers in. Fake it and then make it. The wireframing process helps to funnel the idea of the product into a visual representation. A developer's job is to translate that into an actual product. It's very easy to focus on the programming problems like integration with a backend system and server, scalability, and so on. However, most often, the best thing to do at this point is to make a fake product. This helps get the UI components of the product in place so that you can think of the data integration later. This is the process I use and I find it works extremely well. That said, different things work for different people, so sue the method that works for you on your own projects.
 
 *Will you be using an architecture like Flux or Redux to manage state between components?*
 
-We won't be using either in this tutorial. We personally love Redux but even its creator has said that you shouldn't use it until you've felt the pain without it. This app would be a good candidate for an architecture using Redux. However, we were also able to create a good product without it. So while the production version of Assemblies may incorporate Redux, the tutorial itself won't touch on the topic.
+We won't be using either in this tutorial. We personally love Redux but even its creator has said that you shouldn't use it until you've felt the pain without it. This app would be a good candidate for an architecture using Redux. However, we were also able to create a good product without it. So while the production version of Assemblies may incorporate Redux, the tutorial itself won't touch on the topic. We address how to structure a React Native app with `redux` in the Appendix section of the tutorial.
 
 ### Rounding out our Landing Page
 
-Now we're going to fill in our `Landing` page. Later, this will link to a `login/signup`, but for now we'll have it go directly to the `Dashboard`. Let's place an image as the screen background using the `Dimensions` module. Then let's use the `TouchableOpacity` component as a button that leads to our `Dashboard`
+Now we're going to fill in our `Landing` page. Later, this will link to a `login/signup`, but for now we'll have it go directly to the `Dashboard`. Let's place an image as the screen background using the `Dimensions` module. Then let's use the `TouchableOpacity` component as a button that leads to our `Dashboard`. You can download the image assets from the [open-source repository](https://github.com/buildreactnative/assemblies/tree/master/application/assets/images). Create a folder under `application` called `assets`, and an `images` folder in that. That is where we'll store our images for the tutorial.
 
 ```javascript
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 
 import {
   Dimensions,
@@ -426,7 +386,6 @@ import {
 
 import NavigationBar from 'react-native-navbar';
 import Colors from '../styles/colors';
-import Dashboard from './Dashboard';
 
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
@@ -532,5 +491,6 @@ As for the styles, some stuff should be pretty self-explanatory for those famili
 Time for another commit to close out this chapter on setting up navigation:
 
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 4](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-3.3) - "Flesh out landing page"
+![GitHub logo](/images/github-logo.png "GitHub logo") 
+[Commit 3](https://github.com/buildreactnative/assemblies-tutorial/tree/fff577ae852f38feb087f550f35cec433737bc42) - Flesh out landing page
 ***
