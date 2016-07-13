@@ -122,7 +122,7 @@ Here's what we have so far. Let's make a commit at this point.
 
 ***
 
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 5](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - Commit 5]() "Empty TabBar views"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 5](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - "Empty TabBar views"
 
 ***
 
@@ -272,7 +272,7 @@ Now let's make a commit.
 ![{Profile TabBar View}](/images/chapter-4-basic-tabbar-navigation/profile-tabbar-view.png "Profile TabBar View")
 
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 6](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - Commit 6]() "Add fixtures file and style profile view"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 6](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - "Add fixtures file and style profile view"
 ***
 
 ## 4.2 Messages View
@@ -464,11 +464,8 @@ let styles = StyleSheet.create({
 });
 ```
 
-![{Styled Messages View}](/images/chapter-4-basic-tabbar-navigation/styled-messages-view.png "Styled Messages View")
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 7](https://github.com/buildreactnative/assemblies-tutorial/commit/3fe5fe1d185d1747b791b21c13b348ffbd9dc36a) - "Commit 7 - render Messages view with fixture data"
-<img src='github-logo.png' style='width: 40px;'/> [Commit 7]() "render Messages view with fixture data"
-
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 7](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - "Render messages view with fixture data"
 ***
 
 ## 4.3 Styling the Activity View
