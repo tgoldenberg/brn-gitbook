@@ -122,7 +122,7 @@ Here's what we have so far. Let's make a commit at this point.
 
 ***
 
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 5](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - "Empty TabBar views"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 5](https://github.com/buildreactnative/assemblies-tutorial/commit/b1d0b93f103e8cf0a23a856c4a04d43787f786c0) - "Empty TabBar views"
 
 ***
 
@@ -272,7 +272,7 @@ Now let's make a commit.
 ![{Profile TabBar View}](/images/chapter-4-basic-tabbar-navigation/profile-tabbar-view.png "Profile TabBar View")
 
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 6](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - "Add fixtures file and style profile view"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 6](https://github.com/buildreactnative/assemblies-tutorial/commit/a82cbed80bf43464669182fb61ada3fa2d37234d) - "Add fixtures file and style profile view"
 ***
 
 ## 4.2 Messages View
@@ -467,7 +467,7 @@ let styles = StyleSheet.create({
 ![{Styled Messages View}](/images/chapter-4-basic-tabbar-navigation/styled-messages-view.png "Styled Messages View")
 
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 7](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - "Render messages view with fixture data"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 7](https://github.com/buildreactnative/assemblies-tutorial/commit/fc9866ccabbac243960912cc3206db62dec25a97) - "Render messages view with fixture data"
 ***
 
 ## 4.3 Styling the Activity View
@@ -584,9 +584,10 @@ let styles = StyleSheet.create({
 
 ```
 
-![{Activity View}](/images/chapter-4-basic-tabbar-navigation/activity-view.png "Activity View")
+![{Basic activity view}](/images/chapter-4-basic-tabbar-navigation/activity-view.png "Basic activity view")
+
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 7](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-4.3) - "Commit 7 - render Messages view with fixture data"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 8](https://github.com/buildreactnative/assemblies-tutorial/commit/95d72386aa41693a9aff2513e91d7113ad6ee028) - "Basic activity view"
 ***
 
 
