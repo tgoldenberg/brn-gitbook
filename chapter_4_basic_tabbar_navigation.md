@@ -2,12 +2,12 @@
 
 Last chapter we left off with the start of our project -- a working `Navigator` and a styled landing page. Next we're going to implement `TabBar` navigation inside of our `Dashboard` component.
 
-While we'll be using the `TabBarIOS` component that comes with React Native, you can also components that are compatible with Android, such as [this package](https://github.com/alinz/react-native-tabbar). While it might not be possible to have 100% of your code be the same across iOS and Android, we can come pretty close, especially as contributors bridge the gaps. For now, we'll be focusing on our iOS app. See the Appendix for more information about sharing code across platforms.
-
 Let's start by making three tabs - Dashboard, Messages, and Profile. We'll then fill out the screens with fake data. First replace the contents of `application/components/Dashboard.js` with the code below. Notice that we use the `react-native-vector-icons` package to customize our tab bar.
 
 ```javascript
-import React, { Component } from 'react';
+import React, {
+  Component,
+} from 'react';
 
 import {
   Dimensions,
@@ -33,7 +33,7 @@ export default class Dashboard extends Component{
   render() {
     let { selectedTab } = this.state;
     return (
-      <TabBarIOS style={styles.outerContainer}>
+      <TabBarIOS>
         <TabBarItemIOS
           title='Activity'
           selected={ selectedTab == 'Activity' }
@@ -64,11 +64,7 @@ export default class Dashboard extends Component{
 };
 
 let styles = StyleSheet.create({
-  outerContainer: {
-    backgroundColor: 'white'
-  },
-  ...
-...
+});
 ```
 
 Basically, we're defining each tab with basic information like it's title, the icon it uses, the component it should render upon selection, and passing in the name of the selected tab to `state`, so we can respond to it if necessary.
@@ -76,7 +72,9 @@ Basically, we're defining each tab with basic information like it's title, the i
 Now we have to create the tab components `ActivityView`, `MessagesView`, and `ProfileView`. Here's the code for `ActivityView`. Simply change the name of the component, the NavigationBar title, and text for the other two components.
 
 ```javascript
-import React, { Component } from 'react';
+import React, {
+  Component,
+} from 'react';
 
 import {
   StyleSheet,
@@ -97,7 +95,7 @@ export default class ActivityView extends Component{
           tintColor={Colors.brandPrimary}
         />
         <View style={styles.container}>
-          <Text style={styles.h1}>This is the ActivityView</Text>
+          <Text style={styles.h1}>This is ActivityView</Text>
         </View>
       </View>
     );
@@ -128,19 +126,20 @@ Here's what we have so far. Let's make a commit at this point.
 
 ***
 
-## Building the Profile View
+## Styling the Profile View
 
 Let's build out the tab screens. We'll be using fixtures for this. Add [this gist](https://gist.github.com/tgoldenberg/ef3dc76063ca68ecab09840f6b3eb5ab) as a file in `application/fixtures/fixtures.js`. Let's use this fixtures file to build out our `ProfileView` component.
 
 ```javascript
-...
+import NavigationBar from 'react-native-navbar';
+import Colors from '../../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { currentUser } from '../../fixtures/fixtures';
 
-import React, { Component } from 'react';
-import {
+import React, {
   View,
   Text,
+  Component,
   ScrollView,
   Image,
   StyleSheet,
@@ -273,40 +272,32 @@ Now let's make a commit.
 ![{Profile TabBar View}](/images/chapter-4-basic-tabbar-navigation/profile-tabbar-view.png "Profile TabBar View")
 
 ***
-
 [![GitHub logo](/images/github-logo.png "GitHub logo") Commit 6](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - "Add fixtures file and style profile view"
-
 ***
 
-## Building the Messages View
+## 4.2 Messages View
 
-Next, let's fill in our messages view. We'll be using our fixtures file with messages for now. One thing you'll notice is that these messages include all the relevant data for rendering them, including the author name and avatar url. Later, when implementing our back-end API, we will separate some of these data points, since a user should be able to change their name or profile photo. Therefore, it's better to store the `authorId` in the message long-term and refer to the `user` object.
+Next let's fill in our Messages View. We'll be using our fixtures file with messages for now. One thing you'll notice is that these messages include all the relevant data for rendering them, including the author name and avatar url. Later, when implementing our backend, we will separate some of these data points, since a user can change their name or profile photo. Therefore, it's better to store the `authorId` in the message and refer to the `user` object.
 For convenience, we'll be storing all the data in the messages object for now. We will be using the `ListView` in this component. The first thing we will need to do is convert our array of messages into an array of unique conversations. We then pass this conversation array (with the first message of each conversation) to our `ListView` as its `DataSource`. Let's look at the constructor for `MessagesView`
 
 ```javascript
 ...
-import {
-  StyleSheet,
-  ListView,
-  View,
-  Image,
-  Text,
-  TouchableOpacity
-} from 'react-native';
 // import messages from fixture file
 import { messages } from '../../fixtures/fixtures';
+import _ from 'underscore';
 
 export default class MessagesView extends Component{
   constructor(props){
     super(props);
     let conversations = {};
     // store each message under a conversation key
-    messages.forEach(msg => {
+    messages.forEach((msg) => {
       let key = msg.participants.sort().join('-');
       if (conversations[key]) { conversations[key].push(msg); }
       else { conversations[key] = [msg]; }
     });
-    let dataBlob = Object.keys(conversations).map(key => conversations[key]);
+    let dataBlob = _.keys(conversations)
+                      .map((key) => conversations[key]);
     // take the first message from each conversation
     this.state = {
       dataSource: new ListView.DataSource({
@@ -362,19 +353,19 @@ let styles = StyleSheet.create({
 });
 ```
 
-![{Message Fixtures}](/images/chapter-4-basic-tabbar-navigation/messages-fixtures.png "Messages Fixtures")
+![{Messages Fixtures}](/images/chapter-4-basic-tabbar-navigation/messages-fixtures.png "Messages Fixtures")
 
-Once we've confirmed that the data is being processed into conversations (both through the Chrome console React Native opens for debugging and our Simulator screen), we can refactor the rows into `Conversation` components. Replace the `Text` component in `_renderRow` with ```<Conversation conversation={rowData} />```. We'll also be using `moment` here for time/date formatting. Save the new `Conversation` component in your `application/components/messages` directory and be sure to import it at the top of your `MessagesView` component:
+Once we've confirmed that the data is being processed into conversations (both through the Chrome console React Native opens for debugging and our Simulator screen), we can refactor the rows into `Conversation` components. Replace the `Text` component in `_renderRow` with ```<Conversation conversation={rowData} />```. We'll also be using `moment` here for time/date formatting:
 
 ```javascript
 
+import _ from 'underscore';
 import Colors from '../../styles/colors';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { currentUser, FAKE_USERS } from '../../fixtures/fixtures';
 
-import React, { Component } from 'react';
-import {
+import React, {
   Component,
   StyleSheet,
   View,
@@ -391,9 +382,12 @@ export default class Conversation extends Component{
     let { conversation } = this.props;
     let msg = conversation[0].text;
     let date = new Date(conversation[0].createdAt);
-    let otherUser = conversation[0].participants.filter(p => p != currentUser.id)[0];
-    let otherUserIdx = FAKE_USERS.map(u => u.id).indexOf(otherUser);
-    let user = FAKE_USERS[otherUserIdx]
+    let user = _.find(FAKE_USERS, (usr) => {
+      return (
+        _.contains(conversation[0].participants, usr.id) &&
+        usr.id != currentUser.id
+      )
+    });
     return (
       <TouchableOpacity style={{ flex: 1 }}>
         <View style={styles.container}>
@@ -470,10 +464,10 @@ let styles = StyleSheet.create({
 });
 ```
 
+![{Styled Messages View}](/images/chapter-4-basic-tabbar-navigation/styled-messages-view.png "Styled Messages View")
+
 ***
-
 [![GitHub logo](/images/github-logo.png "GitHub logo") Commit 7](https://github.com/buildreactnative/assemblies-tutorial/commit/f5bc72f5f44c9d0146602d4c75a7353d07dd9039) - "Render messages view with fixture data"
-
 ***
 
 ## 4.3 Styling the Activity View
@@ -488,13 +482,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import { notifications, upcomingEvent } from '../../fixtures/fixtures';
 
-import React, { Component } from 'react';
-import {
+import React, {
   ScrollView,
   View,
   Text,
+  Component,
   StyleSheet,
-  InteractionManager,
   TouchableOpacity,
   Image,
   Dimensions,
@@ -504,18 +497,6 @@ import {
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 export default class ActivityView extends Component{
-  constructor(){
-    super();
-    this.state = {
-      ready: false
-    }
-  }
-  componentDidMount(){
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({ ready: true })
-    })
-  }
-
   _renderNotification(notification){
     return (
       <View style={styles.notificationsContainer}>
@@ -537,28 +518,13 @@ export default class ActivityView extends Component{
       </View>
     );
   }
-  _renderMapView(){
+  _renderScrollView(){
     const mapRegion = {
       latitude: upcomingEvent.location.lat,
       longitude: upcomingEvent.location.lng,
       latitudeDelta: 0.01,
       longitudeDelta: 0.01,
     };
-    return (
-      <MapView
-        style={styles.map}
-        region={mapRegion}
-        annotations={[{latitude: mapRegion.latitude, longitude: mapRegion.longitude}]}
-      />
-    )
-  }
-  _renderMapFiller(){
-    return (
-      <View style={styles.map} />
-    )
-  }
-  _renderScrollView(){
-    let { ready } = this.state;
     return (
       <ScrollView
         contentContainerStyle={styles.scrollView}
@@ -573,7 +539,11 @@ export default class ActivityView extends Component{
           </View>
           <Text style={styles.dateText}>{moment(new Date(upcomingEvent.start)).format('dddd MMM Do, h:mm a')}</Text>
         </View>
-        {ready ? this._renderMapView() : this._renderMapFiller() }
+        <MapView
+          style={styles.map}
+          region={mapRegion}
+          annotations={[{latitude: mapRegion.latitude, longitude: mapRegion.longitude}]}
+        />
         <View>
           <Text style={styles.bodyText}>Notifications</Text>
           <View style={styles.break}/>
@@ -608,6 +578,9 @@ export default class ActivityView extends Component{
             styles.rightInactiveTab
           ]}>
             <Text style={styles.inactiveTabText}>Notifications</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.infoIcon}>
+            <Icon name='information-circled' color='white' size={30} />
           </TouchableOpacity>
         </View>
         {this._renderScrollView()}
@@ -683,7 +656,6 @@ let styles = StyleSheet.create({
     color: 'white',
   },
   map: {
-    backgroundColor: Colors.inactive,
 		height: (deviceHeight / 3),
 		width: deviceWidth
 	},
@@ -772,15 +744,14 @@ let styles = StyleSheet.create({
     fontWeight: '300',
   },
 });
+
 ```
 
 ![{Activity View}](/images/chapter-4-basic-tabbar-navigation/activity-view.png "Activity View")
 ***
-![GitHub log](/images/github-logo.png "GitHub logo")
-[Commit 7](https://github.com/buildreactnative/assemblies-tutorial/tree/2b70033c3c11724b291cb96f2a694b5d2f0074a4) - render Activity view with fixture data"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 7](https://github.com/buildreactnative/assemblies-tutorial/tree/ch-4.3) - "Commit 7 - render Messages view with fixture data"
 ***
 
-Notice we use the `InteractionManager` module. This prevents animation frames from dropping on navigator transitions, since the `MapView` can take up memory to render the map. Therefore, we ask the `InteractionManager` to wait until the navigator transtion is over before setting `ready` to `true`, which then renders our `MapView`.
 
 ## Summing Up
 
