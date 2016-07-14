@@ -222,3 +222,41 @@ unsubscribeFromGroup(group, currentUser){
   this.updateGroup(group);
 }
 ```
+
+Now notice that there is a lit of jumpiness when transitioning from the `Group` page to the `Groups` page when `pop`ping from the navigation stack. To eliminate this, we need to specify a `replaceAndPop` method instead of `pop` for the navigator. Let's modify our `LeftButton` component to take a `handlePress` function and then invoke it. Remember to modify the `props` of `<LeftButton` in other files that use it. 
+
+```javascript
+application/components/accounts/LeftButton.js
+
+import React from 'react';
+import {
+  TouchableOpacity
+} from 'react-native';
+
+import Icon from 'react-native-vector-icons/Ionicons';
+import Globals from '../../styles/globals';
+
+const LeftButton = ({ handlePress }) => {
+  return (
+    <TouchableOpacity style={Globals.backButton} onPress={handlePress}>
+      <Icon name="ios-arrow-back" size={25} color="#ccc" />
+    </TouchableOpacity>
+  );
+};
+
+export default LeftButton;
+
+
+application/components/groups/Group.js
+...
+<NavigationBar
+  title={{title: group.name, tintColor: 'white'}}
+  tintColor={Colors.brandPrimary}
+  leftButton={<LeftButton handlePress={() => navigator.replacePreviousAndPop({name: 'Groups'})}/>}
+  rightButton={<OptionsButton openActionSheet={this.openActionSheet}/>}
+/>
+```
+
+## 9.2 Creating Events
+
+Now that we're able to join and unsubscribe from groups, what are groups for? Events! Events, or assemblies, are where the action is. We need 
