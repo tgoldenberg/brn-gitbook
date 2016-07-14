@@ -157,6 +157,8 @@ application/components/groups/GroupsView.js
 
 ```
 
+![join group button](Screen Shot 2016-07-13 at 11.28.35 PM.png)
+
 Now when you click to join a group, our button should change its content to a success message, and the group should be added to our joined groups in the top level `Groups` component. Notice that we don’t just change the component state but also update our database through a PUT call to our Deployd server.
 
 What about removing oneself from a group? For that, we can have an `ActionSheetIOS` component that gives us a list of actions, one of which can be to leave the group.
@@ -204,6 +206,9 @@ class Group extends Component{
   rightButton={<OptionsButton openActionSheet={this.openActionSheet}/>}
 />
 ```
+
+![group unsubscribe](Screen Shot 2016-07-13 at 11.28.25 PM.png)
+
 
 Now that we’ve invoked a `prop` `unsubscribeFromGroup`, we have to define it in our `GroupsView` component and pass it as a `prop`.
 
