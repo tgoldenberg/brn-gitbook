@@ -8,7 +8,7 @@
 * [Chapter 5: User Accounts Pt. 1](chapter_5_user_accounts_pt_1.md)
 * [Chapter 6: User Accounts Pt. 2](chapter_6_user_accounts_pt_2.md)
 * [Chapter 7: Establishing a Database Schema](chapter_7_establishing_a_database_schema.md)
-* [Chapter 9: Creating Events](chapter_9_creating_events.md)
 * [Chapter 8: Creating Groups](chapter_8_creating_groups.md)
+* [Chapter 9: Creating Events](chapter_9_creating_events.md)
 * [Chapter 16: Deployment](chapter_16_deployment.md)
 
