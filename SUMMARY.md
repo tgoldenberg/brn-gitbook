@@ -10,4 +10,5 @@
 * [Chapter 7: Establishing a Database Schema](chapter_7_establishing_a_database_schema.md)
 * [Chapter 8: Creating Groups](chapter_8_creating_groups.md)
 * [Chapter 16: Deployment](chapter_16_deployment.md)
+* Chapter 9: Creating Events
 
