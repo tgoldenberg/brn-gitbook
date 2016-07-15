@@ -122,6 +122,26 @@ Notice how we use `destructuring` to import our functions. Now to run these exam
 
 The example was chosen to illustrate a few interesting things about modules and ES6. First of all, it gives us practice seeing how there are many different ways of constructing a function, as we showed earlier. Secondly, it shows some of the different ways of exporting and importing modules. In `main.js`, we use our `destructuring` syntax to import the different math functions from `utilities.js`. In `utilities.js`, we export through the `module.exports = ` syntax, while in `config/index.js` we use the `export default ` syntax. Also notice how we invoke `double`, a function, which has the result of a function as its parameter. These are things you will see a lot in React, especially when dealing with Redux.
 
+If we want to explore some more, we can change our `main.js` file a bit.
 
+```javascript
+import * as operations from './utilities';
+import double from './config';
+
+var num1 = 20;
+var num2 = 4;
+
+console.log('ADDING ');
+console.log(operations.add(num1, num2));
+console.log('SUBTRACTING');
+console.log(operations.subtract(num1, num2));
+console.log('DIVIDE');
+console.log(operations.divide(num1, num2));
+console.log('MULTIPLY');
+console.log(operations.multiply(num1, num2));
+console.log('DOUBLE ADD');
+console.log(double(operations.add(num1, num2)));
+
+```
 
 
