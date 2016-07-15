@@ -397,8 +397,8 @@ class CreateEvent extends Component{
       name: 'CreateEventConfirm',
       group,
       location,
-      name,
-      capacity
+      capacity,
+      eventName: name
     })
   }
   saveLocation(data, details=null){
@@ -578,3 +578,11 @@ export default CreateEvent;
 Notice that this is the first time we use the `Slider` component. This is one of many nice React Native components that work equally well in Android as in iOS.
 
 Now that we've saved the `name`, `location`, and `capacity` or our event, we can move on to the second part of the form and collect the start and end times. Once we save the event, we can redirect to the `Group` page again.
+
+## 9.3 Collecting Date Information
+
+In order to render the second part of our `events` form, let's modify `GroupsView.js` to include our new `CreateEventConfirm` route.
+
+```javascript
+application/components/groups/GRoupsView.js
+
