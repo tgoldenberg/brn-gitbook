@@ -141,7 +141,8 @@ console.log('MULTIPLY');
 console.log(operations.multiply(num1, num2));
 console.log('DOUBLE ADD');
 console.log(double(operations.add(num1, num2)));
-
 ```
+
+The `import * as ` syntax imports all the exported functions as one object that we can refer to. This is also a familiar pattern when looking at Redux. If we check we get the same answers as before.
 
 
