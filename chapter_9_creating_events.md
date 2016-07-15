@@ -259,4 +259,100 @@ application/components/groups/Group.js
 
 ## 9.2 Creating Events
 
-Now that we're able to join and unsubscribe from groups, what are groups for? Events! Events, or assemblies, are where the action is. We need 
+In the last part we added the ability to join or unsubscribe from a group. Next we want to give the group owners the ability to create and edit events. We can see that each member to a group has a specific role, currently either `member` or `owner`. We want users with `owner` privileges to be able to create and edit events, while users with `member` privileges have the ability to RSVP or cancel their reservation for an event.
+
+Let’s add a button to our `ActionSheetIOS` to create an event if the user is an owner.
+
+```javascript
+…
+openActionSheet(){
+    let { group, currentUser, unsubscribeFromGroup, navigator } = this.props;
+    let role = find(group.members, (member) => member.userId === currentUser.id).role;
+    let buttonActions = ['Unsubscribe', 'Cancel'];
+    if (role === 'admin' || role === 'owner')
+      buttonActions.unshift('Create Event');
+    let options = {
+      options: buttonActions,
+      cancelButtonIndex: buttonActions.length-1
+    };
+    ActionSheetIOS.showActionSheetWithOptions(options, (buttonIndex) => {
+      switch(buttonActions[buttonIndex]){
+        case 'Unsubscribe':
+          unsubscribeFromGroup(group, currentUser);
+        case 'Create Event':
+          navigator.push({ name: 'Create Event', group })
+        default:
+          return;
+      }
+    });
+  }
+
+```
+![create event](Screen Shot 2016-07-14 at 6.28.11 PM.png)
+
+Since we are redirecting after the user selects `Create Event`, we also need to define the `Create Event` route and create a `CreateEvent` component.
+
+```javascript
+application/components/groups/GroupsView.js
+…
+import CreateEvent from './CreateEvent';
+…
+  case 'Create Event':
+    return (
+      <CreateEvent
+        {...this.props}
+        {...route}
+        navigator={navigator}
+      />
+    )
+…
+
+application/groups/CreateEvent.js
+
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet
+} from 'react-native';
+
+const CreateEvent = () => (
+  <View style={styles.container}>
+    <Text>CREATE EVENT</Text>
+  </View>
+);
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white'
+  }
+});
+
+export default CreateEvent;
+
+```
+
+Now if the user selects `Create Event`, they should be directed to this page. Now we need to fill in the form to create an event. Remember that our `events` have the following schema: 
+
+```
+groupId: String
+createdAt: Number
+start: Number
+end: Number
+location: Object
+going: Array
+name: String
+capacity: Number
+```
+
+Since many of these fields require a numeric value, we’re going to explore using a Picker component. As far as the starting time and ending time, we will need some type of date selector.  Let’s design our form to take the name, location, and capacity in the first part, and the start and end times for the 2nd part.
+
+```javascript
+application/components/groups/CreateEvent.js
+
+
+```
+
