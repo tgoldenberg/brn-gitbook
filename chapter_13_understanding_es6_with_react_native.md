@@ -99,7 +99,7 @@ Notice that we define 4 functions, in 4 different ways! Now, the closest thing t
 
 ```javascript
 import { add, subtract, divide, multiply } from './utilities';
-import doubleOperation from './config';
+import double from './config';
 
 var num1 = 20;
 var num2 = 4;
@@ -113,9 +113,15 @@ console.log(divide(num1, num2));
 console.log('MULTIPLY');
 console.log(multiply(num1, num2));
 console.log('DOUBLE ADDING');
-console.log(doubleOperation(add(num1,num2)));
+console.log(double(add(num1,num2)));
 ```
 
-Notice how we use `destructuring` to import our functions. 
+Notice how we use `destructuring` to import our functions. Now to run these examples, just `node` won't be enough. This is because while vanilla Node offers a lot of ES6 features, it doesn't yet support the `import` syntax. Luckily, there's an easy way around this. We can use the `babel-node` CLI tool to run our code. If you don't have the `babel-cli` installed, just enter ```npm install --save-dev babel-cli```. Then you can run the examples with `babel-node filename`. Here's a screenshot of the output.
+
+![babel output](Screen Shot 2016-07-14 at 11.43.30 PM.png)
+
+The example was chosen to illustrate a few interesting things about modules and ES6. First of all, it gives us practice seeing how there are many different ways of constructing a function, as we showed earlier. Secondly, it shows some of the different ways of exporting and importing modules. In `main.js`, we use our `destructuring` syntax to import the different math functions from `utilities.js`. In `utilities.js`, we export through the `module.exports = ` syntax, while in `config/index.js` we use the `export default ` syntax. Also notice how we invoke `double`, a function, which has the result of a function as its parameter. These are things you will see a lot in React, especially when dealing with Redux.
+
+
 
 
