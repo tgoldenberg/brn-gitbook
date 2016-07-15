@@ -585,4 +585,52 @@ In order to render the second part of our `events` form, let's modify `GroupsVie
 
 ```javascript
 application/components/groups/GroupsView.js
+...
+import CreateEventConfirm from './CreateEventConfirm';
+...
+case 'CreateEventConfirm':
+  return (
+    <CreateEventConfirm
+      {...this.props}
+      {...route}
+      navigator={navigator}
+    />
+  );
+ 
+```
 
+And let's add our new `CreateEventConfirm` component:
+
+```javascript
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet
+} from 'react-native';
+
+const CreateEventConfirm = () => (
+  <View style={styles.container}>
+    <Text>CREATE EVENT CONFIRM</Text>
+  </View>
+);
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white'
+  }
+});
+
+export default CreateEventConfirm;
+
+```
+We should direct to a simple page now after the first part of the form. Now it's time to fill in the rest!
+![create event confirm](Screen Shot 2016-07-15 at 2.13.51 AM.png)
+
+```javascript
+
+
+```
