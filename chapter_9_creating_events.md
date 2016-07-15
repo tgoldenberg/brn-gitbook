@@ -343,7 +343,7 @@ createdAt: Number
 start: Number
 end: Number
 location: Object
-going: Array
+going: Array 
 name: String
 capacity: Number
 ```
