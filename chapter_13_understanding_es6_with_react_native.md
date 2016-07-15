@@ -145,4 +145,28 @@ console.log(double(operations.add(num1, num2)));
 
 The `import * as ` syntax imports all the exported functions as one object that we can refer to. This is also a familiar pattern when looking at Redux. If we check we get the same answers as before.
 
+## 13.4 Spread Operator
 
+Along with destructuring, the spread operator is another useful tool that we can use with both objects and arrays. Take the example of updating an element in a list of TODO items.
+
+```javascript
+let todos = [
+{ id: 0, title: 'Walk the dog' },
+{ id: 1, title: 'Wash the dishes' },
+{ id: 2, title: 'Learn ES6' }
+];
+```
+Let's say we want to update the title of the item at the 1st index to `Clean the bathroom`. One way we can do this is through using the spead operator. 
+```javascript
+function updateItem(items, index, title){
+  let newItem = {
+    ...items[index],
+    title: title
+   };
+  return [
+    ...items.slice(0, index),
+    newItem,
+    ...items.slice(index + 1
+   ];
+}
+```
