@@ -170,3 +170,61 @@ function updateItem(items, index, title){
    ];
 }
 ```
+
+Notice that we use the `...` syntax for both an object and an array. For an object, it is similar to this:
+
+```
+let newItem = Object.assign({}, items[index], { title: title})
+```
+
+For an array, it is similar to this:
+
+```
+return items.slice(0, index).concat(newItem).concat(items.slice(index + 1);
+```
+
+In both cases, `...` just looks more elegant and simpler. Now, another use of the spread operator in React Native is for passing `props` to components. Instead of passing each individual prop, we can just pass ` {...this.props}`. In other words, the two components are the same:
+
+````javascript
+class Card extends Component{
+  render(){
+    return (
+      <View>
+        <Title title={this.props.title} userId={this.props.userId} />
+      </View>
+    );
+  }
+}
+
+class Card extends Component{
+  render(){
+    return (
+      <View>
+        <Title {...this.props} />
+      </View>
+    );
+  }
+}
+
+```
+
+Here are some more lines to practice the spread operator in your Node console with `babel-node`. Good luck and happy coding!
+
+![](Screen Shot 2016-07-15 at 12.39.59 AM.png)
+
+```javascript
+let items = ["a", "b", "c", "d", "e"]
+undefined
+let index = 2;
+undefined
+let newItems = [ ...items.slice(0, index), "z" ]
+undefined
+newItems
+["a", "b", "z"]
+let obj = { username: "Tom", city: "Long Beach" }
+undefined
+let newObj = {...obj, age: 34 }
+undefined
+newObj
+{ username: "Tom", city: "Long Beach", age: 34 }
+```
