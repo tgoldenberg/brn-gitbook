@@ -584,5 +584,5 @@ Now that we've saved the `name`, `location`, and `capacity` or our event, we can
 In order to render the second part of our `events` form, let's modify `GroupsView.js` to include our new `CreateEventConfirm` route.
 
 ```javascript
-application/components/groups/GRoupsView.js
+application/components/groups/GroupsView.js
 
