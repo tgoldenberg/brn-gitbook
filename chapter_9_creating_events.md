@@ -579,7 +579,7 @@ Notice that this is the first time we use the `Slider` component. This is one of
 
 Now that we've saved the `name`, `location`, and `capacity` or our event, we can move on to the second part of the form and collect the start and end times. Once we save the event, we can redirect to the `Group` page again.
 
-## 9.3 Collecting Date Information
+## 9.3 Collecting Event Information
 
 In order to render the second part of our `events` form, let's modify `GroupsView.js` to include our new `CreateEventConfirm` route.
 
@@ -975,4 +975,6 @@ componentDidMount(){
 })}
 ```
 ![event row](Screen Shot 2016-07-15 at 10.06.44 AM.png)
+
+
 
