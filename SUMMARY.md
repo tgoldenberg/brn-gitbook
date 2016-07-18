@@ -15,5 +15,5 @@
 * [Chapter 12: Final Touches](chapter_12_final_touches.md)
 * [Chapter 13: Understanding ES6 with React Native](chapter_13_understanding_es6_with_react_native.md)
 * [Chapter 16: Deployment](chapter_16_deployment.md)
-* Deploying to the App Store
+* Chapter 14: Deploying to the App Store
 
