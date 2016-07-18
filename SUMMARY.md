@@ -16,4 +16,5 @@
 * [Chapter 13: Understanding ES6 with React Native](chapter_13_understanding_es6_with_react_native.md)
 * [Chapter 14: Deploying to the App Store](chapter_14_deploying_to_the_app_store.md)
 * [Chapter 16: Deployment](chapter_16_deployment.md)
+* Chapter 14: Deploying to the Google Play Store
 
