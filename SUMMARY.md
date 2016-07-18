@@ -17,4 +17,5 @@
 * [Chapter 14: Deploying to the App Store](chapter_14_deploying_to_the_app_store.md)
 * [Chapter 15: Deploying to the Google Play Store](chapter_15_deploying_to_the_google_play_store.md)
 * [Chapter 16: Deployment](chapter_16_deployment.md)
+* Chapter 17: Mobile Design Principles
 
