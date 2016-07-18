@@ -1,2 +1,2 @@
-# Chapter 16: Deployment
+# Chapter 16: Deploying an API
 
