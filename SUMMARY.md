@@ -12,4 +12,5 @@
 * [Chapter 9: Creating Events](chapter_9_creating_events.md)
 * [Chapter 16: Deployment](chapter_16_deployment.md)
 * [Chapter 13: Understanding ES6 with React Native](chapter_13_understanding_es6_with_react_native.md)
+* Chapter 10: Building a Calendar View
 
