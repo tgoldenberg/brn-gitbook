@@ -22,3 +22,7 @@ type: String
 seen: Boolean
 ``` 
 
+After each new message and event is created, we should send out a notification to the message recipient and the group members. Let's add this logic in Deployd with a callback after an event is created and after a message is created. Here's what that looks like.
+
+
+
