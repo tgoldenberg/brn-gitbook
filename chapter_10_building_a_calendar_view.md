@@ -71,3 +71,15 @@ dpd.groups.get({id: groupId})
 });
 
 ```
+![deployd event](Screen Shot 2016-07-18 at 8.52.19 PM.png)
+![new event](Screen Shot 2016-07-18 at 8.53.43 PM.png)
+
+![notification](Screen Shot 2016-07-18 at 8.51.20 PM.png)
+
+Now if we create another event, we will see a new notification has been created. Now it should be straightforward to render these in our `ActivityView`. We also want to load the next event that a user is signed up for, or if there is none, the next event nearby.
+
+Let's edit `ActivityView.js`.
+
+```javascript
+
+```
