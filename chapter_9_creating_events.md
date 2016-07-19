@@ -976,5 +976,244 @@ componentDidMount(){
 ```
 ![event row](Screen Shot 2016-07-15 at 10.06.44 AM.png)
 
+## 9.4 Joining an event
+
+Once we have created an event, we want our users to be able to RSVP for them, or cancel their reservation. Now is a good opportunity to use a swipe-to-join functionality. When our user swipes left on the event, we want to show them the option to either join or leave the event. We can use the package `react-native-swipeout` for this. As usual, install the package via `npm` - `npm install --save react-native-swipeout`. 
+
+```javascript
+application/components/groups/Group.js
+...
+import Swipeout from 'react-native-swipeout';
+import {
+  View,
+  ListView,
+...
+class EventList extends Component{
+  constructor(){
+    super();
+    this._renderRow = this._renderRow.bind(this);
+  }
+  _renderRow(event, sectionID, rowID){
+    let { currentUser, cancelRSVP, joinEvent, events } = this.props;
+    let going = find(event.going, (g) => g === currentUser.id);
+    let right = [{
+      text: 'RSVP',
+      type: 'primary',
+      onPress: () => { joinEvent(event, currentUser) }
+    }];
+    if (going) {
+      right = [{
+        text: 'Cancel',
+        type: 'delete',
+        onPress: () => { cancelRSVP(event, currentUser) }
+      }];
+    }
+    return (
+      <Swipeout
+        backgroundColor='white'
+        rowID={rowID}
+        right={right}
+      >
+        <View style={styles.eventContainer}>
+          <TouchableOpacity style={styles.eventInfo}>
+            <Text style={styles.h5}>{event.name}</Text>
+            <Text style={styles.h4}>{moment(event.start).format('dddd, MMM Do')}</Text>
+            <Text style={styles.h4}>{event.going.length} Going</Text>
+          </TouchableOpacity>
+          <View style={styles.goingContainer}>
+            <Text style={styles.goingText}>{going ? "You're Going" : "Want to go?"}</Text>
+            {going ? <Icon name="ios-checkmark" size={30} color={Colors.brandPrimary} /> : <Icon name="ios-add" size={30} color={Colors.brandPrimary} /> }
+          </View>
+        </View>
+      </Swipeout>
+    )
+  }
+  render(){
+    let { events } = this.props
+    return (
+      <ListView
+        enableEmptySections={true}
+        dataSource={new ListView.DataSource({rowHasChanged: (r1, r2) => r1 != r2 }).cloneWithRows(events)}
+        renderRow={this._renderRow.bind(this)}
+        style={styles.listview}
+      />
+    )
+  }
+};
+
+...
+cancelRSVP(event, currentUser){
+  let { events } = this.state;
+  event.going = event.going.filter(userId => userId !== currentUser.id);
+  let idx = events.map(evt => evt.id).indexOf(event.id);
+  this.setState({ events: [
+    ...events.slice(0, idx),
+    event,
+    ...events.slice(idx + 1)
+  ]});
+}
+joinEvent(event, currentUser){
+  console.log('JOIN RSVP', event, currentUser);
+  let { events } = this.state;
+  event.going = event.going.concat(currentUser.id);
+  let idx = events.map(evt => evt.id).indexOf(event.id);
+  this.setState({ events: [
+    ...events.slice(0, idx),
+    event,
+    ...events.slice(idx + 1)
+  ]});
+}
+...
+<Text style={styles.h2}>Events</Text>
+<EventList
+  {...this.state}
+  {...this.props}
+  joinEvent={this.joinEvent}
+  cancelRSVP={this.cancelRSVP}
+/>
+
+```
+
+However, notice how we get an error when we use the `react-native-swipeout` package... This is beacuse of breaking changes in the latest versions of React Native. When this happens, there is often a simple solution -- use the source code of the package in your project and modify the part that is buggy. In this case, the only change needed is to `import` `React` from `react` and not from `'react-native'`. Let's change our `import` statement to this:
+```import Swipeout from '../3rd_party/react-native-swipeout` and add a new directory called `3rd_party`. Inside that directory, create another directory called `react-native-swipeout` with an `index.js` and a `styles.js` file. From there, we can copy over the source code for those files. The only part that needs to be changed is this:
+
+```javascript
+application/components/3rd_party/react-native-swipeout/index.js
+
+var React = require('react')
+var ReactNative = require('react-native')
+var tweenState = require('react-tween-state')
+var {PanResponder, TouchableHighlight, StyleSheet, Text, View} = ReactNative
+...
+
+```
+and this:
+
+```javascript
+application/components/3rd_party/react-native-swipeout/styles.js
+
+var ReactNative = require('react-native')
+var {StyleSheet} = ReactNative
+```
+
+Now we should be able to see our swipe-left functionality.
+
+![swipeout 1](Screen Shot 2016-07-18 at 9.39.19 AM.png)
+![swipeout 2](Screen Shot 2016-07-18 at 9.39.27 AM.png)
+
+Although we are updating the `state` of the event, we also have to make sure we make the corresponding changes to the API. Let's add our API update methods in `Group`.
+
+```javascript
+application/components/groups/Group.js
+
+...
+cancelRSVP(event, currentUser){
+  let { events } = this.state;
+  event.going = event.going.filter(userId => userId !== currentUser.id);
+  let idx = events.map(evt => evt.id).indexOf(event.id);
+  this.setState({ events: [
+    ...events.slice(0, idx),
+    event,
+    ...events.slice(idx + 1)
+  ]});
+  this.updateEventGoing(event);
+}
+updateEventGoing(event){
+  fetch(`${API}/events/${event.id}`, {
+    method: 'PUT',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ going: event.going })
+  })
+  .then(response => response.json())
+  .then(data => console.log('RESPONSE', data))
+  .catch(err => console.log('ERROR', err))
+  .done();
+}
+joinEvent(event, currentUser){
+  let { events } = this.state;
+  event.going = event.going.concat(currentUser.id);
+  let idx = events.map(evt => evt.id).indexOf(event.id);
+  this.setState({ events: [
+    ...events.slice(0, idx),
+    event,
+    ...events.slice(idx + 1)
+  ]});
+  this.updateEventGoing(event);
+}
+
+```
+
+
+Now that we can join and leave a group, we should enable our user to view an individual event and its relevant information. Let’s create a new route, ‘Event’, and direct to it when the user presses on the event section..
+
+```javascript
+application/components/groups/GroupsView.js
+...
+import Event from './Event';
+...
+case 'Event':
+  return (
+    <Event 
+      {...this.props}
+      {...route}
+      navigator={navigator}
+    />
+  )
+
+application/components/groups/Event.js
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet
+} from 'react-native';
+
+const Event = ({ event }) => (
+  <View style={styles.container}>
+    <Text>{event.name}</Text>
+  </View>
+);
+
+let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+});
+
+export default Event;
+
+...
+<TouchableOpacity style={styles.eventInfo} onPress={navigator.push({ name: 'Event', event, group })}>
+  <Text style={styles.h5}>{event.name}</Text>
+  <Text style={styles.h4}>{moment(event.start).format('dddd, MMM Do')}</Text>
+  <Text style={styles.h4}>{event.going.length} Going</Text>
+</TouchableOpacity>
+...
+```
+
+Now when you press on an event row, you should be directed to a screen with just the event name:
+![](Screen Shot 2016-07-18 at 9.53.00 AM.png)
+
+Now that this route is working, let’s fill in the parts with our `event` data.
+
+```javascript
+application/components/groups/Event.js
+
+```
+
+## Wrapping Up
+
+There are a lot of enhancements we can make, but we essentially have created the ability for our users to create, manage, and join groups, as well as to create and join events nearby. Here are some ideas for further enhancements / features:
+
+-	More control over managing user roles within a group (ability to nominate another user as an ‘admin’, adding the ability to delete a group, etc.)
+-	Ability to write comments in an event
+-	Ability to contact group members and write private messages to them
+
+These are all things that are possible, and indeed, are built into the final version of Assemblies! But for now, we’ll be moving on to building out our Calendar and Activity Views. 
+
+Congrats on building out a pretty complex user interface! We have considered a lot of user interactions and data changes, so great job on completing this part!
 
 
