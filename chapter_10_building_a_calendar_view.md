@@ -19,10 +19,32 @@ We haven’t yet considered how we will implement notifications. We will actuall
 message: String
 createdAt: Number
 type: String
-seen: Boolean
+participants: Array
 ``` 
 
 After each new message and event is created, we should send out a notification to the message recipient and the group members. Let's add this logic in Deployd with a callback after an event is created and after a message is created. Here's what that looks like.
 
+```javascript
+console.log('MESSAGE CREATED', this);
+var text = this.text;
+var senderId = this.senderId;
+var recipientId = this.recipientId;
+var createdAt = this.createdAt;
+
+dpd.users.get({ id: recipientId })
+.then(function(user){
+    console.log('SENDER', user.firstName);
+    dpd.notifications.post({
+        type: 'Message',
+        participants: [{userId: recipientId, seen: false}],
+        message: 'New message from ' + user.firstName,
+        createdAt: new Date().valueOf()
+    })
+})
+...
+```
+
+Now create a new message and see that a notification gets created.
+![notification 1](Screen Shot 2016-07-18 at 8.43.37 PM.png)
 
 
