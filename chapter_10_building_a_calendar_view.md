@@ -47,4 +47,9 @@ dpd.users.get({ id: recipientId })
 Now create a new message and see that a notification gets created.
 ![notification 1](Screen Shot 2016-07-18 at 8.43.37 PM.png)
 
+Now we can do the same thing with new events. Let's create a hook on the `POST` event of the `events` collection.
 
+```javascript
+
+
+```
