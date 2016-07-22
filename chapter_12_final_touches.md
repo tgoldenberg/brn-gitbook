@@ -194,3 +194,16 @@ loginUser(){
 }
 ...
 ```
+
+And voila! Our user is automatically logged in when they open the app. Now, the wrong way to do this would be to store the user's password in the `AsyncStorage`, as this would be insecure.
+
+## 12.2 More Robust Tabs
+
+Currently, each of our tab routes are fairly limited in what they can do. For example, how do we message a user from the `Event` page? The `Event` page appears in 4 of our 5 routes. To enable this, we need to add the `Conversation` route in each of these routes.
+
+Let's start with the `ActivityView`.
+
+```javascript
+
+
+```
