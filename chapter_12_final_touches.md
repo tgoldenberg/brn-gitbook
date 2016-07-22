@@ -204,6 +204,46 @@ Currently, each of our tab routes are fairly limited in what they can do. For ex
 Let's start with the `ActivityView`.
 
 ```javascript
-
-
+application/components/activity/ActivityView.js
+...
+import Conversation from '../messages/Conversation';
+...
+  case 'Conversation':
+    return (
+      <Conversation
+        {...this.props}
+        {...route}
+        navigator={navigator}
+      />
+  );
+...
 ```
+
+Then in `Event.js`:
+```javascript
+...
+  <View style={styles.infoContainer}>
+    <Text style={styles.h2}>Going <Text style={styles.h4}>{event.going.length}</Text></Text>
+    {eventMembers.map((member, idx) => (
+      <TouchableOpacity
+        key={idx}
+        onPress={() => {
+          if (user.id !== currentUser.id){
+            navigator.push({
+              name: 'Conversation',
+              user: member
+            })
+          }
+        }}
+        style={styles.memberContainer}>
+        <Image source={{uri: member.avatar}} style={styles.avatar}/>
+        <View style={styles.memberInfo}>
+          <Text style={styles.h5}>{member.firstName} {member.lastName}</Text>
+        </View>
+      </TouchableOpacity>
+    ))}
+  </View>
+...
+```
+
+Now we get directed to a conversation when we press on someone's profile. Notice that we prevent this from happening if the other user is us!
