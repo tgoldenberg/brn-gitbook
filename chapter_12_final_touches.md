@@ -246,4 +246,11 @@ Then in `Event.js`:
 ...
 ```
 
-Now we get directed to a conversation when we press on someone's profile. Notice that we prevent this from happening if the other user is us!
+Now we get directed to a conversation when we press on someone's profile. Notice that we prevent this from happening if the other user is us! Now all we have to do is do the same in `CalendarView` and `GroupsView`.
+
+```javascript
+application/components/groups/GroupsView.js
+
+application/components/calendar/CalendarView.js
+
+```
