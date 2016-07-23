@@ -1,31 +1,27 @@
-# Chapter 5: User Accounts - pt.1
+In the last chapter we left off with a nice prototype to build from. Now it’s time to flesh out the app with real dynamic data. This means we’ll be needing an **API** endpoint to send requests to.  The word **API** stands for ""application programming interface"" – it's the tool we use to interact with our data, via HTTP requests.
 
-In the last chapter we left off with a nice prototype to build from. Now it’s time to flesh out the app with real dynamic data. This means we’ll be needing an **API** endpoint to send requests to.  The word **API** stands for **application programming interface** – it's the tool we use to interact with our data, through HTTP requests. 
+## Setting up Deployd
 
-## 5.1 Setting up Deployd 
+One of the first things we'll need from our API is the ability to manage user accounts. Users should be able to create an account, login, logout, etc. While there are several good options for user management such as **Rails** (the *Devise* gem), **Meteor.js**, etc., we will be using the Node package **Deployd**.
 
-One of the first concerns with just about any API is creating and managing user accounts. Users should be able to create an account, login, logout, etc. While there are several good options for user management such as **Rails** (the *Devise* gem), **MeteorJS**, etc., we will be using the Node package **Deployd** as our API. 
+**Deployd** abstracts the API creation process for us through an easy-to-use command line tool and intuitive interface. Since we want to focus on the mobile development aspects of React Native in this tutorial, we thought it would be an excellent tool to use. There are, of course, situations where a more configurable API would be required. But we found that **Deployd** meets our needs for the most part.
 
-**Deployd** abstracts the API creation process for us through an easy-to-use command line tool and intuitive interface. Since we want to focus on the mobile development aspects of React Native in this tutorial, we thought it would be an excellent tool to use. There are, of course, situations where a more configurable API would be very useful. But we found that **Deployd** meets our needs for the most part.
+Getting the API started is easy. As per **Deployd**’s [documentation](http://docs.deployd.com/guides/), we make sure that the package is installed globally on our machine.
 
-Getting the API started is easy. As per **Deployd**’s documentation, we make sure that the package is installed globally on our machine. 
+```npm install –g deployd```
 
-```npm install –g dpd```
+Check to make sure that the package was installed by running. `dpd –version`. You should see something like this.
 
-Check to make sure that the package was installed. `dpd –version`. You should see something like this. 
-
-![](Screen Shot 2016-06-27 at 9.08.20 AM.png) 
+![Install Deployd](/images/chapter-5-user-accounts-part-1/install-deployd.png "Install Deployd")
 
 Next, we can create our API with a simple command. `dpd create assemblies-api`.
 You should see instructions for opening and running the newly created API. If we `cd` into the created folder and type the command `dpd`, our API will be up and running.
 
-![](Screen Shot 2016-06-27 at 9.09.26 AM.png) 
+![Deployd Running](/images/chapter-5-user-accounts-part-1/deployd-running.png "Deployd Running")
 
-![](Screen Shot 2016-06-27 at 9.12.44 AM.png)
- 
-If you open your browser to `localhost:2403/dashboard`, you can see a visual representation of the API. We can use the dashboard to add "resources", and it is easy to edit the fields of our resources as well. 
+If you open your browser to `localhost:2403/dashboard`, you can see a visual representation of the API. We can use the dashboard to add "resources", and it is easy to edit the fields of our resources as well.
 
-We know that we need a users collection, so let’s start by creating that. By selecting the `users` options under *adding resources*, we can see that **Deployd** creates a default collection with the fields `id`, `username`, and `password`. **Deployd** requires these three fields, even if you don’t plan on having a username for your users. One way around this is to designate the `username` field for the user’s email. The only criteria is that this field be unique for all users.
+We know that we need a users collection, so let’s start by creating that. By selecting the `Users Collection` option under *Resources*, we can see that **Deployd** creates a default collection with the fields `id`, `username`, and `password`. **Deployd** requires these three fields, even if you don’t plan on having a username for your users. One way around this is to designate the `username` field for the user’s email. The only criteria is that this field be unique for all users.
 
 We can add other fields to our user collection. How about location? We will want to know where our users live, in order to suggest other assemblies. We will also want their first and last names, a URL for their avatar, and some of their interests, in order to filter the assemblies we suggest for them. Here are all the fields  we'll be adding to our `users` collection, along with their data type.
 
@@ -40,19 +36,19 @@ interests   Array
 avatarUrl   String
 ```
 
-![](Screen Shot 2016-06-27 at 9.19.45 AM.png) 
+![User Fields](/images/chapter-5-user-accounts-part-1/user-fields.png "User Fields")
 
 
-Now in our `Landing` component, let’s add two buttons in place of the previous `Go to dashboard` button - `Login` and `Signup`. 
+Now in our `Landing` component, let’s add two buttons in place of the previous `Go to dashboard` button - `Login` and `Signup`.
 
-In place of the previous button on `Landing.js`, put this code: 
+In place of the previous button on `Landing.js`, put this code:
 ```JavaScript
 …
 <TouchableOpacity
   style={[styles.button, styles.loginButton]}
   onPress={() => {
     this.props.navigator.push({
-      name: 'Login' 
+      name: 'Login'
     })
   }}
 >
@@ -85,7 +81,7 @@ loginButtonText: {
   }
 …
 ```
-Notice how we use an array of styles for two of the elements, in order to reuse the styles we already created. This is a common convention in React Native. Ideally, you would like to follow the principle of **DRY** – don’t repeat yourself. This means that wherever there is duplication of code, we refactor out those styles to a more general style, for example, a “*button*” style. 
+Notice how we use an array of styles for two of the elements, in order to reuse the styles we already created. This is a common convention in React Native. Ideally, you would like to follow the principle of **DRY** – don’t repeat yourself. This means that wherever there is duplication of code, we refactor out those styles to a more general style, for example, a “*button*” style.
 
 However, part of the fun of building with React Native is the fast iteration. Later on, we’ll be able to assess how we can best refactor our styles for future maintainability. For now, it’s enough if we refactor styles whenever it’s convenient. This doesn’t mean that we should make a big spaghetti mess of JavaScript styles, but we want to build out our prototype quickly. Follow Nick’s advice for styling in React Native for more insight.
 
@@ -172,14 +168,14 @@ You should see something like these screenshots when you click to either the `Lo
   ![](Screen Shot 2016-06-27 at 6.40.14 PM.png)
   ![](Screen Shot 2016-06-27 at 6.40.06 PM.png)
 
-Now is probably a good time to commit our changes. 
+Now is probably a good time to commit our changes.
 
 ***
 [![GitHub logo](/images/github-logo.png "GitHub logo") Commit 1: "Add basic Login and Register routes"]()
 
-## 5.2. Building a Login and Register Form 
+## Building a Login and Register Form
 
-Now that our routing works, let’s build a form for our users to fill out. For login, we’ll only need an email and password. For registration, however, we’ll need more data. Let’s start with the login form, since it’s a bit easier. 
+Now that our routing works, let’s build a form for our users to fill out. For login, we’ll only need an email and password. For registration, however, we’ll need more data. Let’s start with the login form, since it’s a bit easier.
 
 Now, there are several unique issues that we have to deal with when building forms in React Native. You may be used to building forms for the web, using the `<form>` element and maybe the `onSubmit` callback in React for the web.  In React Native, we’ll primarily be using components such as `<TextInput/>`, `<PickerIOS/>`, and so on. We’ll trigger our `onSubmit` callback when the user presses the submit button. Also, it’s important to be aware of whether the user can see the input field when the keyboard expands up. This is an issue we’ll deal with later. For now, let’s just build a simple login form.
 
@@ -354,11 +350,11 @@ let styles = {
 }
 
 export default Login;
-``` 
+```
 
 Here we start to reference some global styles. Create the file `application/styles/globals.js` and fill it with these styles. Many of these styles won’t be used till later, but better to just have them ready now.
 
-```javascript 
+```javascript
 import React from 'react-native';
 import Colors from './colors';
 
@@ -463,14 +459,14 @@ module.exports = globals;
 
 ```
 
-Let’s make a commit here, before making the login calls to our API. 
+Let’s make a commit here, before making the login calls to our API.
 
 ***
 [![GitHub logo](/images/github-logo.png "GitHub logo") Commit 1: "Add basic login component"]()
 
-## 5.3 Adding the API to Login
+## Adding the API to Login
 
-Now we’re ready to collect our user’s email and password and create a session with our API. In production, we would be pointing our requests to an API hosted on a server such as Digital Ocean, AWS, or Heroku. While in development, it’s enough to point to our localhost with the port that is running Deployd. We can set a config file with our API endpoint set to `localhost:2403`, and when we’re ready for production, we can change the endpoint to the URL of the server that is hosting our API. 
+Now we’re ready to collect our user’s email and password and create a session with our API. In production, we would be pointing our requests to an API hosted on a server such as Digital Ocean, AWS, or Heroku. While in development, it’s enough to point to our localhost with the port that is running Deployd. We can set a config file with our API endpoint set to `localhost:2403`, and when we’re ready for production, we can change the endpoint to the URL of the server that is hosting our API.
 
 Let’s create a file `application/config/config.js` and add the following lines:
 
@@ -566,7 +562,7 @@ When you try logging in, you should see an error message like this. This is beca
 
 ![](Screen Shot 2016-06-27 at 8.11.57 PM.png)
 
-If we open up the dashboard for Deployd in our browser window (at `localhost:2403/dashboard`), we can actually manually insert a user. Open the `users` collection, and select the `data` tab. Now start typing, and you should see the fields fill up. When filling in values that expect arrays or objects, make sure to use double quotes and not single quotes. Here is what our screen looks like. 
+If we open up the dashboard for Deployd in our browser window (at `localhost:2403/dashboard`), we can actually manually insert a user. Open the `users` collection, and select the `data` tab. Now start typing, and you should see the fields fill up. When filling in values that expect arrays or objects, make sure to use double quotes and not single quotes. Here is what our screen looks like.
 
 
 ![](Screen Shot 2016-06-27 at 9.18.18 PM.png)
@@ -578,11 +574,11 @@ Now when we login with the correct email and password, we should get a response 
 ![](Screen Shot 2016-06-28 at 9.23.35 AM.png)
 `Git commit -am "Create user login"`
 
-## 5.4 A Real Profile View
+## Real Profile View
 
 Now that we have real user data, we can start to flesh out parts of our app. Our profile view, for example, should be pretty easy to update. We just have to ensure that the user data that is passed to the `<Dashboard/>` component gets passed to our profile view. Let's see what that looks like.
 
-```JavaScript 
+```JavaScript
 application/components/profile/ProfileView.js
 ...
   // import { currentUser } from '../../fixtures/fixtures';
