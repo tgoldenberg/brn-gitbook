@@ -83,7 +83,7 @@ loginButtonText: {
 ```
 Notice how we use an array of styles for two of the elements, in order to reuse the styles we already created. This is a common convention in React Native. Ideally, you would like to follow the principle of **DRY** – don’t repeat yourself. This means that wherever there is duplication of code, we refactor out those styles to a more general style, for example, a “*button*” style.
 
-However, part of the fun of building with React Native is the fast iteration. Later on, we’ll be able to assess how we can best refactor our styles for future maintainability. For now, it’s enough if we refactor styles whenever it’s convenient. This doesn’t mean that we should make a big spaghetti mess of JavaScript styles, but we want to build out our prototype quickly. Follow Nick’s advice for styling in React Native for more insight.
+However, part of the fun of building with React Native is the fast iteration. Later on, we’ll be able to assess how we can best refactor our styles for future maintainability. For now, it’s enough if we refactor styles whenever it’s convenient. This doesn’t mean that we should make a big spaghetti mess of JavaScript styles, but we want to build out our prototype quickly.
 
 Next, we have to create the routes for both “**Register**” and “**Login**” and create forms for our users to create an account and sign in.  In `index.ios.js` or `index.android.js` (depending on what you are building), add the following lines in the `switch` statement. Don’t forget to `import` the referenced files at the top of the file.
 ```javascript
@@ -177,7 +177,7 @@ Now is probably a good time to commit our changes.
 
 Now that our routing works, let’s build a form for our users to fill out. For login, we’ll only need an email and password. For registration, however, we’ll need more data. Let’s start with the login form, since it’s a bit easier.
 
-Now, there are several unique issues that we have to deal with when building forms in React Native. You may be used to building forms for the web, using the `<form>` element and maybe the `onSubmit` callback in React for the web.  In React Native, we’ll primarily be using components such as `<TextInput/>`, `<PickerIOS/>`, and so on. We’ll trigger our `onSubmit` callback when the user presses the submit button. Also, it’s important to be aware of whether the user can see the input field when the keyboard expands up. This is an issue we’ll deal with later. For now, let’s just build a simple login form.
+Now, there are several unique issues that we have to deal with when building forms in React Native. You may be used to building forms for the web, using the `<form>` element and maybe the `onSubmit` callback in React for the web.  In React Native, we’ll primarily be using components such as `<TextInput/>`, `<PickerIOS/>`, and so on. We’ll trigger our `onSubmit` callback when the user presses the submit button. Also, it’s important to make sure the user can see the input field when the keyboard opens. This is an issue we’ll deal with later. For now, let’s just build a simple login form.
 
 ```javascript
 Login.js
@@ -352,7 +352,7 @@ let styles = {
 export default Login;
 ```
 
-Here we start to reference some global styles. Create the file `application/styles/globals.js` and fill it with these styles. Many of these styles won’t be used till later, but better to just have them ready now.
+Here we start to reference some global styles. Create the file `application/styles/globals.js` and fill it with these styles. Many of these styles won’t be used until later, but better to just have them ready now.
 
 ```javascript
 import React from 'react-native';
@@ -466,7 +466,7 @@ Let’s make a commit here, before making the login calls to our API.
 
 ## Adding the API to Login
 
-Now we’re ready to collect our user’s email and password and create a session with our API. In production, we would be pointing our requests to an API hosted on a server such as Digital Ocean, AWS, or Heroku. While in development, it’s enough to point to our localhost with the port that is running Deployd. We can set a config file with our API endpoint set to `localhost:2403`, and when we’re ready for production, we can change the endpoint to the URL of the server that is hosting our API.
+Now we’re ready to collect our user’s email and password and create a session with our API. In production, we would be pointing our requests to an API hosted on a server such as DigitalOcean, AWS, or Heroku. While in development, it’s enough to point to our localhost with the port that is running Deployd. We can set a config file with our API endpoint set to `localhost:2403`, and when we’re ready for production, we can change the endpoint to the URL of the server that is hosting our API.
 
 Let’s create a file `application/config/config.js` and add the following lines:
 
@@ -565,9 +565,9 @@ When you try logging in, you should see an error message like this. This is beca
 If we open up the dashboard for Deployd in our browser window (at `localhost:2403/dashboard`), we can actually manually insert a user. Open the `users` collection, and select the `data` tab. Now start typing, and you should see the fields fill up. When filling in values that expect arrays or objects, make sure to use double quotes and not single quotes. Here is what our screen looks like.
 
 
-![](Screen Shot 2016-06-27 at 9.18.18 PM.png)
-![](Screen Shot 2016-06-27 at 9.18.26 PM.png)
-![](Screen Shot 2016-06-27 at 9.18.32 PM.png)
+![User Data 1](/images/chapter-5-user-accounts-part-1/user-data-1.png "User Data 1")
+![User Data 2](/images/chapter-5-user-accounts-part-1/user-data-2.png "User Data 2")
+![User Data 3](/images/chapter-5-user-accounts-part-1/user-data-3.png "User Data 3")
 
 Now when we login with the correct email and password, we should get a response with the user information, and we can then redirect to the dashboard. Voila! Let's not forget to make a commit at this point.
 
@@ -600,4 +600,4 @@ Now our profile view should have real dynamic data. If we log in as a different 
 
 ![](Screen Shot 2016-06-28 at 10.14.17 AM.png)
 
-Now that we've allowed our users to log in and fleshed out our `<ProfileView/>` with real data, we still need to allow users to create their account, and logout. That will come next in chapter 6.
+Now that we've allowed our users to log in and fleshed out our `<ProfileView/>` with real data, we still need to allow users to create their account, and logout. That will come next in Chapter 6.
