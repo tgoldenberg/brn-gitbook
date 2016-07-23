@@ -1,8 +1,6 @@
-# Chapter 6: User Accounts Pt. 2
+At the end of the last chapter, we had created a user through **Deployd**, logged into the dashboard and fleshed out the Profile view with real data. However, there are two important things that we neglected related to user accounts. These are logging out and registering an account.
 
-At the end of the last chapter, we had created a user through **Deployd**, logged into the dashboard and fleshed out the Profile view with real data. However, there are two important things that we neglected related to user accounts. These are logging out and registering an account. 
-
-## 6.1 Logging Out
+## Logging Out
 
 Since registering is much trickier, let’s first implement logging out. Our API has an endpoint for logout - `/users/logout`. When the user initiates logout, we want to call this endpoint and then redirect the user to the Landing page.
 
@@ -57,13 +55,13 @@ logout(){
 
 Let’s commit at this point.
 
-## 6.2 Registration Form - pt. 1
+## Registration Form - Part 1
 
 Now we’re left with the most complex part of user accounts – registration. This doesn’t have to be complicated; we could just ask for our users email and a password. After all, that’s enough information to create a user with Deployd. However, we want more information about our users. We want to know what city they live in, so we can suggest nearby meetups. We want to know what technologies they are interested in, for similar reasons. We want their first and last name, since many “assemblies” require a person’s real name to be admitted to the venue location. Finally, we want an avatar for our users so that our users are able to know each other a little better.
 
-We could, of course, just make a single view with all of these inputs available. However, that wouldn’t be a very good user experience. Long forms are off-putting to potential users, and we want our registration process to be relatively smooth. That’s why we take a step approach for user registration. 
+We could, of course, just make a single view with all of these inputs available. However, that wouldn’t be a very good user experience. Long forms are off-putting to potential users, and we want our registration process to be relatively smooth. That’s why we take a step approach for user registration.
 
-In step 1, the user will enter their email, first and last name, and password – all absolutely necessary information. In step 2, we will ask the user for their interests, location, and a photo to use as their avatar. All of these steps, except for the user’s location, are optional. If the user doesn’t select an avatar, we can use a default image. If the user doesn’t specify their interests, we can ask them for them later. 
+In step 1, the user will enter their email, first and last name, and password – all absolutely necessary information. In step 2, we will ask the user for their interests, location, and a photo to use as their avatar. All of these steps, except for the user’s location, are optional. If the user doesn’t select an avatar, we can use a default image. If the user doesn’t specify their interests, we can ask them for them later.
 
 Let’s flesh out step 1 of our user registration process.
 
@@ -138,7 +136,7 @@ Here we introduce a new `npm` package, `react-native-google-places-autocomplete`
 Also, you may notice that we refactor the left button of our navigation to a stateless functional component. These are components that have no local state (i.e., no `constructor(){}` method). These components render faster than state-ful components, so we'll try to use them more frequently. If you'll notice the ` ({ navigator }) ` syntax is a way of destructuring our props, and reduces the amount of code. We can now refactor this to its own file and use it in both `Register.js` and `Login.js`. Remember to `import` the file in both components.
 
 ![](Screen Shot 2016-07-04 at 12.45.33 PM.png)
-Here's what the refactored component would look like: 
+Here's what the refactored component would look like:
 
 ```javascript
 import React from 'react';
@@ -164,9 +162,9 @@ export default LeftButton;
 
 Let's make a commit there, and now we can add in some of the form content.
 
-[Commit]() - Add autocomplete package and refactor LeftButton for navigation bar 
+[Commit]() - Add autocomplete package and refactor LeftButton for navigation bar
 
-## 6.3 Using Google Places Autocomplete
+## Using Google Places Autocomplete
 
 ```javascript
 ...
@@ -269,7 +267,7 @@ const autocompleteStyles = StyleSheet.create({
 
 You'll notice a few things here. In our `react-native-google-places-autocomplete` package, we need an API key. To do this, go to the website for [Google's Places services](https://developers.google.com/places/). From there, you will want to select the `Google Places API Web Service`, which is an `HTML` button. From there you can follow the steps to get your API key (You will have to create a project, and then access your credentials to get the API key).
 
-Once we have the API key, where do we store it? Well, we want to make sure that we don't store it in our `git` repository, especially if our code will be hosted on a service like Github. 
+Once we have the API key, where do we store it? Well, we want to make sure that we don't store it in our `git` repository, especially if our code will be hosted on a service like Github.
 
 We'll be using the [`react-native-config`](https://github.com/luggg/react-native-config) package to manage these environment variables.
 
@@ -302,7 +300,7 @@ You might have to restart all of the `node` processes to get this to work proper
 Another you may notice is that the package we use for `react-native-google-places-autocomplete` is a little buggy. That is, it works, but it throws a few warnings when we use it. If you'd like to use a version without these warnings, follow these steps.
 
 * Run `npm uninstall --save react-native-google-places-autocomplete`
-* Add this line to your `package.json` file under `dependencies`: 
+* Add this line to your `package.json` file under `dependencies`:
 
 ```    
 "react-native-google-places-autocomplete": "https://github.com/tgoldenberg/react-native-google-places-autocomplete/tarball/master",
@@ -311,7 +309,7 @@ Another you may notice is that the package we use for `react-native-google-place
 
 [Commit]() - Add environment variables and Google Places Autocomplete to registration form
 
-## 6.4 Finishing the Registration Form pt.1 
+## Registration Form - Part 2
 
 Alright, so that was the toughest part of building the first part of our registration form. Let's fill in the rest.
 
@@ -391,7 +389,7 @@ application/components/accounts/Register.js
 ...
 ```
 
-The page should now look something like this: 
+The page should now look something like this:
 ![](Screen Shot 2016-07-04 at 2.27.50 PM.png)
 
 Notice also that we have to define a new route in our `index.ios.js` file, with the name `RegisterConfirm`.
@@ -435,12 +433,12 @@ case 'RegisterConfirm':
 ...
 ```
 
-Now when you press `Next` on the `Register.js` screen, you should be directed to a screen that looks like this: 
+Now when you press `Next` on the `Register.js` screen, you should be directed to a screen that looks like this:
 ![](Screen Shot 2016-07-04 at 2.45.14 PM.png)
 
 Also notice that by passing in `{...route}` to our component, we pass it as `props` all the variable that the `route` object contains. This means that we'll have access to the `email`, `password`, and other values from the first part of the registration form.
 
-## 6.5 Adding User Avatars
+## Adding User Avatars
 
 Now let's fill in `RegisterConfirm` component. We want to ask the user for their interests, i.e. which technologies they are interested in. We also want to ask them for an avatar, an image we can display about them. Finally we want to display any errors on submission.
 
@@ -643,9 +641,9 @@ Then you should be able to select photos.![](Screen Shot 2016-07-04 at 3.34.10 P
 ![](Screen Shot 2016-07-04 at 3.34.15 PM.png)
 ![](Screen Shot 2016-07-04 at 3.34.58 PM.png)
 
-## 6.6 Adding User Technologies
+## Adding User Technologies
 
-To get our users to select interested technologies from a list, we'll use the `npm` package `react-native-selectme`. As per usual, we install the package and link it. 
+To get our users to select interested technologies from a list, we'll use the `npm` package `react-native-selectme`. As per usual, we install the package and link it.
 ```
 npm install --save react-native-selectme
 rnpm link
@@ -1003,12 +1001,12 @@ let overlayStyles = {
 ```
 
 Since we are referencing `this.props.updateUser`, we have to pass that function as `props` to our component.
-```javascript 
+```javascript
 case 'RegisterConfirm':
   return (
     <RegisterConfirm
       {...route}
-      navigator={navigator} 
+      navigator={navigator}
       updateUser={this.updateUser}
     />
   );
@@ -1027,8 +1025,6 @@ Let's commit there and call it a wrap!
 
 ## Summing Up
 
-In this chapter, we learned how to build a complex form and create accounts for our users. In the process, we used the `Google Places Autocomplete` API, as well as packages such as `react-native-image-picker` and `react-native-selectme`. There is much more to learn about forms, and our forms can be much improved. But this is a good start, and now we are able to register, login, and logout users. 
+In this chapter, we learned how to build a complex form and create accounts for our users. In the process, we used the `Google Places Autocomplete` API, as well as packages such as `react-native-image-picker` and `react-native-selectme`. There is much more to learn about forms, and our forms can be much improved. But this is a good start, and now we are able to register, login, and logout users.
 
 In the next few chapters, we will use our newly created users to create groups, events, messages, and comments. We will also look at establishing a database schema for our entire app.
-
-

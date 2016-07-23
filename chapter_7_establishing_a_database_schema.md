@@ -1,6 +1,6 @@
-# Chapter 7: Establishing a Database Schema
+# Establishing a Database Schema
 
-Let's go over what we want to do in our app and what kind of data we'll need. Already we have a `users` collection, with the following relevant fields: 
+Let's go over what we want to do in our app and what kind of data we'll need. Already we have a `users` collection, with the following relevant fields:
 ```
 id: String
 username: String
@@ -10,7 +10,7 @@ lastName: String
 technologies: Array of Strings
 avatar: String
 location: Object {
-  city: Object { 
+  city: Object {
     long_name: String,
     short_name: String
   }
@@ -25,7 +25,7 @@ location: Object {
 ```
 This way of notation simply expresses that location is an `Object` with a field `city` which is also an object with the fields `long_name` and `short_name`. It's important to keep track of the structure of our data as we create it, since the wrong data type can cause errors in our program.
 
-## 7.1 Defining Collections
+## Defining Collections
 
 Now what other collections will we need? We certainly need a `messages` collection, since we offer user-to-user messaging as a feature of our app. We also need a `groups` collection, since an assembly is a type of group that has members and hosts events. We need an `events` collection to highlight new events for our users. Here's a schema we can use for each one. Finally, we will want a `comments` collection for users to comment on individual events.
 
@@ -94,15 +94,15 @@ Now let's create these collections from our Deployd interface at `localhost:2403
 
 ![](Screen Shot 2016-07-04 at 8.06.53 PM.png)
 
-## 7.2 Deployd in Production
+## Deployd in Production
 
 While all this is well and good for local development, what about when we want our app to go live? At that point we will need to deploy Deployd to an actual server. For full instructions on this, please read the Deployment chapter in the appendix.
 
-## 7.3 Creating Messages
+## Creating Messages
 
 Now that we have our data models in place, we can start to replace our fixture data with real data. We also have to consider what we want our `MessagesView` to contain.
 
-Currently `MessagesView.js` displays a list of conversations with the last message sent displayed. Intuitively, if we press on one of these conversations, we should be directed to a conversation view, where we can scroll through all the messages and create new messages. We also may want to be able to direct to a Profile View for when any of the user’s avatars is pressed. 
+Currently `MessagesView.js` displays a list of conversations with the last message sent displayed. Intuitively, if we press on one of these conversations, we should be directed to a conversation view, where we can scroll through all the messages and create new messages. We also may want to be able to direct to a Profile View for when any of the user’s avatars is pressed.
 
 Therefore, we have to replace the static component of `MessagesView` and replace it with a new `Navigator` with the routes `Conversations`, `Conversation`, and `Profile`. While the `Conversations` and `Conversation` route will be specific to the `MessagesView`, we will reuse the `Profile` view in other parts of our app. We will also reuse the other components, for example, when a user wants to message another user from a different part of our app.
 
@@ -224,7 +224,7 @@ If done correctly, the Messages View should look exactly the same as before! Don
 
 [Commit]() – "Refactor MessagesView into a Navigation component and create simple Conversation and UserProfile components"
 
-## 7.4 Fetching Message Data
+## Fetching Message Data
 
 Now we will want to replace our `FAKE_USERS` and `FAKE_MESSAGES` data for real data. First we will create a collection called `conversations`. This will make the data fetching easier. Our collection will have the following fields
 
@@ -235,7 +235,7 @@ user1Id: String
 user2Id: String
 ```
 
-We can also create a fake conversation in the `data` tab of the collection, at `localhost:2403/dashboard`. Once we have a conversation in the database, we can work on fetching the data from the `MessagesView`. 
+We can also create a fake conversation in the `data` tab of the collection, at `localhost:2403/dashboard`. Once we have a conversation in the database, we can work on fetching the data from the `MessagesView`.
 
 ![](Screen Shot 2016-07-05 at 9.32.33 AM.png)
 
@@ -321,7 +321,7 @@ export default class MessagesView extends Component{
               );
             case 'Conversation':
               return (
-                <Conversation 
+                <Conversation
                   {...this.props}
                   {...route}
                   navigator={navigator}
@@ -346,9 +346,9 @@ let styles = StyleSheet.create({
 
 ```
 ![](Screen Shot 2016-07-05 at 9.58.43 AM.png)
-Here you can see that we are first fetching the conversations that are relevant to the user. Then we collect the userID’s that are relevant and fetch the user data for those IDs. This data then gets passed on to the `Conversations` component. 
+Here you can see that we are first fetching the conversations that are relevant to the user. Then we collect the userID’s that are relevant and fetch the user data for those IDs. This data then gets passed on to the `Conversations` component.
 
-Also notice that we are using queries to fetch our data. In Deployd, we can add these Mongo queries at the end of our API call, preceded by a `?`. In the first query, we are asking for all conversations where the `user1Id` or the `user2Id` is equal to the current user's `id`. In the second we are fetching all users who have an `id` that is contained in the array of `userId`s. 
+Also notice that we are using queries to fetch our data. In Deployd, we can add these Mongo queries at the end of our API call, preceded by a `?`. In the first query, we are asking for all conversations where the `user1Id` or the `user2Id` is equal to the current user's `id`. In the second we are fetching all users who have an `id` that is contained in the array of `userId`s.
 
 We also have to slightly modify our `Conversations.js` component.
 
@@ -434,7 +434,7 @@ Finally, we have to modify our `ConversationRow` component.
 …
 ```
 
-Let’s create another user and another conversation and see how the UI changes. 
+Let’s create another user and another conversation and see how the UI changes.
 ![](Screen Shot 2016-07-05 at 7.54.10 PM.png)
 
 ![](Screen Shot 2016-07-05 at 7.54.14 PM.png)
@@ -443,9 +443,9 @@ And now is a good time to make a commit.
 
 [commit]() – Fetch conversation data and render in Conversations component
 
-## 7.5 Adding routing to our Messages View
+## Adding Routing to our Messages View
 
-Now that we at least have real `conversation` objects, we need to add routing to an individual `conversation` component. 
+Now that we at least have real `conversation` objects, we need to add routing to an individual `conversation` component.
 
 Let's modify the file `application/components/messages/ConversationRow.js`
 
@@ -490,7 +490,7 @@ _renderRow(rowData){
 ![](Screen Shot 2016-07-05 at 8.10.32 PM.png)
 You should now get directed to our `Conversation` screen when you press on a conversation. Now we need to flesh out that view. Ideally we want to have all the messages in reverse chronological order, along with an input field on the bottom to send a new message.
 
-Let's create a few messages in Deployd to get started. Here is some data to get started (replace the userIds with the appropriate ones from your Deployd database): 
+Let's create a few messages in Deployd to get started. Here is some data to get started (replace the userIds with the appropriate ones from your Deployd database):
 
 ```
 senderId: 15f9d0d11a023b8a
@@ -600,7 +600,7 @@ export default class Conversation extends Component{
         <KeyboardSpacer topSpacing={-50}/>
       </View>
     )
-    
+
   }
 };
 
@@ -851,7 +851,7 @@ Now let's fetch our messages, and save new messages.
 ...
 ```
 
-## 7.6 (optional) Callback to update Conversations
+## Callback to Update Conversations (Optional)
 
 One cool thing about Deployd is that we can set callback hooks from within our REST-ful actions. For example, once we send a new message, we should update the relevant `conversation` with the latest message and timestamp. Using the `Events` tab in our Deployd dashboard, this is done easily. Under `POST`, add the following lines.
 ```javascript
@@ -889,6 +889,6 @@ Notice how we can use this hooks to log statements and to update other collectio
 
 ## Conclusion
 
-In this chapter, we built out a message view for our users. We created a user-friendly way to share messages between two users. While this is a feature of numerous mobile applications, our work is not yet done. We still have a lot of features to build out - Calendar View, more Profile customizations, creating and editing Groups and Events, etc. 
+In this chapter, we built out a message view for our users. We created a user-friendly way to share messages between two users. While this is a feature of numerous mobile applications, our work is not yet done. We still have a lot of features to build out - Calendar View, more Profile customizations, creating and editing Groups and Events, etc.
 
 If you're interested in improving your messaging view even further, you can explore options like creating a real-time connection for live chat. This can be done in a number of ways - through a 3rd-party service such as Firebase or Pusher, through establishing a websocket connection with our Deployd API, or by using a real-time framework such as MeteorJS. In any case, congratulations and continue the good work!
