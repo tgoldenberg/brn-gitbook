@@ -392,26 +392,26 @@ let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 export default class Landing extends Component{
   render(){
     return (
-        <View style={styles.container}>
-          <View style={styles.backgroundHolder}>
-            <Image style={styles.image} source={require('../assets/images/welcome.png')}/>
-          </View>
-          <View style={styles.logoContainer}>
-            <Image style={styles.logo} source={require('../assets/images/logo.png')}/>
-            <Text style={styles.title}>assemblies</Text>
-            <Text style={styles.subTitle}>Where Developers Connect</Text>
-          </View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              this.props.navigator.push({
-                name: 'Dashboard'
-              })
-            }}
-          >
-            <Text style={styles.buttonText}>Go to Dashboard</Text>
-          </TouchableOpacity>
+      <View style={styles.container}>
+        <View style={styles.backgroundHolder}>
+          <Image style={styles.image} source={require('../assets/images/welcome.png')}/>
         </View>
+        <View style={styles.logoContainer}>
+          <Image style={styles.logo} source={require('../assets/images/logo.png')}/>
+          <Text style={styles.title}>assemblies</Text>
+          <Text style={styles.subTitle}>Where Developers Connect</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            this.props.navigator.push({
+              name: 'Dashboard'
+            })
+          }}
+        >
+          <Text style={styles.buttonText}>Go to Dashboard</Text>
+        </TouchableOpacity>
+      </View>
     )
   }
 };
@@ -475,6 +475,17 @@ let styles = StyleSheet.create({
   },
 });
 
+```
+
+If you don't want to go through the hassle of downloading and setting up the image, you can also use a URL for the image source. Here's how that would look: 
+
+```javascript
+const backgroundImageSrc = 'https://s3-us-west-2.amazonaws.com/assembliesapp/welcome%402x.png';
+...
+<View style={styles.container}>
+  <Image style={styles.backgroundImage} source={{ uri: backgroundImageSrc }}/>
+</View>
+...
 ```
 
 You'll notice that we reference `Colors` from a separate file now, and that some images are referenced. You can download the `logo.png` and `welcome.png` images by following the commit link below and place them in an `assets/images` folder under `application`. The `colors.js` file can be placed in `styles/` under `application`. So far it's just this:
