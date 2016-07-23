@@ -553,4 +553,11 @@ There are a couple of things we should do before immediately pushing this up to 
 
 - Have you run the app on a local device? (See the appendix for more details on doing this)
 - Have you either removed or prevented all `console.log` statements from running? (This will really slow down the performance of your app in production if there are logs)
-- Have you checked the font sizes, layout, etc. on different screen widths and heights? (This is why it's 
+- Have you checked the font sizes, layout, etc. on different screen widths and heights? (This is why it's a good idea to develop on a smaller screen size, like the iPhone 4s)
+- Have you refactored the styles? (Many times there is duplication of styles which can be refactored)
+
+Once we have gone through this checklist, we can start preparing our app for deployment. For iOS, this means creating a build, testing locally on your device, and then submitting to TestFlight. After testing with TestFlight you can then submit to the AppStore. For Android, this means creating a bundle, testing locally on the device, and then submitting to the Google Play store. We will cover these topics in the appendix.
+
+We hope you enjoyed building `Assemblies` with us. We hope that you learned new things about mobile app development, ranging from app design to API construction to user experience. Please contact us and let us know how `Assemblies` has helped you in your own project. We'd be glad to feature products that were influenced by it!
+
+
