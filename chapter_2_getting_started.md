@@ -1,6 +1,6 @@
 ## Installing React Native
 
-We'll begin our app on iOS since the development workflow is a bit easier, and add instructions for creating an Android version towards the end of the guide.
+We'll begin our app on iOS since the development workflow is a bit easier, and add instructions for porting your app to Android in the later chapters. 
 
 ### Basic Requirements
 
@@ -14,8 +14,6 @@ The steps that follow assume you’ve met React Native’s basic requirements, w
 
 4. ```brew install watchman```
 
-5. ```brew install flow``` (optional)
-
 We’re paraphrasing the requirements listed in the official React native [documentation](https://facebook.github.io/react-native/docs/getting-started.html). It’s a good idea to check the details there before getting started.
 
 Make sure you have the latest version of [Xcode](https://developer.apple.com/xcode/download/) installed. When Apple rolls out new major releases of Xcode (and often even in minor releases), breaking changes are often introduced. Do yourself a favor and start out with the latest to avoid serious pain later.
@@ -27,7 +25,7 @@ Here’s where things get really exciting - we’re going to install React Nativ
 
 ### Install the React Native Command Line Interface (CLI)
 
-This should be pretty familiar if you’ve used anything like the Amazon or Express.js CLIs:
+This should be pretty familiar if you’ve used CLI's like Rails or Ember:
 
 ```npm install -g react-native-cli```
 
@@ -37,9 +35,9 @@ The `-g` flag tells `npm` to install the CLI in our system's global scope, that 
 
 ### Create a React Native Project
 
-So far, so good. Now let’s get a project up and running. it’s good practice to keep all of your coding projects in one place, like **~/Source**. Navigate to your working directory and create a new project:
+So far, so good. Now let’s get a project up and running. it’s good practice to keep all of your coding projects in one place, like **~/ReactNativeProjects**. Navigate to your working directory and create a new project:
 
-```cd ~/Source```
+```cd ~/ReactNativeProjects```
 
 ```react-native init assembliesTutorial```
 
@@ -53,14 +51,20 @@ Now navigate to your new project’s directory:
 
 Before we test out our new project, let’s explain a little bit about how React Native projects are structured. This will be enormously helpful to understand later, especially when we start working on  both the iOS and Android versions of a project simultaneously.
 
+To open your project, you should use a text editor such as Atom, Sublime, Vim, Emacs, etc. We'll be using `Atom` for the tutorial, and we'll also provide some tips later for speeding up your performance with custom packages. In any case, open up your project with your favorite text editor.
+
 You should see something like this:
 ```
 
-android          
+android
+ios
+node_modules
+.buckconfig
+.flowconfig
+.gitignore
+.watchmanconfig
 index.android.js
-index.ios.js     
-ios              
-node_modules     
+index.ios.js
 package.json
 ```
 
@@ -75,17 +79,19 @@ package.json
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
-    "react": "15.1.0",
-    "react-native": "^0.28.0"
+    "react": "15.2.1",
+    "react-native": "0.30.0"
   }
 }
 ```
 
-Right now we only two package dependencies, `react-native` and `react`, at version 0.28.0 and 15.1.0, respectively. It’s important to note this version number at the outset. React Native is incredible, but bleeding edge technology and the codebase is changing constantly. Whenever you’re debugging issues, especially with third-party libraries, conflicts created by differing ```react-native``` version dependencies are often the cause. Try and update at regular intervals, testing in a new branch, so you don’t get too far behind, but play with release candidates at your own risk.
+Right now we only have two package dependencies, `react-native` and `react`, at version 0.30.0 and 15.2.1, respectively. It’s important to note this version number at the outset. React Native is incredible, but the codebase is changing constantly. Whenever you’re debugging issues, especially with third-party libraries, conflicts created by differing ```react-native``` version dependencies are often the cause. Try and update at regular intervals, testing in a new branch, so you don’t get too far behind, but play with release candidates at your own risk.
 
 ```node_modules```  - contains all of the `npm` packages, React Native core or otherwise, our project will use.
 
 ```index.android.js``` and ```index.ios.js``` - think of these like your `index.html` file in a web project - it’s the starting point for your application, one is for Android, and the other is for iOS.
+
+The files `.buckconfig` and `.flowconfig` are unimportant for us, unless you're using `Flow`. The `.gitignore` file will be used later, to make sure sensitive information doesn't get published to source control.
 
 ```android``` and ```ios``` - these folders contain all of the native code the Android and iOS platforms require to run and bundle apps. We’ll introduce different aspects of each directory as we build our project
 
@@ -93,6 +99,8 @@ Right now we only two package dependencies, `react-native` and `react`, at versi
 
 
 To check out our new project on iOS, simply start Xcode from your "Applications" folder and open the ```assembliesTutorial.xcodeproj``` file in your project’s `ios` folder.
+
+``` open ios/assembliesTutorial.xcodeproj```
 
 Assuming you have iOS Simulator devices installed, you can simply go to Project > Run in the menu or hit `⌘-R` on your keyboard. The iOS Simulator will open and if everything went according to plan, you should see this:
 
