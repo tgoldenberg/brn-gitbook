@@ -148,8 +148,6 @@ Opening up `packages.json`, we can see that `moment` has been added:
 }
 ```
 
-
-
 If you prefer not to use the CLI, you can also edit `packages.json` directly to accomplish the same thing. Sometimes this makes it easier if you're adding many packages at once. If you do things this way, make sure to run `npm install` from you project's root directory once you've saved `packages.json` to actually download the packages.
 
 ## Setting Up a Git Repo
@@ -162,11 +160,16 @@ If you’ve made it this far and understood the instructions, you probably alrea
 
 [GitHub Git Code School](https://try.github.io/levels/1/challenges/1) - fairly new and super polished tutorial from GitHub.
 
-[Atlassian GIt Tutorials](https://www.atlassian.com/git/tutorials/) - far easier to understand than the official Git docs
+[Atlassian Git Tutorials](https://www.atlassian.com/git/tutorials/) - far easier to understand than the official Git docs
 
 [Git on Codeacademy](https://www.codecademy.com/learn/learn-git) - everything you’ve come to expect from Codeacademy, straightforward and intuitive
 
 Let's make a commit now:
+
+`git add .`
+
+`git commit -m "Initial commit"`
+
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 1](https://github.com/buildreactnative/assemblies-tutorial/commit/4ab2e70ccc2cfad5a079a1a3050094b5dd489421) - "Initial commit"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 1](https://github.com/buildreactnative/assemblies-tutorial/tree/a21f029d59f935022079256608551c3c83070371) - "Initial commit"
 ***
