@@ -114,7 +114,11 @@ This window holds the React Native packager’s process, which will interpret al
 
 ## Debugging
 
-One incredible feature of React Native is that it lets you debug your Javascript directly in Chrome as you interact with the Simulator. To turn on debugging, go to the Simulator, hit `Cmd + D`, and select "Debug JS Remotely." You'll notice a new Chrome tab open. To see console output, just open up the Chrome Developer Tools.
+One incredible feature of React Native is that it lets you debug your Javascript directly in Chrome as you interact with the Simulator. To turn on debugging, go to the Simulator, hit `Cmd + D`, and select "Debug JS Remotely." You'll notice a new Chrome tab open. To see console output, just open up the Chrome Developer Tools. 
+
+## Hot Loading
+
+Some other options in the debugging menu are `Enable Live Reload` and `Enable Hot Reloading`. This enables us to make changes in our code without restarting the project to see the effect. This is really useful when it comes to deciding on content and styles.
 
 ## Adding Packages
 
@@ -130,18 +134,17 @@ Opening up `packages.json`, we can see that `moment` has been added:
 
 ```
 {
-
-  "name": "Assembly",
+  "name": "assembliesTutorial",
   "version": "0.0.1",
   "private": true,
-   "scripts": {
-      "start": "node node_modules/react-native/local-cli/cli.js start"
-   },
-   "dependencies": {
-     "moment": "^2.13.0",
-     "react": "15.1.0",
-     "react-native": "^0.28.0"
-   }
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start"
+  },
+  "dependencies": {
+    "moment": "^2.14.1",
+    "react": "15.2.1",
+    "react-native": "0.30.0"
+  }
 }
 ```
 
