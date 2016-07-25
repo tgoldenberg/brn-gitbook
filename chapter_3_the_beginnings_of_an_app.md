@@ -329,107 +329,47 @@ We won't be using either in this tutorial. We personally love Redux but even its
 Now we're going to fill in our `Landing` page. Later, this will link to a `login/signup`, but for now we'll have it go directly to the `Dashboard`. Let's place an image as the screen background using the `Dimensions` module. Then let's use the `TouchableOpacity` component as a button that leads to our `Dashboard`. You can download the image assets from the [open-source repository](https://github.com/buildreactnative/assemblies/tree/master/application/assets/images), or use the URL we provide below. Create a folder under `application` called `assets`, and an `images` folder in that. That is where we'll store our images for the tutorial.
 
 ```javascript
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import React, { Component } from 'react';
+import { Text, TouchableOpacity, Image, View } from 'react-native';
 
-import {
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
-
-import NavigationBar from 'react-native-navbar';
 import Colors from '../styles/colors';
+import { landingStyles } from '../styles';
+import { globals } from '../styles';
 
-let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+const BackgroundImage = 'https://s3-us-west-2.amazonaws.com/assembliesapp/welcome%402x.png';
+const Logo = 'https://s3-us-west-2.amazonaws.com/assembliesapp/logo.png';
+const styles = landingStyles;
 
-export default class Landing extends Component{
+class Landing extends Component{
+  constructor(){
+    super();
+    this.visitDashboard = this.visitDashboard.bind(this);
+  }
+  visitDashboard(){
+    this.props.navigator.push({ name: 'Dashboard' })
+  }
   render(){
     return (
       <View style={styles.container}>
-        <View style={styles.backgroundHolder}>
-          <Image style={styles.image} source={require('../assets/images/welcome.png')}/>
+        <View style={styles.container}>
+          <Image style={styles.backgroundImage} source={{ uri: BackgroundImage }}/>
         </View>
-        <View style={styles.logoContainer}>
-          <Image style={styles.logo} source={require('../assets/images/logo.png')}/>
-          <Text style={styles.title}>assemblies</Text>
-          <Text style={styles.subTitle}>Where Developers Connect</Text>
+        <View style={globals.flexCenter}>
+          <Image style={styles.logo} source={{ uri: Logo }}/>
+          <Text style={[globals.lightText, globals.h2, globals.mb2]}>assemblies</Text>
+          <Text style={[globals.lightText, globals.h4]}>Where Developers Connect</Text>
         </View>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            this.props.navigator.push({
-              name: 'Dashboard'
-            })
-          }}
-        >
-          <Text style={styles.buttonText}>Go to Dashboard</Text>
+        <TouchableOpacity style={globals.button} onPress={this.visitDashboard}>
+          <Icon name='person' size={36} color='white' />
+          <Text style={globals.buttonText}>Go to Dashboard</Text>
         </TouchableOpacity>
       </View>
-    )
+    );
   }
 };
 
-let styles = StyleSheet.create({
-  backgroundHolder: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-  },
-  button: {
-    height: 80,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    backgroundColor: Colors.brandPrimary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  container: {
-    flex: 1,
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-  },
-  image: {
-    height: deviceHeight,
-    width: deviceWidth,
-  },
-  logo: {
-    height: 90,
-    width: 90,
-  },
-  logoContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 50,
-  },
-  subTitle: {
-    color: 'white',
-    fontSize: 20,
-  },
-  title: {
-    color: 'white',
-    fontSize: 28,
-    fontWeight: '700',
-    paddingBottom: 24,
-  },
-});
+export default Landing;
 
 ```
 
