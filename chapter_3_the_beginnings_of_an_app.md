@@ -373,25 +373,19 @@ export default Landing;
 
 ```
 
-If you don't want to go through the hassle of downloading and setting up the image, you can also use a URL for the image source. Here's how that would look: 
+If you were to download the images and places them under `application/assets/images`, here's how your `Image` elements would look.
 
 ```javascript
-const backgroundImageSrc = 'https://s3-us-west-2.amazonaws.com/assembliesapp/welcome%402x.png';
-...
 <View style={styles.container}>
-  <Image style={styles.backgroundImage} source={{ uri: backgroundImageSrc }}/>
+  <Image style={styles.backgroundImage} source={require('../assets/images/welcome.png')}/>
+</View>
+<View style={globals.flexCenter}>
+  <Image style={styles.logo} source={require('../assets/images/logo.png')}/>
+  <Text style={[globals.lightText, globals.h2, globals.mb2]}>assemblies</Text>
+  <Text style={[globals.lightText, globals.h4]}>Where Developers Connect</Text>
 </View>
 ...
 ```
-
-You'll notice that we reference `Colors` from a separate file now, and that some images are referenced. You can download the `logo.png` and `welcome.png` images by following the commit link below and place them in an `assets/images` folder under `application`. The `colors.js` file can be placed in `styles/` under `application`. So far it's just this:
-```javascript
-export default Colors = {
-  brandPrimary: '#3A7BD2'
-};
-```
-
-![Landing Screen](/images/chapter-3-the-beginnings-of-an-app/landing-screen.png "Landing Screen")
 
 As for the styles, some stuff should be pretty self-explanatory for those familiar with styling with CSS on the web. You'll see that we use some absolute positioning as well here, but the majority of components typically use flexbox for positioning.
 
