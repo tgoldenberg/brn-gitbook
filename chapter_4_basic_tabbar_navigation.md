@@ -39,6 +39,7 @@ class Dashboard extends Component{
     this.state = {
       selectedTab: 'Activity'
     }
+  }
   render(){
     return (
       <TabBarIOS>
@@ -86,53 +87,37 @@ Let's create the folders `activity`, `messages`, and `profile`, under our `appli
 ```javascript
 application/components/activity/ActivityView.js
 
-import React, {
-  Component,
-} from 'react';
-
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import Colors from '../../styles/colors';
 
-export default class ActivityView extends Component{
-  render() {
+import Colors from '../../styles/colors';
+import { globals } from '../../styles';
+
+class ActivityView extends Component{
+  render(){
     return (
-      <View style={{ flex: 1 }}>
+      <View style={globals.flex}>
         <NavigationBar
           title={{ title: 'Activity', tintColor: 'white' }}
           tintColor={Colors.brandPrimary}
         />
-        <View style={styles.container}>
-          <Text style={styles.h1}>This is ActivityView</Text>
+        <View style={globals.flexCenter}>
+          <Text style={globals.h2}>This is the ActivityView</Text>
         </View>
       </View>
-    );
+    )
   }
-};
+}
 
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  h1: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    padding: 20,
-  },
-});
+export default ActivityView;
 ```
 
-Here's what we have so far. Let's make a commit at this point.
+Here's what we have so far, after creating `MessagesView` and `ProfileView`. Let's make a commit at this point.
 
-![Empty TabBar Views](/images/chapter-4-basic-tabbar-navigation/empty-tabbar-views.png "Empty TabBar Views")
+![screen](Simulator Screen Shot Jul 24, 2016, 11.28.37 PM.png)
+
 
 ***
 
