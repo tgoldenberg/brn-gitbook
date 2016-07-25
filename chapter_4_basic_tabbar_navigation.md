@@ -183,218 +183,152 @@ export default ProfileView;
 
 Here we use the `ScrollView` component for the first time. ScrollView gives us greater layout flexibility then relying on a simple `View` component. Even though the components may fit on a certain view, using `ScrollView` ensures that all components will be visible on all phone sizes. As for the functionality of the `TouchableOpacity` components, we will add that in later.
 
-Note that we also added an `inactive` variable to our `colors.js` file:
-
-```javascript
-export default Colors = {
-  brandPrimary: '#3A7BD2',
-  inactive: '#EBEEF5'
-};
-```
-
-We are also referencing a `fixtures.js` file in a newly-created `application/fixtures` folder. You can download that file from GitHub by following the commit link below and add it to your project directory at the appropriate path.
-
 Now let's make a commit.
 
 ![{Profile TabBar View}](/images/chapter-4-basic-tabbar-navigation/profile-tabbar-view.png "Profile TabBar View")
 
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 6](https://github.com/buildreactnative/assemblies-tutorial/commit/a82cbed80bf43464669182fb61ada3fa2d37234d) - "Add fixtures file and style profile view"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 6](https://github.com/buildreactnative/assemblies-tutorial/tree/4ddce2b8eb25177a5c58588dcb1a17f3a831d32c) - "Add fixtures file and style profile view"
 ***
 
 ## 4.2 Messages View
 
-Next let's fill in our Messages View. We'll be using our fixtures file with messages for now. One thing you'll notice is that these messages include all the relevant data for rendering them, including the author name and avatar url. Later, when implementing our backend, we will separate some of these data points, since a user can change their name or profile photo. Therefore, it's better to store the `authorId` in the message and refer to the `user` object.
-For convenience, we'll be storing all the data in the messages object for now. We will be using the `ListView` in this component. The first thing we will need to do is convert our array of messages into an array of unique conversations. We then pass this conversation array (with the first message of each conversation) to our `ListView` as its `DataSource`. Let's look at the constructor for `MessagesView`
+Next let's fill in our Messages View. We'll be using our fixtures file with `FakeConversations` for now. One thing you'll notice is that these conversations depend on matching a `userId` with an actual user for rendering information like the username, etc. By the way, we're using fake messages from [www.hipsteripsum.co](www.hipsteripsum.co). I find it to be more fun to work with than the traditional Latin lorem ipsum.
+
+We will be using the `ListView` in this component. We pass our array of conversations to our `ListView` as its `DataSource`. Let's look at the constructor for `MessagesView`
 
 ```javascript
 ...
-// import messages from fixture file
-import { messages } from '../../fixtures/fixtures';
-import _ from 'underscore';
+import React, { Component } from 'react';
+import { View, Text, Image, TouchableOpacity, ListView } from 'react-native';
+import moment from 'moment';
+import Icon from 'react-native-vector-icons/Ionicons';
+import NavigationBar from 'react-native-navbar';
+import { find } from 'underscore';
 
-export default class MessagesView extends Component{
-  constructor(props){
-    super(props);
-    let conversations = {};
-    // store each message under a conversation key
-    messages.forEach((msg) => {
-      let key = msg.participants.sort().join('-');
-      if (conversations[key]) { conversations[key].push(msg); }
-      else { conversations[key] = [msg]; }
-    });
-    let dataBlob = _.keys(conversations)
-                      .map((key) => conversations[key]);
-    // take the first message from each conversation
-    this.state = {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 != r2
-      })
-      .cloneWithRows(dataBlob)
-    };
+import Colors from '../../styles/colors';
+import { FakeConversations, FakeUsers, currentUser } from '../../fixtures';
+import { globals, messagesStyles } from '../../styles';
+
+const styles = messagesStyles;
+
+class Conversations extends Component{
+  constructor(){
+    super();
+    this._renderRow = this._renderRow.bind(this);
+    this.dataSource = this.dataSource.bind(this);
   }
-...
-}
 
-```
-
-Now that we have our data, here's what the rest of the component looks like. By the way, we're using fake messages from [www.hipsteripsum.co](www.hipsteripsum.co). I find it to be more fun to work with than the traditional Latin lorem ipsum.
-
-```javascript
-  _renderRow(rowData){
-    console.log('ROW DATA', rowData);
+  _renderRow(conversation){
     return (
-      <Text>{rowData[0].senderName}: {rowData[0].text}</Text>
+      <Text>{conversation.lastMessageText}</Text>
+    )
+  }
+  dataSource(){
+    return (
+      new ListView.DataSource({
+        rowHasChanged: (r1,r2) => r1 != r2
+      })
+      .cloneWithRows(FakeConversations)
     );
   }
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={globals.flexContainer}>
         <NavigationBar
           title={{ title: 'Messages', tintColor: 'white' }}
           tintColor={Colors.brandPrimary}
         />
         <ListView
-          dataSource={this.state.dataSource}
+          dataSource={this.dataSource()}
           contentInset={{ bottom: 49 }}
-          automaticallyAdjustContentInsets={false}
-          ref='messagesList'
-          renderRow={this._renderRow.bind(this)}
+          renderRow={this._renderRow}
         />
       </View>
     );
   }
 };
 
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  h1: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    padding: 20,
-  },
-});
+export default Conversations;
+
 ```
+![screen](Simulator Screen Shot Jul 25, 2016, 7.36.35 AM.png)
 
-![{Messages Fixtures}](/images/chapter-4-basic-tabbar-navigation/messages-fixtures.png "Messages Fixtures")
+Here's what we just did:
 
-Once we've confirmed that the data is being processed into conversations (both through the Chrome console React Native opens for debugging and our Simulator screen), we can refactor the rows into `Conversation` components. Replace the `Text` component in `_renderRow` with ```<Conversation conversation={rowData} />```. We'll also be using `moment` here for time/date formatting:
+- imported necessary components from React and React Native, as usual
+- import our `globals` and `messagesStyles` style objects, as well as our `Colors` variables
+- import `FakeConversations`, along with `FakeUsers` and `currentUser` from our fixtures file
+- render a ListView with the following fields:
+  - dataSource: this is the data that the ListView renders. In it's most simple format, this can be an array of data that is converted into a `ListView.DataSource`. Later on, we'll see more examples with headers, etc.
+  - contentInset: this is the margin for the `ListView`. We added 49 because of the tabbar at the bottom
+  - renderRow: this function returns the UI for each row
+- render a simple `<Text/>` element for each row with the last message
+
+Now we can fill in our `renderRow` function with some style.
+
 
 ```javascript
-
-import _ from 'underscore';
-import Colors from '../../styles/colors';
-import moment from 'moment';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { currentUser, FAKE_USERS } from '../../fixtures/fixtures';
-
-import React, {
-  Component,
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
-
-let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-
-export default class Conversation extends Component{
-  render(){
-    let { conversation } = this.props;
-    let msg = conversation[0].text;
-    let date = new Date(conversation[0].createdAt);
-    let user = _.find(FAKE_USERS, (usr) => {
-      return (
-        _.contains(conversation[0].participants, usr.id) &&
-        usr.id != currentUser.id
-      )
-    });
+...
+ _renderRow(conversation){
+    let otherUserID = find([conversation.user1Id, conversation.user2Id], (id) => id !== currentUser.id);
+    let user = find(FakeUsers, ({ id }) => id === otherUserID);
     return (
-      <TouchableOpacity style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <Image style={styles.profile} source={{uri: user.avatarUrl}}/>
-          <View style={styles.fromContainer}>
-            <View style={styles.container}>
-              <Text style={styles.fromText}>{user.firstName} {user.lastName}</Text>
-              <Text style={styles.sentText}>{moment(date).fromNow()}</Text>
+      <TouchableOpacity style={globals.flexContainer}>
+        <View style={globals.flexRow}>
+          <Image style={globals.avatar} source={{uri: user.avatar}}/>
+          <View style={globals.flex}>
+            <View style={globals.textContainer}>
+              <Text style={styles.h5}>{user.firstName} {user.lastName}</Text>
+              <Text style={styles.h6}>{moment(conversation.lastMessageDate).fromNow()}</Text>
             </View>
-            <Text style={styles.messageText}>{msg.substring(0, 40)}...</Text>
+            <Text style={styles.h4}>{conversation.lastMessageText.substring(0, 40)}...</Text>
           </View>
-          <View style={styles.iconHolder}>
+          <View style={styles.arrowContainer}>
             <Icon size={30} name="ios-arrow-forward" color={Colors.bodyTextLight}/>
           </View>
         </View>
-        <View style={styles.center}>
-          <View style={styles.border}/>
-        </View>
+        <View style={styles.divider}/>
       </TouchableOpacity>
-    );
+    )
   }
-};
+...
+```
+![screen](Simulator Screen Shot Jul 25, 2016, 7.37.48 AM.png)
 
-let styles = StyleSheet.create({
-  container:{
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  profile:{
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginHorizontal: 10,
-    marginVertical: 10,
-  },
-  fromContainer:{
-    justifyContent: 'center',
-    marginLeft: 10,
-    flex: 1,
-  },
-  fromText:{
-    fontSize: 12,
-    fontWeight: '700'
-  },
-  sentText:{
-    fontSize: 12,
-    fontWeight: '300',
-    color: Colors.bodyTextGray,
-    marginLeft: 10,
-    fontWeight: '300',
-    marginLeft: 10
-  },
-  iconHolder: {
-    flex: 0.5,
-    alignItems: 'flex-end',
-    paddingRight: 25,
-  },
-  border: {
-    height: 0,
-    borderBottomWidth: 1,
-    width: deviceWidth * 0.95,
-    borderBottomColor: Colors.inactive,
-  },
-  messageText:{
-    fontSize: 16,
-    color: '#9B9B9B',
-    fontStyle: 'italic',
-    fontWeight: '300',
-  },
-  center: {
-    alignItems: 'center',
-  },
-});
+Although we haven't added any dynamic data to this view, it's still looking pretty good! Here's what we did with our `renderRow` function:
+
+- We use the `currentUser` fixture to find the other user in the conversation, then find that user in our `FakeUsers` array. We use the `find` function from `underscore`, a JavaScript utility package.
+- We wrap our row in a `TouchableOpacity` component, and separate the row into parts: the avatar image, the conversation info, and an icon to route to the conversation
+- We use the `moment` package to format our conversations. We probably ought to sort them by the `lastMessageDate`, but we can do that later
+
+Since we're going to be using the `ListView` component quite a bit, we can refactor the `rowHasChanged` function to a utilities file. Create the folder `application/utilities` and place these contents there in an `index.js` file:
+
+```javascript
+application/utilities/index.js
+export function rowHasChanged(r1, r2){
+  return r1 != r2;
+}
+
 ```
 
-![{Styled Messages View}](/images/chapter-4-basic-tabbar-navigation/styled-messages-view.png "Styled Messages View")
+Now we can simplify our `ListView.DataSource` code somewhat:
+
+```javascript
+...
+import { rowHasChanged } from '../../utilities';
+...
+dataSource(){
+  return (
+    new ListView.DataSource({ rowHasChanged: rowHasChanged }).cloneWithRows(FakeConversations)
+  );
+}
+...
+```
+
 
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 7](https://github.com/buildreactnative/assemblies-tutorial/commit/fc9866ccabbac243960912cc3206db62dec25a97) - "Render messages view with fixture data"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 7](https://github.com/buildreactnative/assemblies-tutorial/tree/839957ac1b0e457c2a1e2267a3d9ee240713953b) - "Render MessagesView with fixture data"
 ***
 
 ## 4.3 Styling the Activity View
@@ -402,119 +336,103 @@ let styles = StyleSheet.create({
 So far we have a tab bar with two views filled in - `ProfileView` and `MessagesView`. Now let's fill in the other view, our `ActivityView." We'll add a heading with our next upcoming event and a map of it's location (hard-coded for now, of course). We'll make this screen more interesting later:
 
 ```javascript
-
-import React, {
-  Component,
-} from 'react';
-
-import {
-  Dimensions,
-  MapView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-
-import NavigationBar from 'react-native-navbar';
-import Colors from '../../styles/colors';
 import moment from 'moment';
-import { notifications, upcomingEvent } from '../../fixtures/fixtures';
+import Icon from 'react-native-vector-icons/Ionicons';
+import NavigationBar from 'react-native-navbar';
+import React, { Component } from 'react';
+import { ScrollView, View, Text, TouchableOpacity, MapView } from 'react-native';
 
-let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+import Colors from '../../styles/colors';
+import { globals, activityStyles } from '../../styles';
+import { upcomingEvent, FakeNotifications } from '../../fixtures';
 
-export default class ActivityView extends Component{
-  _renderScrollView(){
-    const mapRegion = {
-      latitude: upcomingEvent.location.lat,
-      longitude: upcomingEvent.location.lng,
-      latitudeDelta: 0.01,
-      longitudeDelta: 0.01,
-    };
-    return (
-      <ScrollView
-        contentContainerStyle={styles.scrollView}
-        automaticallyAdjustContentInsets={false}
-      >
-        <View>
-          <View style={styles.nextAssemblyContainer}>
-            <Text style={styles.bodyText}>Next Assembly: </Text>
-            <TouchableOpacity>
-              <Text style={styles.eventName}>{upcomingEvent.name}</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.dateText}>{moment(new Date(upcomingEvent.start)).format('dddd MMM Do, h:mm a')}</Text>
+const styles = activityStyles;
+
+const ActivityMap = ({ event }) => {
+  const mapRegion = {
+    latitude: event.location.lat,
+    longitude: event.location.lng,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  };
+  return (
+    <MapView
+      style={globals.map}
+      region={mapRegion}
+      annotations={[{latitude: mapRegion.latitude, longitude: mapRegion.longitude}]}
+    />
+  )
+};
+
+const Notification = ({ notification }) => (
+  <TouchableOpacity style={[globals.flexRow, globals.ph1]}>
+    <View style={globals.flex}>
+      <View style={globals.flexRow}>
+        <View style={styles.circle}/>
+        <View style={[globals.textContainer, globals.pv1]}>
+          <Text style={styles.h4}>New {notification.type}</Text>
         </View>
-        <MapView
-          style={styles.map}
-          region={mapRegion}
-          annotations={[{latitude: mapRegion.latitude, longitude: mapRegion.longitude}]}
-        />
-      </ScrollView>
-    );
-  }
+        <Text style={styles.h5}>{moment(new Date(new Date(notification.createdAt))).fromNow()}</Text>
+      </View>
+      <View style={globals.flex}>
+        <Text style={styles.messageText}>{notification.message}</Text>
+      </View>
+    </View>
+    <View>
+      <Icon name='ios-arrow-forward' color='#777' size={25} />
+    </View>
+  </TouchableOpacity>
+)
+
+class Activity extends Component{
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={globals.flexContainer}>
         <NavigationBar
           title={{ title: 'Activity', tintColor: 'white' }}
           tintColor={Colors.brandPrimary}
         />
-        <View style={styles.container}>
-          {this._renderScrollView()}
-        </View>
+        <ScrollView>
+          <TouchableOpacity>
+            <View style={[globals.flexRow, globals.mb1]}>
+              <Text style={styles.h4}>Next Assembly: </Text>
+              <Text style={globals.primaryText}>{ upcomingEvent.name }</Text>
+            </View>
+            <Text style={[styles.dateText, globals.mb1]}>{moment(new Date(upcomingEvent.start)).format('dddd MMM Do, h:mm a')}</Text>
+          </TouchableOpacity>
+          <ActivityMap event={upcomingEvent}/>
+          <View>
+            <Text style={[styles.h4, globals.mv1]}>Notifications</Text>
+            <View style={globals.divider}/>
+            <View style={globals.flex}>
+              {FakeNotifications.map((n, idx) => (
+                <View key={idx} style={globals.flex}>
+                  <Notification notification={n} />
+                </View>
+              ))}
+              <View style={styles.emptySpace} />
+            </View>
+          </View>
+        </ScrollView>
       </View>
     );
   }
 };
 
-let styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-    paddingBottom: 80,
-  },
-  nextAssemblyContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  eventName: {
-    color: Colors.brandPrimary,
-    fontWeight: '500',
-  },
-  map: {
-		height: (deviceHeight / 3),
-		width: deviceWidth
-	},
-  bodyText: {
-    color: Colors.bodyText,
-		fontSize: 16,
-    fontWeight: '400',
-		paddingHorizontal: 15,
-    paddingVertical: 10,
-  },
-  nextEvent: {
-    color: Colors.bodyTextLight,
-    fontSize: 14,
-    fontWeight: '300',
-    fontStyle: 'italic',
-  },
-  dateText: {
-    fontSize: 14,
-    paddingBottom: 4,
-    fontWeight: '300',
-    fontStyle: 'italic',
-    paddingHorizontal: 15,
-    color: Colors.bodyText,
-  },
-});
+export default Activity;
+
 
 ```
+
+Let's go over what we just did:
+- we imported our normal packages, along with the `FakeNotifications` array and `upcomingEvent` object from our fixtures file
+- We render a top section with data from the upcoming event, then a `MapView` of the next event location, then a list of notifications
+- We refactor both the `MapView` component and the `Notification` component into their own stateless functional components
 
 ![{Basic activity view}](/images/chapter-4-basic-tabbar-navigation/activity-view.png "Basic activity view")
 
 ***
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 8](https://github.com/buildreactnative/assemblies-tutorial/commit/95d72386aa41693a9aff2513e91d7113ad6ee028) - "Basic activity view"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 8](https://github.com/buildreactnative/assemblies-tutorial/tree/be23993f480a585ff3aa99a44bd3abcbb3f06ef5) - "Create a basic ActivityView"
 ***
 
 
