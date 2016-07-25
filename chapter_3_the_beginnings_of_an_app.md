@@ -3,123 +3,283 @@ Mobile apps are comprised of many different parts - navigation, UI components, a
 
 ## Navigator Drama - Which Should I Use?
 
-Since React Native is a budding technology, it is not always as opinionated as other frameworks. For example, we're given three different options for setting up navigation - `NavigatorIOS`,  `Navigator`, and `NavigationExperimental`.
+Since React Native is a budding technology, it is not always as opinionated as other frameworks. For example, we're given three different options for setting up navigation - `NavigatorIOS`,  `Navigator`, and `NavigationExperimental`. Since `NavigationExperimental` is as it is described, experimental, and `NavigatorIOS` is no longer maintained by Facebook, we'll be using `Navigator` for this tutorial. We will, however, look more at `NavigationExperimental` with `Redux` in the later chapters of the guide.
 
-Let's look at the pros and cons of these three options for routing to see which best suits our needs.
 
-### NavigatorIOS
-`NavigatorIOS` offers great performance because the animation displayed as we navigate throughout our app is handled outside of the main JavaScript thread. It features a simple layout and API to support pushing and popping routes off of the stack of views the user accumulates while browsing. `NavigatorIOS` is able to achieve this by very thinly wrapping the native iOS navigation stack in a Javascript component. The downside of this superficial implementation is that it is highly opinionated, tied very closely to iOS default navigation patterns, and therefore less configurable. It can be appropriate for simple apps or when customization isn't needed. It also is not actively maintained by the core React Native team at Facebook.
+### Why Navigator?
+`Navigator`, unlike `NavigatorIOS`, is highly customizable. It has options for different sliding and fading transitions, and is completely neutral in regards to UI. The only downside is that navigation animations run on the JavaScript thread, and this can cause performance lags. We'll show how to tweak the navigation code in order to keep our app running smoothly.
 
-### Navigator
-`Navigator`, on the other hand, is highly customizable. It has options for different sliding and fading transitions, and is completely neutral in regards to UI. The main downside is that the animation runs on the JavaScript thread, and so, this can cause performance lags. In order to keep our app running smoothly, we'll need to add some tweaks to the navigation code.
 
-### NavigationExperimental
+### A Simple Example
 
-`NavigationExperimental` was introduced to offer a single-state approach to navigation. This is because many development teams use the library `redux` to manage their application state. However, learning `redux` with React and React Native can be overwhelming, so we will be sticking with `Navigator`.
+Now we're ready to start writing some components! First, let's set up our file directory structure. Create a folder at the root level called `application`, and within that, a folder called `components` and a folder called `styles`. Within `styles` create the two files  `index.js` and `colors.js`, and within `components` create the files `Dashboard.js` and `Landing.js`. Your folder tree should look something like this.
 
-Even though `Navigator` and `NavigatorExperimental` are flexible for complex apps, `NavigatorIOS` can be very useful in simple applications. In order to get a feel for NavigatorIOS, let's implement it in a simple two-route app. If you have experience with `NavigatorIOS` or are not interested in seeing what it has to offer, you can skip to the next commit.
+```
+android
+application
+  - components
+    - Dashboard.js
+    - Landing.js
+  - styles
+    - colors.js
+    - index.js
+```
 
-## 3.1 Using NavigatorIOS - a Simple Example
+In `application/styles/index.js` we will copy/paste all of our styles and in `application/styles/colors.js`, all of our colors. While we will have a chapter later on how to style and design your app in React Native, it will make the code samples much simpler if we can simply import our styles from a single file. This also makes our design code more modular. 
 
-Now we're ready to start writing some components! First, let's set up our file directory structure. Create a folder at the root level called `application`, and within that, a folder called `components`. There we will create two `.js` files, `Landing.js` and `Dashboard.js`.
+Copy/paste the contents at [this gist](https://gist.github.com/tgoldenberg/5e2f7be3d3f4f97302e2d7545063b3c9) and paste them in `application/styles/index.js`.
 
-Let's build our Landing component -
+Now copy/paste the contents at [this gist](https://gist.github.com/tgoldenberg/b024fd60ad6fab148bdcd2b039eac5c9) and past them in `application/styles/colors.js`.
+
+Before we build our first component, a warning that we will be using ES6 syntax. If you're unfamiliar with using features such as `import`, `{}` destructuring, the `...` spread operator, and the `=>` fat arrow function syntax, we recommending first completing the ES6 chapter in the appendix. Here are some other resources to get you up to speed: 
+
+- [Tutorial by Mantra](https://tutor.mantrajs.com/say-hello-to-ES2015/introduction)
+- [learnharmony.org](http://learnharmony.org/)
+- [Video by Sencha](https://www.youtube.com/watch?v=Z7yS28I5ci4)
+
+Since `Navigator` is not opinionated in terms of UI, we will need to `npm install` the following packages
+  - `react-native-vector-icons`
+  - `react-native-navbar`
+
+We'll also need to link the icon package to XCode with `rnpm`. First install `rnpm` globally
+
+```
+npm install -g rnpm
+```
+Then link the packages with `rnpm link`. You should get a success message.
+
+![](Screen Shot 2016-07-24 at 8.33.37 PM.png)
+
+Once those packages are linked we can build our Landing component -
+
+```javascript
+application/components/Landings.js
+
+import React, { Component } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import NavigationBar from 'react-native-navbar';
+
+import Colors from '../styles/colors';
+import { globals } from '../styles';
+
+class Landing extends Component{
+  constructor(){
+    super();
+    this.visitDashboard = this.visitDashboard.bind(this);
+  }
+  visitDashboard(){
+    this.props.navigator.push({
+      name: 'Dashboard'
+    });
+  }
+  render(){
+    return (
+      <View style={globals.flexContainer}>
+        <NavigationBar
+          title={{title: 'Landing', tintColor: 'white'}}
+          tintColor={Colors.brandPrimary}
+        />
+        <View style={globals.flexCenter}>
+          <Text style={globals.h2}>This is the Landing Page</Text>
+          <TouchableOpacity onPress={this.visitDashboard}>
+            <Text>Go to the Dashboard</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+}
+
+export default Landing;
+
+```
+
+Let's go over what's going on in this component.
+
+- we import the necessary components from `react` and `react-native` for building our component
+- we import our `globals` styles object, as well as the `NavigationBar` and `Icon` components from our recently installed `npm` packages
+- we bind our class methods in the `constructor` function. We need to bind them so that the value of `this` that corresponds to the class instance itself persists
+- we define our `visitLanding` method, which routes the `Navigator` to the `Landing` component
+- we render our content with the `render` method
+
+To view our content now, we can simply `import` the component in `index.ios.js` and render it.
+
+```javascript
+index.ios.js
+
+import React, { Component } from 'react';
+import {
+  AppRegistry,
+  Navigator
+} from 'react-native';
+
+import Landing from './application/components/Landing';
+
+class assembliesTutorial extends Component {
+  render() {
+    return (
+      <Landing />
+    );
+  }
+}
+
+AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
+
+```
+
+You should see something similar to this in the Simulator:
+![screen](Simulator Screen Shot Jul 24, 2016, 8.58.30 PM.png)
+
+
+
+Now, we can't go to the `Dashboard` component just yet. When we press the `Go to the Dashboard` button, we then get an error `Cannot read property 'push' of undefined`.
+
+This means that we haven't defined our `Navigator` yet. Let's add that in `index.ios.js` and then reload.
 
 ```javascript
 import React, { Component } from 'react';
-
 import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
+  AppRegistry,
+  Navigator
 } from 'react-native';
 
-import Dashboard from './Dashboard';
+import Landing from './application/components/Landing';
+import { globals } from './application/styles';
 
-export default class Landing extends Component{
-  render(){
+class assembliesTutorial extends Component {
+  render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.h1}>This is Landing</Text>
-        <TouchableOpacity onPress={() => {
-          this.props.navigator.push({
-            title: 'Dashboard',
-            component: Dashboard,
-          });
-        }}>
-          <Text>Go to Dashboard</Text>
-        </TouchableOpacity>
-      </View>
+      <Navigator
+        style={globals.flex}
+        initialRoute={{ name: 'Landing' }}
+        renderScene={(route, navigator) => {
+          switch(route.name){
+            case 'Landing':
+              return (
+                <Landing navigator={navigator}/>
+            );
+          }
+        }}
+      />
     );
   }
-};
+}
 
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  h1: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    padding: 20,
-  },
-});
+AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
+
 ```
 
-And our Dashboard component (with the same styles)-
+Alright, what's going on here?
+
+- We render our `Navigator`, which currently has 3 properties - `style`, `initialRoute`, and `renderScene`
+- `initialRoute` is exactly what is sounds like - the first component we want to render when our app starts. We define this route with an object with the name of our first route.
+- `renderScene` is a function which expects a component to be returned. We render the appropriate component depending on the name of the route. To achieve this, we use JavaScript's `switch/case` syntax.
+
+With all that, we should now see the same component. However, we get a different result when we try to press the same button. This time, a blank screen appears. This is because we haven't defined our `Dashboard.js` component, nor included a route for it in the `Navigator`. Let's modify our `Navigator` first.
+
+```javascript
+index.ios.js
+
+import React, { Component } from 'react';
+import {
+  AppRegistry,
+  Navigator
+} from 'react-native';
+
+import Landing from './application/components/Landing';
+import Dashboard from './application/components/Dashboard';
+import { globals } from './application/styles';
+
+class assembliesTutorial extends Component {
+  render() {
+    return (
+      <Navigator
+        style={globals.flex}
+        initialRoute={{ name: 'Landing' }}
+        renderScene={(route, navigator) => {
+          switch(route.name){
+            case 'Landing':
+              return (
+                <Landing navigator={navigator}/>
+            );
+            case 'Dashboard':
+              return (
+                <Dashboard navigator={navigator}/>
+            );
+          }
+        }}
+      />
+    );
+  }
+}
+
+AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
+
+```
+
+Next let's define our `Dashboard` component in `application/components/Dashboard.js`.
 
 ```javascript
 import React, { Component } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import NavigationBar from 'react-native-navbar';
 
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import Colors from '../styles/colors';
+import { globals } from '../styles';
 
-import Landing from './Landing';
+const BackButton = ({ handlePress }) => (
+  <TouchableOpacity onPress={handlePress} style={globals.pa1}>
+    <Icon name='ios-arrow-back' size={25} color='white' />
+  </TouchableOpacity>
+);
 
-export default class Dashboard extends Component{
+class Dashboard extends Component{
+  constructor(){
+    super();
+    this.goBack = this.goBack.bind(this);
+    this.visitLanding = this.visitLanding.bind(this);
+  }
+  visitLanding(){
+    this.props.navigator.push({
+      name: 'Landing'
+    });
+  }
+  goBack(){
+    this.props.navigator.pop();
+  }
   render(){
     return (
-      <View style={styles.container}>
-        <Text style={styles.h1}>This is Dashboard</Text>
-        <TouchableOpacity onPress={() => {
-          this.props.navigator.push({
-            title: 'Landing',
-            component: Landing,
-          });
-        }}>
-          <Text >Go to Landing</Text>
-        </TouchableOpacity>
+      <View style={globals.flexContainer}>
+        <NavigationBar
+          title={{title: 'Dashboard', tintColor: 'white'}}
+          tintColor={Colors.brandPrimary}
+          leftButton={<BackButton handlePress={this.goBack}/>}
+        />
+        <View style={globals.flexCenter}>
+          <Text style={globals.h2}>This is the Dashbaord</Text>
+          <TouchableOpacity onPress={this.visitLanding}>
+            <Text>Go to the Landing Page</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    );
+    )
   }
-};
+}
 
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  h1: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    padding: 20,
-  },
-});
+export default Dashboard;
 ```
 
-Whoa, that was a lot of code! Let's take a minute and look at what we did piece by piece.
+Notice a few things:
+- We add a `leftButton` property to the `NavigationBar`. This is the back icon that renders in the top left part of our screen. We define our `BackButton` component at the top of the file, using React's stripped-down functional stateless component syntax.
+- When we press the `Go to the Dashboard` button, we pass in a new object to our `Navigator` with the name of our new component (in our case, 'Dashboard'). Our `Navigator` understands this and delivers us to the correct component
 
-We're using Javascript's ES2015 syntax throughout to wire up our views. We start by importing the dependencies of each of our components, which will always include the `import React from 'react-native;'` statement. We also pull in any components we directly reference, like `./Dashboard` or `./Landing` in this case.
+Now you should be able to go back and forth between the `Landing` and `Dashboard` screens.
 
-Next, we declare any React Native components we'll need in our component. We'll always need `Component`, but you can find a list of available components in the [React Native docs](https://facebook.github.io/react-native/docs/getting-started.html).
+![screen](Simulator Screen Shot Jul 24, 2016, 9.10.59 PM.png)
+
+Let's talk a bit about the components we have been using and the approach we are taking.
 
 Think of `View` like `<div>` in the world of React for Web - it's the basic container for our component and something the packager can bundle and send to the view.
 
@@ -127,217 +287,13 @@ Think of `View` like `<div>` in the world of React for Web - it's the basic cont
 
 As we mock up our view, you can see this is just fairly familiar JSX syntax, pretty much XML with a few tweaks.
 
-Specifically, pay attention to how we style our components. We're declaring our styles with Javascript in camel case, referencing keys of a `styles` object we declare and define below. Generally, these styles work pretty closely to CSS, and use flexbox to define containers and layouts. If you're not too familiar with how flexbox works (perhaps you've spent too much time making things backwards compatible for Internet Explorer), we highlight recommend you check out the excellent guide over at [CSS Tricks](https://css-tricks.com/snippets/css/a-guide-to-flexbox/).
+If you examing the `globals` style object in `application/styles/index.js`, you'll see that we are declaring our styles with Javascript in `CamelCase`, referencing keys of a `styles` object we declare and define below. Generally, these styles work pretty closely to CSS, and use flexbox to define containers and layouts. If you're not too familiar with how flexbox works (perhaps you've spent too much time making things backwards compatible for Internet Explorer), we highlight recommend you check out the excellent guide over at [CSS Tricks](https://css-tricks.com/snippets/css/a-guide-to-flexbox/).
 
 *Note: One of the first 'gotchas' to avoid when working with flexbox is making sure you set `flex: 1` on your top-level components so they actually fill the view, otherwise you'll be very confused and frustrated when your app looks completely blank*
 
-Don't worry, we'll cover flexbox and styling in React Native in far more detail as we go.
-
-Now that we have some components, let's connect them in our `index.ios.js` file -
-
-
-```javascript
-import React, { Component } from 'react';
-
-import {
-  AppRegistry,
-  NavigatorIOS,
-  StyleSheet,
-} from 'react-native';
-
-import Landing from './application/components/Landing';
-
-class assembliesTutorial extends Component{
-  render(){
-    return (
-      <NavigatorIOS
-        style={{flex: 1}}
-        barTintColor='#3A7BD2'
-        titleTextColor='white'
-        tintColor='white'
-        shadowHidden={true}
-        translucent={false}
-        initialRoute={{
-          component: Landing,
-          title: 'Landing',
-        }}
-      />
-    );
-  }
-};
-
-AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
-```
-
-This should look pretty familiar, as we're doing many of the same things as in our two previous components. Here we import our dependencies, as well as declare what we need from React Native. Here, `AppRegistry` is simply the global container that will house our app at the top level.
-
-We set up `NavigatorIOS` by giving it it our initial route `Landing`, or the first view that will live at the bottom of our route stack. We then set a few basic options for styling, which you can find in the [React Native docs](https://facebook.github.io/react-native/docs/navigatorios.html#content).
-
-Once we save our code, we should see our two-view app rendered in the iOS Simulator:
-
-![Simple NavigatorIOS Example](/images/chapter-3-the-beginnings-of-an-app/simple-navigatorios-example.png "Simple NavigatorIOS Example")
+Don't worry, we'll cover flexbox and styling in React Native in far more detail as we go. We've provided all the styles you need for this tutorial so you can get familiar with the basics before having to worry too much about styling.
 
 Take a minute and play with the views, switching back and forth between them. Right out of the gate you can see how much smoother things are than any hybrid app you've ever tried.
-
-If you app is going to be iOS-only (as the name implies, `NavigatorIOS` only works on iOS) and only really involves simple navigation through a few views, by all means, use NavigatorIOS.
-
-We used `NavigatorIOS` for our first app ([Bhagavad Gita](https://itunes.apple.com/us/app/bhagavad-gita-app/id1065731220?mt=8)) partly because we didn't yet know how to handle the animations for Navigator, but also because it had limited navigation needs.
-
-Not to worry - we'll make sure that you don't have that situation. Let's make a commit before moving to `Navigator`.
-
-Let's commit that code now:
-
-****
-![GitHub logo](/images/github-logo.png "GitHub logo")
-[Commit 1](https://github.com/buildreactnative/assemblies-tutorial/commit/389e3c50df563a94a85c6d6a5054b62a232b4f1c) - Simple NavigatorIOS example
-****
-
-
-## 3.2 Navigator - A World of Opportunity
-
-Now we'll take our implementation with `NavigatorIOS` and switch it to `Navigator`. You'll notice some differences. For one, `Navigator` doesn't have any interface components out of the box. That's why we'll be using the `react-native-navbar` package by [@kureev](https://github.com/Kureev). We'll also want to install the `react-native-vector-icons` package by [@oblador](https://github.com/oblador) to use cool icons in our navbar. Let's also throw in `underscore` for use later in the tutorial. Type the following in the terminal
-
-```npm install --save react-native-navbar react-native-vector-icons underscore```
-
-This will install the packages to our `node_modules` folder. Now, one issue that React Native developers often face is linking npm libraries to Xcode. Most packages have instructions on how to do this the long way. Fortunately, there is a newer package, `rnpm`, which handles the linking process for us. Just install it with `npm install -g rnpm`, and then run `rnpm link` to link the libraries we installed.
-
-Now we can swap out `NavigatorIOS` for `Navigator` in our `index.ios.js` file. In `Navigator`, we must provide an initial route and a `renderScene` function which acts as a `switch()` statement for all of our main routes. Let's set up the `Navigator` for our two previous components, `Dashboard` and `Landing`.
-
-```javascript
-...
-import Dashboard from './application/components/Dashboard';
-
-
-class assembliesTutorial extends Component{
-  render(){
-    console.log(Navigator.SceneConfigs)
-    return (
-      <Navigator
-        initialRoute={{name: 'Landing', index: 0}}
-        renderScene={(route, navigator) => {
-          switch(route.name){
-            case 'Landing':
-              return <Landing navigator={navigator} />
-              break;
-            case 'Dashboard':
-              return <Dashboard navigator={navigator} />
-              break;
-          }
-        }}
-        configureScene={() => Navigator.SceneConfigs.PushFromRight}
-      />
-    )
-  }
-}
-...
-```
-
-Notice that the `configureScene` option defines which type of animation our navigation uses to transition between scenes. Feel free to experiment and try other configurations, such as `FloatFromLeft`, `HorizontalSwipeJump`, and `VerticalUpSwipeJump`.
-
-Next we redesign our 2 screens so that they route to each other and also include our navbar with a back icon. Let's look at `Landing.js`
-
-```javascript
-...
-
-import NavigationBar from 'react-native-navbar';
-
-export default class Landing extends Component{
-  render(){
-    return (
-      <View style={styles.outerContainer}>
-        <NavigationBar
-          title={{title: 'Landing', tintColor: 'white'}}
-          tintColor='#3A7BD2'
-        />
-        <View style={styles.container}>
-          <Text style={styles.h1}>This is the Landing</Text>
-          <TouchableOpacity onPress={() => {
-            this.props.navigator.push({
-              name: 'Dashboard'
-            });
-          }}>
-            <Text>Go to Dashboard</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
-};
-
-let styles = StyleSheet.create({
-  outerContainer: {
-    flex: 1,
-    backgroundColor: 'white'
-  },
- ...
-```
-
-That should give us our first screen with the navigation bar. If there are errors compiling, it may be that you did not re-build the app after the command `rnpm link`. If so, try pressing the "stop"  button on Xcode and restarting.
-
-For the `Dashboard` component, we'll add an icon on the left of the navbar to `pop()` to the previous route.
-
-```javascript
-import React, {
-  Component,
-} from 'react';
-
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-
-import NavigationBar from 'react-native-navbar';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Landing from './Landing';
-
-export default class Dashboard extends Component{
-  _renderBackButton(){
-    return (
-      <TouchableOpacity
-        onPress={() => this.props.navigator.pop()}
-        style={styles.backBtn}>
-        <Icon name='ios-arrow-back' size={25} color='white' />
-      </TouchableOpacity>
-    )
-  }
-  render(){
-    return (
-      <View style={styles.outerContainer}>
-        <NavigationBar
-          title={{title: 'Dashboard', tintColor: 'white'}}
-          tintColor='#3A7BD2'
-          leftButton={this._renderBackButton()}
-        />
-        <View style={styles.container}>
-          <Text style={styles.h1}>This is Dashboard</Text>
-          <TouchableOpacity onPress={() => {
-              this.props.navigator.push({
-                name: 'Landing'
-              })
-            }}>
-            <Text>Go to Landing</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    )
-  }
-};
-
-let styles = StyleSheet.create({
-  outerContainer: {
-    flex: 1,
-    backgroundColor: 'white'
-  },
-  backBtn: {
-    paddingTop: 10,
-    paddingHorizontal: 20,
-  },
-  ...
-```
-
-![Empty Navigator](/images/chapter-3-the-beginnings-of-an-app/empty-navigator.png "Empty Navigator")
 
 As you can see, the nice thing about `Navigator` is that we can customize how our screen looks at any given time. We can create a navbar with `react-native-navbar` and customize it with icons, or we can set up navigation in a different way. It's worth looking at the different options before deciding what's right for your app.
 
