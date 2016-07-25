@@ -121,7 +121,7 @@ Here's what we have so far, after creating `MessagesView` and `ProfileView`. Let
 
 ***
 
-[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 5](https://github.com/buildreactnative/assemblies-tutorial/commit/b1d0b93f103e8cf0a23a856c4a04d43787f786c0) - "Empty TabBar views"
+[![GitHub logo](/images/github-logo.png "GitHub logo") Commit 5](https://github.com/buildreactnative/assemblies-tutorial/tree/19afd0331e19182106243827d05818779b8015a0) - "Create empty TabBar views"
 
 ***
 
