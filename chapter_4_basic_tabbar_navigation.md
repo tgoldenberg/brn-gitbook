@@ -116,7 +116,8 @@ export default ActivityView;
 
 Here's what we have so far, after creating `MessagesView` and `ProfileView`. Let's make a commit at this point.
 
-![screen](Simulator Screen Shot Jul 24, 2016, 11.28.37 PM.png)
+![screen](Simulator Screen Shot Jul 24, 2016, 11.53.24 PM.png)
+
 
 
 ***
