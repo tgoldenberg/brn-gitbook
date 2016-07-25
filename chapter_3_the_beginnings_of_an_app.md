@@ -1,7 +1,7 @@
 Mobile apps are comprised of many different parts - navigation, UI components, animations, integrating an external API, etc. We'll be looking first at navigation, which is how we tie different parts of the app together.
 
 
-## Navigator Drama - Which Should I Use?
+## 3.1 Navigator Drama - Which Should I Use?
 
 Since React Native is a budding technology, it is not always as opinionated as other frameworks. For example, we're given three different options for setting up navigation - `NavigatorIOS`,  `Navigator`, and `NavigationExperimental`. Since `NavigationExperimental` is as it is described, experimental, and `NavigatorIOS` is no longer maintained by Facebook, we'll be using `Navigator` for this tutorial. We will, however, look more at `NavigationExperimental` with `Redux` in the later chapters of the guide.
 
@@ -10,7 +10,7 @@ Since React Native is a budding technology, it is not always as opinionated as o
 `Navigator`, unlike `NavigatorIOS`, is highly customizable. It has options for different sliding and fading transitions, and is completely neutral in regards to UI. The only downside is that navigation animations run on the JavaScript thread, and this can cause performance lags. We'll show how to tweak the navigation code in order to keep our app running smoothly.
 
 
-### A Simple Example
+## 3.2 A Simple Example
 
 Now we're ready to start writing some components! First, let's set up our file directory structure. Create a folder at the root level called `application`, and within that, a folder called `components` and a folder called `styles`. Within `styles` create the two files  `index.js` and `colors.js`, and within `components` create the files `Dashboard.js` and `Landing.js`. Your folder tree should look something like this.
 
@@ -322,11 +322,15 @@ The interesting thing about TabBar navigation is that to accomplish it, you ofte
 
 I've gone ahead and wired up a few tabs. In all, there will be five tabs, but for now, I'll start with a Profile view, a Dashboard view, and a Messages view.
 
+### Using Fake Data to Prototype
+
 Now that we're about to build out the app, there are a couple of things I want to clarify:
 
 *Why are we starting out with fake data?*
 
 This is something were are strong believers in. Fake it and then make it. The wireframing process helps to funnel the idea of the product into a visual representation. A developer's job is to translate that into an actual product. It's very easy to focus on the programming problems like integration with a backend system and server, scalability, and so on. However, most often, the best thing to do at this point is to make a fake product. This helps get the UI components of the product in place so that you can think of the data integration later. This is the process we use and find it works extremely well. That said, different things work for different people, so sue the method that works for you on your own projects.
+
+### Should We Be Using Redux?
 
 *Will you be using an architecture like Flux or Redux to manage state between components?*
 
@@ -380,6 +384,7 @@ class Landing extends Component{
 export default Landing;
 
 ```
+![screen](Simulator Screen Shot Jul 24, 2016, 9.46.18 PM.png)
 
 If you were to download the images and places them under `application/assets/images`, here's how your `Image` elements would look.
 
@@ -401,5 +406,5 @@ Time for another commit to close out this chapter on setting up navigation:
 
 ***
 ![GitHub logo](/images/github-logo.png "GitHub logo")
-[Commit 3](https://github.com/buildreactnative/assemblies-tutorial/commit/240f554e76704d9e6cbde0a6b7bec37281dd8972) - Flesh out landing page
+[Commit 3](https://github.com/buildreactnative/assemblies-tutorial/tree/ea505fc5f296a38f723ae05fedec3d46b5c0a584) - "Flesh out Landing screen"
 ***
