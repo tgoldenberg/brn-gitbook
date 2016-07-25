@@ -127,7 +127,7 @@ Here's what we have so far, after creating `MessagesView` and `ProfileView`. Let
 
 ## Styling the Profile View
 
-Let's build out the tab screens. We'll be using fixtures for this. Add [this gist](https://gist.github.com/tgoldenberg/ef3dc76063ca68ecab09840f6b3eb5ab) as a file in `application/fixtures/fixtures.js`. Let's use this fixtures file to build out our `ProfileView` component.
+Let's build out the tab screens. We'll be using fixtures for this. Add [this gist](https://gist.github.com/tgoldenberg/6e7682d958edabea90616a1706e30af7) as a file in `application/fixtures/index.js`. Let's use this fixtures file to build out our `ProfileView` component.
 
 ```javascript
 import NavigationBar from 'react-native-navbar';
