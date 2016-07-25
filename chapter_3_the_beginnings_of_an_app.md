@@ -311,7 +311,7 @@ Note: If you are interested in using `NavigationExperimental`, please refer to t
 
 ***
 ![GitHub logo](/images/github-logo.png "GitHub logo")
-[Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/630635abda872078ea89937952f91f7cb95e7617) - Create basic navigation with Navigator
+[Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/630635abda872078ea89937952f91f7cb95e7617) - "Create basic navigation with Navigator"
 ***
 
 ## 3.3 Fleshing out the App
