@@ -131,7 +131,7 @@ AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
 You should see something similar to this in the Simulator:
 ![screen](Simulator Screen Shot Jul 24, 2016, 8.58.30 PM.png)
 
-
+### Adding Routing
 
 Now, we can't go to the `Dashboard` component just yet. When we press the `Go to the Dashboard` button, we then get an error `Cannot read property 'push' of undefined`.
 
@@ -177,6 +177,8 @@ Alright, what's going on here?
 - `renderScene` is a function which expects a component to be returned. We render the appropriate component depending on the name of the route. To achieve this, we use JavaScript's `switch/case` syntax.
 
 With all that, we should now see the same component. However, we get a different result when we try to press the same button. This time, a blank screen appears. This is because we haven't defined our `Dashboard.js` component, nor included a route for it in the `Navigator`. Let's modify our `Navigator` first.
+
+### Pushing and Popping Routes
 
 ```javascript
 index.ios.js
@@ -279,6 +281,8 @@ Now you should be able to go back and forth between the `Landing` and `Dashboard
 
 ![screen](Simulator Screen Shot Jul 24, 2016, 9.10.59 PM.png)
 
+### Overview of Components Used
+
 Let's talk a bit about the components we have been using and the approach we are taking.
 
 Think of `View` like `<div>` in the world of React for Web - it's the basic container for our component and something the packager can bundle and send to the view.
@@ -287,11 +291,15 @@ Think of `View` like `<div>` in the world of React for Web - it's the basic cont
 
 As we mock up our view, you can see this is just fairly familiar JSX syntax, pretty much XML with a few tweaks.
 
+### JavaScript Styles
+
 If you examing the `globals` style object in `application/styles/index.js`, you'll see that we are declaring our styles with Javascript in `CamelCase`, referencing keys of a `styles` object we declare and define below. Generally, these styles work pretty closely to CSS, and use flexbox to define containers and layouts. If you're not too familiar with how flexbox works (perhaps you've spent too much time making things backwards compatible for Internet Explorer), we highlight recommend you check out the excellent guide over at [CSS Tricks](https://css-tricks.com/snippets/css/a-guide-to-flexbox/).
 
 *Note: One of the first 'gotchas' to avoid when working with flexbox is making sure you set `flex: 1` on your top-level components so they actually fill the view, otherwise you'll be very confused and frustrated when your app looks completely blank*
 
 Don't worry, we'll cover flexbox and styling in React Native in far more detail as we go. We've provided all the styles you need for this tutorial so you can get familiar with the basics before having to worry too much about styling.
+
+### Isn't that nice?
 
 Take a minute and play with the views, switching back and forth between them. Right out of the gate you can see how much smoother things are than any hybrid app you've ever tried.
 
@@ -303,7 +311,7 @@ Note: If you are interested in using `NavigationExperimental`, please refer to t
 
 ***
 ![GitHub logo](/images/github-logo.png "GitHub logo")
-[Commit 2](https://github.com/buildreactnative/assemblies-tutorial/commit/fdf4cdb9b8b53b54006ef52b91ba3ba8b82cf7dd) - Create basic navigation with Navigator
+[Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/630635abda872078ea89937952f91f7cb95e7617) - Create basic navigation with Navigator
 ***
 
 ## 3.3 Fleshing out the App
