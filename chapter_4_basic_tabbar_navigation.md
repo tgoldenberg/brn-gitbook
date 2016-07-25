@@ -4,39 +4,47 @@ Last chapter we left off with the start of our project -- a working `Navigator` 
 
 Let's start by making three tabs - Dashboard, Messages, and Profile. We'll then fill out the screens with fake data. First replace the contents of `application/components/Dashboard.js` with the code below. Notice that we use the `react-native-vector-icons` package to customize our tab bar.
 
+Before we replace `Dashboard.js`, let's take our `BackButton` component and give it it's own file, under `application/shared/BackButton.js`.
+
 ```javascript
-import React, {
-  Component,
-} from 'react';
+import React from 'react';
+import { TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { globals } from '../styles';
 
-import {
-  Dimensions,
-  StyleSheet,
-  TabBarIOS,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+const BackButton = ({ handlePress }) => (
+  <TouchableOpacity onPress={handlePress} style={globals.pa1}>
+    <Icon name='ios-arrow-back' size={25} color='white' />
+  </TouchableOpacity>
+);
 
-import Icon, {TabBarItemIOS} from 'react-native-vector-icons/Ionicons';
-import ProfileView from './profile/ProfileView';
-import MessagesView from './messages/MessagesView';
+export default BackButton;
+
+```
+
+Here's our new `Dashboard.js`:
+
+```javascript
+import React, { Component } from 'react';
+import { TabBarIOS } from 'react-native';
+import { TabBarItemIOS } from 'react-native-vector-icons/Ionicons';
+
 import ActivityView from './activity/ActivityView';
+import MessagesView from './messages/MessagesView';
+import ProfileView from './profile/ProfileView';
 
-export default class Dashboard extends Component{
-  constructor(props){
-    super(props);
+class Dashboard extends Component{
+  constructor(){
+    super();
     this.state = {
-      selectedTab: 'Activity',
-    };
-  }
-  render() {
-    let { selectedTab } = this.state;
+      selectedTab: 'Activity'
+    }
+  render(){
     return (
       <TabBarIOS>
         <TabBarItemIOS
           title='Activity'
-          selected={ selectedTab == 'Activity' }
+          selected={this.state.selectedTab === 'Activity'}
           iconName='ios-pulse'
           onPress={() => this.setState({ selectedTab: 'Activity' })}
         >
@@ -44,7 +52,7 @@ export default class Dashboard extends Component{
         </TabBarItemIOS>
         <TabBarItemIOS
           title='Messages'
-          selected={ selectedTab == 'Messages' }
+          selected={this.state.selectedTab === 'Messages'}
           iconName='ios-chatboxes'
           onPress={() => this.setState({ selectedTab: 'Messages' })}
         >
@@ -52,26 +60,32 @@ export default class Dashboard extends Component{
         </TabBarItemIOS>
         <TabBarItemIOS
           title='Profile'
-          selected={ selectedTab == 'Profile' }
+          selected={this.state.selectedTab === 'Profile'}
           iconName='ios-person'
           onPress={() => this.setState({ selectedTab: 'Profile' })}
         >
           <ProfileView />
         </TabBarItemIOS>
       </TabBarIOS>
-    );
+    )
   }
-};
+}
 
-let styles = StyleSheet.create({
-});
+export default Dashboard;
+
 ```
 
-Basically, we're defining each tab with basic information like it's title, the icon it uses, the component it should render upon selection, and passing in the name of the selected tab to `state`, so we can respond to it if necessary.
+Here's what we just did:
 
-Now we have to create the tab components `ActivityView`, `MessagesView`, and `ProfileView`. Here's the code for `ActivityView`. Simply change the name of the component, the NavigationBar title, and text for the other two components.
+- we define each tab with information such as its title, icon, and the component it should render
+- each time a tab is selected, the value of `this.state.selectedTab` changes, rendering a different component
+- we reference the components `<ActivityView/>`, `<MessagesView/>`, and `<ProfileView/>`, which we still have to define in our project
+
+Let's create the folders `activity`, `messages`, and `profile`, under our `application/components` directory, and create the files `ActivityView.js`, `MessagesView.js`, and `ProfileView.js` under each respectively. Here is the code to `ActivityView.js`. Simple change the name of the component and its title to see the basic `TabBar` functionality.
 
 ```javascript
+application/components/activity/ActivityView.js
+
 import React, {
   Component,
 } from 'react';
