@@ -135,10 +135,10 @@ import Colors from '../../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { currentUser } from '../../fixtures/fixtures';
 
-import React, {
+import React, { Component } from 'react';
+import {
   View,
   Text,
-  Component,
   ScrollView,
   Image,
   StyleSheet,
