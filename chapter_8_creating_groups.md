@@ -433,6 +433,19 @@ Now that we've successfully fetched our data, we need to render it properly. We 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 Let's add this functionality to our Messages view as well. Just edit `application/components/messages/Conversations.js`.
 
 ```javascript
