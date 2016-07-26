@@ -2,7 +2,182 @@
 
 In the last chapter, we built out a messaging feature. We were able to fetch messages related to a group of users and create new messages. Now we’ll focus on adding some new features to our tab-bar navigation – `Groups` and `Calendar`.
 
-First we need to add these components to our tab-bar navigation. Let’s edit `Dashboard.js` and add the two files `application/calendar/CalendarView.js` and `application/groups/GroupsView.js`. 
+Before we get started, let's make the development process easier and add persistent user login. This way, every time we refresh the app, we won't have to login. 
+
+### Persistent User Login
+
+To do this, when a user logs in, we need to store their session id in local storage. We use React Native's `AsyncStorage` module for this. `AsyncStorage` works as a simple dictionary of keys and values, with a `getItem` and `setItem` method. Let's edit `Login.js` and `RegisterConfirmation.js` to save this session id.
+
+```javascript
+application/components/accounts/Login.js
+...
+import { Text, View, ScrollView, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
+...
+fetchUserInfo(sid){
+  AsyncStorage.setItem('sid', sid);
+  fetch(`${API}/users/me`, { headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`}) })
+  .then(response => response.json())
+  .then(user => this.updateUserInfo(user))
+  .catch(err => this.connectionError())
+  .done();
+}
+...
+```
+
+```javascript
+application/components/RegisterConfirmation.js
+...
+import { Image, ScrollView, Text, TouchableOpacity, View, Dimensions, AsyncStorage } from 'react-native';
+...
+getUserInfo(sid){ /* use session id to retreive user information and store session id in local storage */
+  AsyncStorage.setItem('sid', sid);
+  fetch(`${API}/users/me`, { headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`}) })
+  .then(response => response.json())
+  .then(user => {
+    this.props.updateUser(user);
+    this.props.navigator.push({
+      name: 'Dashboard'
+    });
+  })
+  .catch((err) => {})
+  .done();
+}
+...
+```
+
+Now in our main `index.ios.js` we can modify our component to first check if a session id is saved. If it is, we can fetch the user information and direct the user to the dashboard. If not, we load the landing screen as per usual.
+
+```javascript
+index.ios.js
+import React, { Component } from 'react';
+import {
+  AppRegistry,
+  ActivityIndicator,
+  View,
+  Navigator,
+  AsyncStorage
+} from 'react-native';
+
+import Landing from './application/components/Landing';
+import Register from './application/components/accounts/Register';
+import RegisterConfirmation from './application/components/accounts/RegisterConfirmation';
+import Login from './application/components/accounts/Login';
+import Dashboard from './application/components/Dashboard';
+import { Headers } from './application/fixtures';
+import { extend } from 'underscore';
+import { API, DEV } from './application/config';
+import { globals } from './application/styles';
+
+const Loading = () => (
+  <View style={globals.flexCenter}>
+    <ActivityIndicator size='large'/>
+  </View>
+);
+
+class assembliesTutorial extends Component {
+  constructor(){
+    super();
+    this.logout = this.logout.bind(this);
+    this.updateUser = this.updateUser.bind(this);
+    this.state = {
+      user          : null,
+      ready         : false,
+      initialRoute  : 'Landing',
+    }
+  }
+  componentDidMount(){
+    this._loadLoginCredentials()
+  }
+  async _loadLoginCredentials(){
+    try {
+      let sid = await AsyncStorage.getItem('sid');
+      console.log('SID', sid);
+      if (sid){
+        this.fetchUser(sid);
+      } else {
+        this.ready();
+      }
+    } catch (err) {
+      this.ready(err);
+    }
+  }
+  ready(err){
+    this.setState({ ready: true });
+  }
+  fetchUser(sid){
+    fetch(`${API}/users/me`, { headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`})})
+    .then(response => response.json())
+    .then(user => this.setState({ user, ready: true, initialRoute: 'Dashboard' }))
+    .catch(err => this.ready(err))
+    .done();
+  }
+  logout(){
+    this.nav.push({ name: 'Landing' })
+  }
+  updateUser(user){
+    this.setState({ user });
+  }
+  render() {
+    if ( ! this.state.ready ) { return <Loading /> }
+    return (
+      <Navigator
+        style={globals.flex}
+        ref={(el) => this.nav = el }
+        initialRoute={{ name: this.state.initialRoute }}
+        renderScene={(route, navigator) => {
+          switch(route.name){
+            case 'Landing':
+              return (
+                <Landing navigator={navigator}/>
+            );
+            case 'Dashboard':
+              return (
+                <Dashboard
+                  navigator={navigator}
+                  logout={this.logout}
+                  user={this.state.user}
+                />
+            );
+            case 'Register':
+              return (
+                <Register navigator={navigator}/>
+            );
+            case 'RegisterConfirmation':
+              return (
+                <RegisterConfirmation
+                  {...route}
+                  updateUser={this.updateUser}
+                  navigator={navigator}
+                />
+            );
+            case 'Login':
+              return (
+                <Login
+                  navigator={navigator}
+                  updateUser={this.updateUser}
+                />
+            );
+          }
+        }}
+      />
+    );
+  }
+}
+
+AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
+
+```
+
+A few things:
+- We are using the `async` and `await` functionality to retreive the local storage information. `await` is used to ensure that the value is properly retreived before running subsequent code.
+- We use React Native's `ActivityIndicator` component to show a spinner while the session id is being fetched. We can move this to a separate file for reuse, like `application/components/shared/Loading.js`.
+- We also make our `initialRoute` dynamic, meaning that it is dependant on `this.state.initialRoute`. If our async function returns false, the landing page will render as usual. If it is successful, the value of `this.state.initialRoute` will be set to 'Dashboard`, and the app will automatically log our user in.
+
+[Commit ]()- "Add persistent user login"
+
+### Adding a Groups and Calendar Tab
+
+Now we want to add a tab for showing groups and for showing a calendar view. Let’s edit `Dashboard.js` and add the two files `application/calendar/CalendarView.js` and `application/groups/GroupsView.js`. 
 
 ```javascript
 application/components/Dashboard.js
@@ -12,170 +187,80 @@ import GroupsView from './groups/GroupsView';
 …
 <TabBarItemIOS
   title='Groups'
-  selected={ selectedTab == 'Groups' }
-  iconName=''
+  selected={ this.state.selectedTab == 'Groups' }
+  iconName='ios-people'
   onPress={() => this.setState({ selectedTab: 'Groups' })}
 >
-  <GroupsView {...this.props}/>
+  <GroupsView currentUser={user}/>
 </TabBarItemIOS>
 <TabBarItemIOS
   title='Calendar'
-  selected={ selectedTab == 'Calendar' }
-  iconName=''
-  onPress={() => this.setState({ selectedTab: 'Calendar '})}
+  selected={ this.state.selectedTab == 'Calendar' }
+  iconName='ios-calendar'
+  onPress={() => this.setState({ selectedTab: 'Calendar'})}
 >
-  <CalendarView {...this.props}/>
+  <CalendarView currentUser={user}/>
 </TabBarItemIOS>
 …
-
+```
+```javascript
 application/components/calendar/CalendarView.js
 
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet
-} from 'react-native';
+import { View, Text } from 'react-native';
+import { globals } from '../../styles';
 
 class CalendarView extends Component{
   render(){
     return (
-      <View style={styles.container}>
-        <Text>CALENDAR VIEW</Text>
+      <View style={globals.flexCenter}>
+        <Text style={globals.h2}>CALENDAR VIEW</Text>
       </View>
     )
   }
 };
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-});
 
 export default CalendarView;
 
 application/components/groups/GroupsView.js
 
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet
-} from 'react-native';
+import { View, Text } from 'react-native';
+import { globals } from '../../styles';
 
 class GroupsView extends Component{
   render(){
     return (
-      <View style={styles.container}>
-        <Text>GROUPS VIEW</Text>
+      <View style={globals.flexCenter}>
+        <Text style={globals.h2}>GROUPS VIEW</Text>
       </View>
     )
   }
 };
 
-let styles = StyleSheet.create({
-  container: {
-    flex: 1, 
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-});
-
 export default GroupsView;
+
 ```
-
-Also, if you’re tired of logging in every time you have to refresh the app, you can use this hack to load a fake user on refresh and direct the `navigator` to the `Dashboard` route.
-
-```javascript
-index.ios.js
-…
-const FAKE_USER = {
-  avatar: 'https://confluence.slac.stanford.edu/s/en_GB/5996/4a6343ec7ed8542179d6c78fa7f87c01f81da016.20/_/images/icons/profilepics/default.png',
-  technologies: [
-  	"JavaScript",
-  	"Machine Learning",
-  	"React Native",
-  	"Redux"
-  ],
-  id: '15f9d0d11a023b8a',
-  username: 'tom@example.com',
-  password: 'password',
-  firstName: 'Tom',
-  lastName: 'Goldenberg',
-  location : {
-  	lat: 41.308274,
-  	lng: -72.9278835,
-  	city: {
-  		long_name: "New Haven",
-  		short_name: "New Haven",
-  		types: [
-  			"locality",
-  			"political"
-  		]
-  	},
-  	state: {
-  		long_name: "Connecticut",
-  		short_name: "CT",
-  		types: [
-  			"administrative_area_level_1",
-  			"political"
-  		]
-  	},
-  	county: {
-  		long_name: "New Haven County",
-  		short_name: "New Haven County",
-  		types: [
-  			"administrative_area_level_2",
-  			"political"
-  		]
-  	},
-  	formattedAddress: "New Haven, CT, USA"
-  }
-}
-
-class assemblies extends Component {
-  constructor(){
-    super();
-    this.updateUser = this.updateUser.bind(this);
-    this.state = {
-      user: FAKE_USER
-    }
-  }
-  updateUser(user){
-    this.setState({ user: user });
-  }
-  render() {
-    let { user } = this.state;
-    return (
-      <Navigator
-      initialRoute={{name: 'Dashboard', index: 0}}
-```
+![screen](Simulator Screen Shot Jul 26, 2016, 9.49.04 AM.png)
 
 ## 8.2 Rendering Groups
 
-We want to start off by rendering some groups. But we haven’t created any. How can we get around this? Of course, fake data! Let’s create some groups in our Deployd dashboard `localhost:2403/dashboard`, and then render them in our groups view.
+We want to start off by rendering some groups. But we haven’t created any. How can we get around this? We can create some data, of course! Let’s create some groups in our Deployd dashboard `localhost:2403/dashboard`, and then render them in our groups view.
 
-In the Deployd dashboard, add the following groups: 
+In the Deployd dashboard, add the following groups, replacing the `userId` with your personal user `id`.
 ```
-title  “React Native NYC”
-description: “A meetup for people interested in learning React Native, the mobile development library created by Facebook.”
+name: “React Native NYC”,
+description: “A meetup for people interested in learning React Native, the mobile development library created by Facebook.”,
 users: [
     {
-        "user_id": "15f9d0d11a023b8a",
+        "userId": "15f9d0d11a023b8a",
         "confirmed": true,
         "role": "owner",
-        "joined_on": 1468113633150,
-        "notifications": {
-            "email": true
-        }
+        "joinedOn": 1468113633150
     }
 ]
-userIds: [ “15f9d0d11a023b8a” ]
 image: “”,
-technologies: [“React Native” ]
+technologies: [“React Native” ],
 location: {
 	"lat": 41.308274,
 	"lng": -72.9278835,
@@ -224,322 +309,129 @@ description: “Meetup for Ruby enthusiasts”
 
 Now we’re ready to fetch these groups and render them in our `GroupsView` page!
 
-First, we have to turn `GroupsView` into another `Navigator` component. We will set `Groups` as our initial route, and render the groups in `Groups.js`.
+First, we have to turn `GroupsView` into another `Navigator` component. We will set `Groups` as our initial route, and render the a blank screen in `Groups.js`.
 
 ```javascript
-application/components/groups/GroupsView.js
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Navigator,
-} from 'react-native';
+import { Navigator } from 'react-native';
+import { find, isEqual } from 'underscore';
+
 import Groups from './Groups';
+import Headers from '../../fixtures/headers';
+import { API, DEV } from '../../config';
+import { globals } from '../../styles';
 
 class GroupsView extends Component{
   constructor(){
     super();
     this.state = {
-      groups: [],
-      suggestedGroups: [],
-      ready: false,
+      groups            : [],
+      ready             : false,
+      suggestedGroups   : [],
     }
   }
   componentWillMount(){
-    this.loadGroups(this.props.currentUser.id);
+    this._loadGroups(this.props.currentUser);
   }
-  loadGroups(userId){
-    /* TODO: load user groups and suggested groups */
+  _loadGroups(currentUser){ /* fetch all groups that the current user belongs to */
+    let query = {
+      members: {
+        $elemMatch: { userId: currentUser.id }
+      },
+      $limit: 10
+    };
+    fetch(`${API}/groups/?${JSON.stringify(query)}`)
+    .then(response => response.json())
+    .then(groups => this._loadSuggestedGroups(groups))
+    .catch(err => this.ready(err))
+    .done();
+  }
+  _loadSuggestedGroups(groups){
+    this.setState({ groups, ready: true });
+    let query = { /* query groups that the user does not belong to but are nearby */
+      id: { $nin: groups.map(group => group.id) },
+      'location.city.long_name': this.props.currentUser.location.city.long_name,
+      $limit: 4
+    };
+    fetch(`${API}/groups/?${JSON.stringify(query)}`)
+    .then(response => response.json())
+    .then(suggestedGroups => this.setState({ suggestedGroups }))
+    .catch(err => this.ready(err))
+    .done();
+  }
+  ready(err){
+    this.setState({ ready: true })
   }
   render(){
     return (
       <Navigator
-        style={styles.container}
+        style={globals.flex}
         initialRoute={{ name: 'Groups' }}
         renderScene={(route, navigator) => {
           switch(route.name){
             case 'Groups':
               return (
-                <Groups {...route} {...this.props}/>
-              );
+                <Groups
+                  {...this.props}
+                  {...this.state}
+                  navigator={navigator}
+                />
+            );
           }
         }}
       />
-    )
+    );
   }
 };
 
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  }
-});
-
 export default GroupsView;
-
+```
+```javascript
 application/components/groups/Groups.js
 
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  Dimensions,
-  StyleSheet,
-} from 'react-native';
-import Colors from '../../styles/colors';
-import NavigationBar from 'react-native-navbar';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-
-const AddGroupBox = ({ addGroup }) => (
-  <TouchableOpacity
-    onPress={()=> {
-      /* TODO: redirect to create group */
-    }}
-    style={styles.groupImage}>
-    <View style={[styles.group, {backgroundColor: Colors.inactive,}]} >
-      <Icon name="add-circle" size={60} color={Colors.brandPrimary} />
-    </View>
-  </TouchableOpacity>
-);
-
-const GroupBox = ({ group }) => (
-  <View></View>
-);
-
-const EmptyGroupBox = () => (
-  <View style={styles.groupsContainer}>
-    <View style={styles.groupImage}>
-      <View style={[styles.group, {backgroundColor: Colors.inactive,}]} />
-    </View>
-  </View>
-);
-
-const EmptyGroupBoxes = () => (
-  <View style={styles.assemblyBoxContainer}>
-    <View style={styles.groupsContainer}>
-      <AddGroupBox />
-      <EmptyGroupBox />
-    </View>
-  </View>
-);
-
-const EmptySuggestedGroupBoxes = () => (
-  <View style={styles.assemblyBoxContainer}>
-    <View style={styles.groupsContainer}>
-      <EmptyGroupBox />
-      <EmptyGroupBox />
-    </View>
-  </View>
-)
-
-const GroupBoxes = ({ groups }) => (
-  <View style={{justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap'}}>
-    {groups.map((group, idx) => {
-      if (!group) { return <EmptyGroupBox key={idx}/>}
-      return (
-        <View key={idx} style={styles.groupsContainer}>
-          <Image source={{uri: group.image}} style={styles.groupImage}>
-            <View style={[styles.group, {backgroundColor: group.color,}]} >
-              <Text style={styles.groupText}>{group.title}</Text>
-            </View>
-          </Image>
-        </View>
-      )
-    })}
-  </View>
-);
-
-const SuggestedGroupBoxes = ({ groups }) => (
-  <View>
-    {groups.map((group, idx) => (
-      <Text key={idx}>{group.title}</Text>
-    ))}
-  </View>
-);
+import { View, Text } from 'react-native';
+import { globals } from '../../styles';
 
 class Groups extends Component{
-  constructor(){
-    super();
-    this._renderAddButton = this._renderAddButton.bind(this);
-  }
-  _renderAddButton(){
-    return (
-      <TouchableOpacity style={styles.navButton} onPress={()=>{
-        /* TODO: redirect to create group */
-      }}>
-        <Icon name="add-circle" size={25} color="#ccc" />
-      </TouchableOpacity>
-    )
-  }
   render(){
-    let { groups, suggestedGroups } = this.props;
-    groups = [
-      {
-        id: 'abc',
-        title: 'React Native NYC',
-        description: 'Meetup for React Native enthusiasts',
-        image: 'https://c2.staticflickr.com/8/7495/16029420669_1e1cc4fccf_b.jpg',
-        createdAt: 1468113633150,
-        color: 'blue',
-      },
-      {
-        id: 'abc',
-        title: 'React Native NYC',
-        description: 'Meetup for React Native enthusiasts',
-        image: 'https://c2.staticflickr.com/8/7495/16029420669_1e1cc4fccf_b.jpg',
-        createdAt: 1468113633150,
-        color: 'red',
-      },
-      {
-        id: 'abc',
-        title: 'React Native NYC',
-        description: 'Meetup for React Native enthusiasts',
-        image: 'https://c2.staticflickr.com/8/7495/16029420669_1e1cc4fccf_b.jpg',
-        createdAt: 1468113633150,
-        color: 'purple',
-      },
-    ]
-    if (groups.length % 2 === 1){
-      groups = groups.concat(null);
-    }
-    let rightButtonConfig = this._renderAddButton()
-    let titleConfig = {title: 'My Groups', tintColor: 'white'}
     return (
-      <View style={styles.container}>
-        <NavigationBar
-          statusBar={{style: 'light-content', hidden: false}}
-          title={titleConfig}
-          tintColor={Colors.brandPrimary}
-          rightButton={rightButtonConfig}
-        />
-        <ScrollView style={styles.assembliesContainer}>
-          <Text style={styles.h2}>Your Assemblies</Text>
-          {groups.length ? <GroupBoxes groups={groups} /> : <EmptyGroupBoxes />}
-          <Text style={styles.h2}>You Might Like</Text>
-          {suggestedGroups.length ? <SuggestedGroupBoxes groups={suggestedGroups} /> : <EmptySuggestedGroupBoxes />}
-        </ScrollView>
+      <View style={globals.flexCenter}>
+        <Text style={globals.h2}>GROUPS VIEW</Text>
+        {this.props.groups.map((group, idx) => (
+          <Text key={idx}>{group.name}</Text>
+        ))}
       </View>
     )
   }
 };
 
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  h2: {
-    fontSize: 20,
-    fontWeight: '400',
-    paddingHorizontal: 10,
-    color: Colors.bodyText,
-  },
-  group: {
-    opacity: 0.9,
-    flex: 1,
-    padding: 15,
-    height: (deviceWidth / 2) - 25,
-    width: (deviceWidth / 2) - 25,
-  },
-  groupsContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 5,
-  },
-  groupImage: {
-    height: (deviceWidth / 2) - 25,
-    width: (deviceWidth / 2) - 25,
-    opacity: 0.8,
-    margin: 5,
-  },
-  navButton: {
-    padding: 10,
-  },
-  groupText: {
-    color: 'white',
-    fontSize: 20,
-    position: 'absolute',
-    fontWeight: '500',
-  },
-});
-
 export default Groups;
-
 ```
 
-![groups](Screen Shot 2016-07-10 at 10.14.39 PM.png)
+![screen](Simulator Screen Shot Jul 26, 2016, 10.00.16 AM.png)
 
-## 8.3 Fetching Groups
+Let's go over the above code:
+- As before, we're setting `GroupsView` to be a `Navigator` component, this time with only one route so far, `Groups`. The `Groups` component expect `props` of an array of groups and suggested groups. We fetch these in the `componentDidMount` method of `GroupsView`, using MongoDB queries. 
+- The `$elemMatch` query in Mongo looks for nested values in an object. Here, our `members` fields of the `groups` collection is an object with a nested field of `userId`. We search for groups that have a `members` object with the `userId` of our current user.
+- We use the `$nin` Mongo query to find groups that are in the same city as our user, but that do **not** have the same id as any of the groups that the user belongs to. This way we can show groups that the user might be interested in.
+- In `Groups.js`, we use the groups that we fetched and render a simple `<Text/>` component with each group's name. We will flesh this out more next.
 
-Now let's replace our fixture data with an actual API call. Let's fill in our `loadGroups` function in `GroupsView.js`.
+## 8.3 Rendering Groups
+
+Now that we've successfully fetched our data, we need to render it properly. We should also make sure that while the value `ready` is set to `false`, we should load our loading spinner (which we moved to `application/components/shared/Loading.js`). Here is the updated `Groups.js`:
 
 ```javascript
-...
-import { API, DEV } from '../../config';
-...
-  loadGroups(currentUser){
-    /* TODO: load user groups and suggested groups */
-    let query = {
-      members: {
-        $elemMatch: {
-          user_id: currentUser.id
-        }
-      }
-    };
-    fetch(`${API}/groups/?${JSON.stringify(query)}`)
-    .then(response => response.json())
-    .then(groups => {
-      this.setState({ groups, ready: true });
-      let suggestedGroupsQuery = {
-        id: { $nin: groups.map(group => group.id) },
-        'location.city.long_name': currentUser.location.city.long_name
-      };
-      fetch(`${API}/groups/?${JSON.stringify(suggestedGroupsQuery)}`)
-      .then(response => response.json())
-      .then(suggestedGroups => this.setState({ suggestedGroups }))
-      .catch(err => { console.log('ERR:', err)})
-      .done();
-    })
-    .catch(err => {
-      console.log('ERR:', err);
-      this.setState({ ready: true });
-    })
-    .done();
-  }
+
 
 ```
 
-Now you should see the groups appearing as before. However, there's one problem -- a problem we didn't really address with our `Messages` component. We aren't displaying a `loading` state while the data is being fetched. Let's make sure that our component renders a loader while the `ready` field is set to `false`. Here's what that looks like in `application/components/groups/Groups.js`.
 
-```javascript
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  Indicator,
-  Dimensions,
-  StyleSheet,
-} from 'react-native';
-...
-const Loading = () => (
-  <View style={styles.loadingContainer}>
-    <ActivityIndicator size='large'/>
-  </View>
-)
-...
-   render(){
-    let { groups, suggestedGroups, ready } = this.props;
-    if (! ready ) { return <Loading /> }
-...
-```
+
+
+
+
+
 
 Let's add this functionality to our Messages view as well. Just edit `application/components/messages/Conversations.js`.
 
