@@ -78,9 +78,9 @@ export default Dashboard;
 
 Here's what we just did:
 
-- we define each tab with information such as its title, icon, and the component it should render
-- each time a tab is selected, the value of `this.state.selectedTab` changes, rendering a different component
-- we reference the components `<ActivityView/>`, `<MessagesView/>`, and `<ProfileView/>`, which we still have to define in our project
+- We define each tab with information such as its title, icon, and the component it should render.
+- Each time a tab is selected, the value of `this.state.selectedTab` changes, rendering a different component.
+- We reference the components `<ActivityView/>`, `<MessagesView/>`, and `<ProfileView/>`, which we still have to define in our project.
 
 Let's create the folders `activity`, `messages`, and `profile`, under our `application/components` directory, and create the files `ActivityView.js`, `MessagesView.js`, and `ProfileView.js` under each respectively. Here is the code to `ActivityView.js`. Simple change the name of the component and its title to see the basic `TabBar` functionality.
 
