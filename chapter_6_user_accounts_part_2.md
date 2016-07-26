@@ -171,7 +171,6 @@ now add this filename to your `.gitignore` file
 
 ```
 .env
-...
 ```
 If you check `git` with `git status`, you'll see that your file doesn't appear, which means it has effectively been ignored. Now we can access the variable in our `Register.js` file.
 ```javascript
