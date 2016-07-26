@@ -27,33 +27,39 @@ This way of notation simply expresses that location is an `Object` with a field 
 
 ## Defining Collections
 
-Now what other collections will we need? We certainly need a `messages` collection, since we offer user-to-user messaging as a feature of our app. We also need a `groups` collection, since an assembly is a type of group that has members and hosts events. We need an `events` collection to highlight new events for our users. Here's a schema we can use for each one. Finally, we will want a `comments` collection for users to comment on individual events.
+Now what other collections will we need? We certainly need a `messages` collection, since we offer user-to-user messaging as a feature of our app. We also need a `groups` collection, since an assembly is a type of group that has members and hosts events. We need an `events` collection to highlight new events for our users. Here's a schema we can use for each one. We'll want a `conversations` collection to easily render conversation data, and a `notifications` collection for informing users of new messages and events.
 
 ```
 **messages**
 
 id: String
 createdAt: Integer
-participants: Array of Strings
 text: String
-senderName: String
-senderAvatar: String
 senderId: String
 recipientId: String
+
+**conversations**
+
+id: String
+user1Id: String
+user2Id: String
+lastMessageText: String
+lastMessageDate: Integer
 
 **groups**
 
 id: String,
 createdAt: Integer
-memberIds: Array of Strings
 members: Array of Objects {
   userId: String,
   confirmed: Boolean,
-  role: String
+  role: String,
+  joinedAt: Integer
 }
 name: String
 technologies: Array of Strings
 description: String
+color: String
 image: String
 
 **events**
@@ -70,33 +76,26 @@ location: Object {
   state: Object
   formattedAddress: String
 }
-goingIds: Array of Strings
-going: Array of Objects {
-  userId: String
-}
-notGoingIds: Array of String
+going: Array of Strings
 capacity: Integer
 
-**comments**
+**notifications**
 id: String
-eventId: String
+type: String
+message: String
+participants: Array of Strings
 createdAt: Integer
-text: String
-likes: Object of userId Strings
 
 ```
 
 Now let's create these collections from our Deployd interface at `localhost:2403`. This should be a straight-forward process of creating a collection and then editing its fields in the `properties` tab.
 
-![](Screen Shot 2016-07-04 at 8.04.43 PM.png)
-
-![](Screen Shot 2016-07-04 at 8.08.22 PM.png)
-
-![](Screen Shot 2016-07-04 at 8.06.53 PM.png)
+![deployd](Screen Shot 2016-07-25 at 11.21.20 PM.png)
+![deployd](Screen Shot 2016-07-25 at 11.21.27 PM.png)
 
 ## Deployd in Production
 
-While all this is well and good for local development, what about when we want our app to go live? At that point we will need to deploy Deployd to an actual server. For full instructions on this, please read the Deployment chapter in the appendix.
+While all this is well and good for local development, what about when we want our app to go live? At that point we will need to deploy Deployd to an actual server. For full instructions on this, please read the API deployment chapter in the appendix.
 
 ## Creating Messages
 
@@ -104,7 +103,7 @@ Now that we have our data models in place, we can start to replace our fixture d
 
 Currently `MessagesView.js` displays a list of conversations with the last message sent displayed. Intuitively, if we press on one of these conversations, we should be directed to a conversation view, where we can scroll through all the messages and create new messages. We also may want to be able to direct to a Profile View for when any of the user’s avatars is pressed.
 
-Therefore, we have to replace the static component of `MessagesView` and replace it with a new `Navigator` with the routes `Conversations`, `Conversation`, and `Profile`. While the `Conversations` and `Conversation` route will be specific to the `MessagesView`, we will reuse the `Profile` view in other parts of our app. We will also reuse the other components, for example, when a user wants to message another user from a different part of our app.
+Therefore, we have to replace the static component of `MessagesView` and replace it with a new `Navigator` with the two routes `Conversations` and `Conversation`. 
 
 Let’s move the contents of `MessagesView.js` to another file, `Conversations.js`, and fill in `MessagesView.js` with a new `Navigator` component.
 
