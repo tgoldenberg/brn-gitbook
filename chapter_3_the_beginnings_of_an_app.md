@@ -97,11 +97,11 @@ export default Landing;
 
 Let's go over what's going on in this component.
 
-- we import the necessary components from `react` and `react-native` for building our component
-- we import our `globals` styles object, as well as the `NavigationBar` and `Icon` components from our recently installed `npm` packages
-- we bind our class methods in the `constructor` function. We need to bind them so that the value of `this` that corresponds to the class instance itself persists
-- we define our `visitLanding` method, which routes the `Navigator` to the `Landing` component
-- we render our content with the `render` method
+- We import the necessary components from `react` and `react-native` for building our component.
+- We import our `globals` styles object, as well as the `NavigationBar` and `Icon` components from our recently installed `npm` packages.
+- We bind our class methods in the `constructor` function. We need to bind them so that the value of `this` that corresponds to the class instance itself persists.
+- We define our `visitLanding` method, which routes the `Navigator` to the `Landing` component.
+- We render our content with the `render` method.
 
 To view our content now, we can simply `import` the component in `index.ios.js` and render it.
 
