@@ -708,6 +708,8 @@ export default Conversation;
 
 ```
 
+![screen](Simulator Screen Shot Jul 26, 2016, 12.29.06 AM.png)
+![screen](Simulator Screen Shot Jul 26, 2016, 12.29.01 AM.png)
 
 
 
