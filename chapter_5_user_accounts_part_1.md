@@ -11,17 +11,15 @@ Getting the API started is easy. As per **Deployd**’s [documentation](http://d
 ```npm install –g deployd```
 
 Check to make sure that the package was installed by running. `dpd –version`. You should see something like this.
+![terminal](Screen Shot 2016-07-25 at 6.18.45 PM.png)
 
-![Install Deployd](/images/chapter-5-user-accounts-part-1/install-deployd.png "Install Deployd")
-
-Next, we can create our API with a simple command. `dpd create assemblies-api`.
+Next, we can create our API with a simple command. `dpd create assembliesApi`.
 You should see instructions for opening and running the newly created API. If we `cd` into the created folder and type the command `dpd`, our API will be up and running.
-
-![Deployd Running](/images/chapter-5-user-accounts-part-1/deployd-running.png "Deployd Running")
+![terminal](Screen Shot 2016-07-25 at 6.19.46 PM.png)
 
 If you open your browser to `localhost:2403/dashboard`, you can see a visual representation of the API. We can use the dashboard to add "resources", and it is easy to edit the fields of our resources as well.
 
-We know that we need a users collection, so let’s start by creating that. By selecting the `Users Collection` option under *Resources*, we can see that **Deployd** creates a default collection with the fields `id`, `username`, and `password`. **Deployd** requires these three fields, even if you don’t plan on having a username for your users. One way around this is to designate the `username` field for the user’s email. The only criteria is that this field be unique for all users.
+We know that we need a `users` collection, so let’s start by creating that. By selecting the `Users Collection` option under *Resources*, we can see that **Deployd** creates a default collection with the fields `id`, `username`, and `password`. **Deployd** requires these three fields, even if you don’t plan on having a username for your users. One way around this is to designate the `username` field for the user’s email. The only criteria is that this field be unique for all users.
 
 We can add other fields to our user collection. How about location? We will want to know where our users live, in order to suggest other assemblies. We will also want their first and last names, a URL for their avatar, and what technologies they are interested in, in order to filter the assemblies we suggest for them. Here are all the fields  we'll be adding to our `users` collection, along with their data type.
 
@@ -97,10 +95,10 @@ export default Landing;
 
 Let's point out a few things:
 
-- See how for some elements, we use an `array` of styles. React Native makes it very easy to make modular styles, and part of this is accepting an array of styles. The last style in the array overrides any previous conflicting fields in the previous style objects
-- Also notice how our `render` method is very slim. We could easily include the full methods `visitLogin` and `visitRegister` in the code under `render` but this is less readable than refactoring out these functions. Also remember that we have to `bind` them to the class in the `constructor` function
+- See how for some elements, we use an `array` of styles. React Native makes it very easy to make modular styles, and part of this is accepting an array of styles. The last style in the array overrides any previous conflicting fields in the previous style objects.
+- Also notice how our `render` method is very slim. We could easily include the full methods `visitLogin` and `visitRegister` in the code under `render` but this is less readable than refactoring out these functions. Also remember that we have to `bind` them to the class in the `constructor` function.
 
-Next, we have to create the routes for both **Register** and **Login** and create forms for our users to create an account and sign in.  In `index.ios.js` or `index.android.js` (depending on what you are building), add the following lines in the `switch` statement. Don’t forget to `import` the referenced files at the top of the file.
+Next, we have to create the routes for both **Register** and **Login** and create forms for our users to create an account and sign in.  In `index.ios.js` (depending on what you are building), add the following lines. Don’t forget to `import` the referenced files at the top of the file.
 ```javascript
 …
 import Register from './application/components/accounts/Register';
@@ -155,8 +153,6 @@ class Register extends Component{
 };
 
 export default Register;
-
-
 ```
 
 ```JavaScript
@@ -212,10 +208,10 @@ Now is probably a good time to commit our changes.
 
 Now that our routing works, let’s build a form for our users to fill out. For login, we’ll only need an email and password. For registration, however, we’ll need more data. Let’s start with the login form, since it’s a bit easier.
 
-Now, there are several unique issues that we have to deal with when building forms in React Native. You may be used to building forms for the web, using the `<form>` element and maybe the `onSubmit` callback in React for the web.  In React Native, we’ll primarily be using components such as `<TextInput/>`, `<PickerIOS/>`, and so on. We’ll trigger our `handleSubmit` callback when the user presses the submit button. Also, it’s important to make sure the user can see the input field when the keyboard opens. This is an issue we’ll deal with later. For now, let’s just build a simple login form.
+Now, there are several issues that we have to deal with when building forms in React Native. You may be used to building forms for the web, using the `<form>` element and maybe the `onSubmit` callback in React for the web.  In React Native, we’ll primarily be using components such as `<TextInput/>`, `<PickerIOS/>`, and so on. We’ll trigger our `handleSubmit` callback when the user presses the submit button. Also, it’s important to make sure the user can see the input field when the keyboard opens. This is an issue we’ll deal with later. For now, let’s just build a simple login form.
 
 ```javascript
-Login.js
+application/components/accounts/Login.js
 
 import NavigationBar from 'react-native-navbar';
 import React, { Component } from 'react';
@@ -339,9 +335,12 @@ export const DEV = true;
 export const API = ‘http://localhost:2403’;
 ```
 
-Now we can refer to our endpoint as ‘../../config’ from within our components. Notice how we don't have to specify the `index.js` file, as it is automatically inferred. 
+Now we can refer to our endpoint as `API` as long as we import from  the config file -- 
+`import { API, DEV } from '../../config';`
 
-Now, let’s think about what we want to do.  With **Deployd**, we first have to call the `/users/login` endpoint with the username and password. Our API will return the user’s ID, and a session variable (or cookie). From here, we will want to get all of the user’s information, so we will have to call to **Deployd** to fetch the user information for the user_id. This would be `/users/me`, once we’re logged in.
+Notice how we don't have to specify the `index.js` file, as it is automatically inferred. 
+
+Now, let’s think about what we want to do.  With **Deployd**, we first have to call the `/users/login` endpoint with the username and password. Our API will return a session id (or cookie). From here, we will want to get all of the user’s information, so we will have to call to **Deployd** to fetch the user information with the session id. This would be `/users/me`, once we’re logged in.
 
 If the user is not allowed to log in, we want to display a generic error message, to the effect that the email and password combination was invalid. Giving too much information in a login form can be a bad idea.
 
@@ -388,7 +387,7 @@ loginUser(){
 ```
 Let's go over this: 
 - When we use `fetch`, it takes three arguments: `method`, `headers`, and `body`. The default method is `GET`, but `PUT`, `POST`, and `DELETE` are also accepted. As for headers, the default is `{ 'Content-Type': 'application/json' }`. This specifies that we are dealing with JSON data. 
-- So first we send a `POST` request with our username and password information. This gives us a response with a `status` and `id` property. If the status is `401`, it means our request failed, so we display an error message to the user.
+- So, first we send a `POST` request with our username and password information. This gives us a response with a `status` and `id` property. If the status is `401`, it means our request failed, so we display an error message to the user.
 - If the request was successful, we then make a `GET` request to retreive all of the user's information. We do this by sending a special header `Set-Cookie` which passes the session ID that was received from the first request.
 - If the user information retrieval works, we `console.log` our `user` object. Otherwise, we set the error message to show that there was a connection error.
 
@@ -404,9 +403,11 @@ export const Headers = {
 ```
 ```javascript
 application/components/accounts/Login.js
+import { API, DEV } from '../../config';
 import { Headers } from '../../fixtures';
 ...
 loginUser(){
+  if (DEV) { console.log('Logging in...'); }
   fetch(`${API}/users/login`, {
     method: 'POST',
     headers: Headers,
@@ -435,7 +436,7 @@ fetchUserInfo(sid){
   .done();
 }
 updateUserInfo(user){
-  if (DEV) { console.log('USER', user); }
+  if (DEV) { console.log('Logged in user:', user); }
   this.props.updateUser(user);
   this.props.navigator.push({ name: 'Dashboard' })
 }
@@ -446,6 +447,7 @@ connectionError(){
 
 ```
 
+The only thing we have left to do is pass the new `user` information up to the main component in `index.ios.js`. We do this by making `user` a state object and defining a method `updateUser` that we pass as a property to `<Login />`.
 
 ```JavaScript
 index.ios.js
@@ -462,31 +464,40 @@ index.ios.js
   }
   ...
   case 'Login':
-    return <Login navigator={navigator} updateUser={this.updateUser}/>
+    return (
+      <Login 
+        navigator={navigator} 
+        updateUser={this.updateUser} 
+        user={this.state.user}
+      />
+    );
   ...
 ```
 
-Notice a few things here. First of all, we are only calling `console.log` if `DEV` is set to true. This is because often times when running the Simulator in React Native, `console.log`'s can slow down performance. When we want to switch to production, it's important to make sure that these aren't being called to ensure a smooth user experience. Here, since we are debugging, we want to see these debugging messages in our browser console.
+Let's go over what's happening one more time:
+- When our user submits their username and password, we call our API to start a new session
+- Once we receive the session ID, we call the API again to retreive our user information. We then pass this information to our main `<Navigator/>` component
+- When the main `<Navigator/>` receives the new user data, it sets the new data in its state, and then navigates to the Dashboard with our logged in user, that simple.
+- 
+Now that we have our login functionality working, try logging into the app!
 
-The parameter to `fetch` is the URL from which we are fetching data. With ES6, we are able to use string interpolation, which feels neater than writing `API + '/users/me'`, etc. We are also specifying the type of HTTP request (usually `GET` or `POST`) and headers. As per the Deployd docs, we supply a session cookie to retrieve the user information. Try logging into the app!
-
-Once we receive the user's information, we send a callback to our `<Navigator/>` component to update it's state, setting `user` to the new data. Then we navigate to the Dashboard with our logged in user, that simple.
 
 When you try logging in, you should see an error message like this. This is because we forgot to create a user! Luckily, Deployd makes this easy to get started.
 
 ![](Screen Shot 2016-06-27 at 8.11.57 PM.png)
 
-If we open up the dashboard for Deployd in our browser window (at `localhost:2403/dashboard`), we can actually manually insert a user. Open the `users` collection, and select the `data` tab. Now start typing, and you should see the fields fill up. When filling in values that expect arrays or objects, make sure to use double quotes and not single quotes. Here is what our screen looks like.
+If we open up the dashboard for Deployd in our browser window (at `localhost:2403/dashboard`), we can actually manually insert a user. Open the `users` collection, and select the `data` tab. Now start typing, and you should see the fields fill up. When filling in values that expect arrays or objects, make sure to use double quotes and not single quotes. Here is what our screen looks like. Feel free to use the fields in our `currentUser` fixture for things like `location` and `technologies`. 
 
 
 ![User Data 1](/images/chapter-5-user-accounts-part-1/user-data-1.png "User Data 1")
 ![User Data 2](/images/chapter-5-user-accounts-part-1/user-data-2.png "User Data 2")
 ![User Data 3](/images/chapter-5-user-accounts-part-1/user-data-3.png "User Data 3")
 
-Now when we login with the correct email and password, we should get a response with the user information, and we can then redirect to the dashboard. Voila! Let's not forget to make a commit at this point.
+Now when we login with the correct email and password, we should get a response with the user information, and we can then redirect to the dashboard. Voila! 
 
 ![](Screen Shot 2016-06-28 at 9.23.35 AM.png)
-`Git commit -am "Create user login"`
+
+Finally, notice that we add `if (DEV) { }` clauses to our console statements. This is because console logs can really slow down app performance in production. By setting `DEV` to false, we eliminate the need to remove individual console statements.
 
 ## Real Profile View
 
@@ -495,16 +506,26 @@ Now that we have real user data, we can start to flesh out parts of our app. Our
 ```JavaScript
 application/components/profile/ProfileView.js
 ...
-  // import { currentUser } from '../../fixtures/fixtures';
+  // import { currentUser } from '../../fixtures';
 ...
-  // console.log('CURRENT USER', currentUser);
-  let { currentUser } = this.props;
+ class ProfileView extends Component{
+  render() {
+    let { currentUser } = this.props;
+    return (
 ...
 ```
 ```JavaScript
 application/components/Dashboard.js
   ...
-  let { user } = this.props;
+class Dashboard extends Component{
+  constructor(){
+    super();
+    this.state = {
+      selectedTab: 'Activity'
+    };
+  }
+  render(){
+    let { user } = this.props;
   ...
   <ProfileView currentUser={user}/>
   ...
@@ -515,3 +536,7 @@ Now our profile view should have real dynamic data. If we log in as a different 
 ![](Screen Shot 2016-06-28 at 10.14.17 AM.png)
 
 Now that we've allowed our users to log in and fleshed out our `<ProfileView/>` with real data, we still need to allow users to create their account, and logout. That will come next in Chapter 6.
+
+`Git commit -am "Create user login"`
+
+[Commit - "Create user login"]()
