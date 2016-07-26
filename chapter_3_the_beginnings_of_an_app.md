@@ -172,7 +172,7 @@ AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
 
 Alright, what's going on here?
 
-- We render our `Navigator`, which currently has 3 properties - `style`, `initialRoute`, and `renderScene`
+- We render our `Navigator`, which currently has 3 properties - `style`, `initialRoute`, and `renderScene`.
 - `initialRoute` is exactly what is sounds like - the first component we want to render when our app starts. We define this route with an object with the name of our first route.
 - `renderScene` is a function which expects a component to be returned. We render the appropriate component depending on the name of the route. To achieve this, we use JavaScript's `switch/case` syntax.
 
