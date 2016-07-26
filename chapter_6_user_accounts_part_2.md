@@ -333,7 +333,7 @@ Let's go through some new things here:
 
 Let's make a commit there.
 
-Commit 11 - "Add Google Places API configuration and render Register component"
+[Commit 11]() - "Add Google Places API configuration and render Register component"
 
 ## Saving Location Information
 
