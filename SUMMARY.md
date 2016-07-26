@@ -10,7 +10,7 @@
 * [Chapter 7: Establishing a Database Schema](chapter_7_establishing_a_database_schema.md)
 * [Chapter 8: Creating Groups](chapter_8_creating_groups.md)
 * [Chapter 9: Creating Events](chapter_9_creating_events.md)
-* [Chapter 10: Building a Calendar View](chapter_10_building_a_calendar_view.md)
+* [Chapter 10: Building an Activity View](chapter_10_building_a_calendar_view.md)
 * [Chapter 11: Building an Activity View](chapter_11_building_an_activity_view.md)
 * [Chapter 12: Final Touches](chapter_12_final_touches.md)
 * [Chapter 13: Understanding ES6 with React Native](chapter_13_understanding_es6_with_react_native.md)
