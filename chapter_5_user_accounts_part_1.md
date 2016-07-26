@@ -463,22 +463,41 @@ index.ios.js
     this.setState({ user: user });
   }
   ...
-  case 'Login':
+  case 'Dashboard':
     return (
-      <Login 
-        navigator={navigator} 
-        updateUser={this.updateUser} 
+      <Dashboard
+        navigator={navigator}
+        logout={this.logout}
         user={this.state.user}
       />
-    );
+  );
+  case 'Register':
+    return (
+      <Register navigator={navigator}/>
+  );
+  case 'RegisterConfirmation':
+    return (
+      <RegisterConfirmation
+        {...route}
+        updateUser={this.updateUser}
+        navigator={navigator}
+      />
+  );
+  case 'Login':
+    return (
+      <Login
+        navigator={navigator}
+        updateUser={this.updateUser}
+      />
+  );
   ...
 ```
 
 Let's go over what's happening one more time:
-- When our user submits their username and password, we call our API to start a new session
-- Once we receive the session ID, we call the API again to retreive our user information. We then pass this information to our main `<Navigator/>` component
+- When our user submits their username and password, we call our API to start a new session.
+- Once we receive the session ID, we call the API again to retreive our user information. We then pass this information to our main `<Navigator/>` component.
 - When the main `<Navigator/>` receives the new user data, it sets the new data in its state, and then navigates to the Dashboard with our logged in user, that simple.
-- 
+ 
 Now that we have our login functionality working, try logging into the app!
 
 
@@ -527,7 +546,32 @@ class Dashboard extends Component{
   render(){
     let { user } = this.props;
   ...
-  <ProfileView currentUser={user}/>
+  <TabBarIOS>
+    <TabBarItemIOS
+      title='Activity'
+      selected={this.state.selectedTab === 'Activity'}
+      iconName='ios-pulse'
+      onPress={() => this.setState({ selectedTab: 'Activity' })}
+    >
+      <ActivityView currentUser={user}/>
+    </TabBarItemIOS>
+    <TabBarItemIOS
+      title='Messages'
+      selected={this.state.selectedTab === 'Messages'}
+      iconName='ios-chatboxes'
+      onPress={() => this.setState({ selectedTab: 'Messages' })}
+    >
+      <MessagesView currentUser={user}/>
+    </TabBarItemIOS>
+    <TabBarItemIOS
+      title='Profile'
+      selected={this.state.selectedTab === 'Profile'}
+      iconName='ios-person'
+      onPress={() => this.setState({ selectedTab: 'Profile' })}
+    >
+      <ProfileView currentUser={user} logout={this.logout}/>
+    </TabBarItemIOS>
+  </TabBarIOS>
   ...
 ```
 
