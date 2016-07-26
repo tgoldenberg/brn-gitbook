@@ -105,120 +105,133 @@ Currently `MessagesView.js` displays a list of conversations with the last messa
 
 Therefore, we have to replace the static component of `MessagesView` and replace it with a new `Navigator` with the two routes `Conversations` and `Conversation`. 
 
-Let’s move the contents of `MessagesView.js` to another file, `Conversations.js`, and fill in `MessagesView.js` with a new `Navigator` component.
+Let’s move the contents of `MessagesView.js` to another file, `Conversations.js`, and fill in `MessagesView.js` with a new `Navigator` component. We'll also create a dumb `Conversation.js` file for now.
+
+```javascript
+application/components/messages/Conversation.js
+
+import Icon from 'react-native-vector-icons/Ionicons';
+import NavigationBar from 'react-native-navbar';
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+
+import { globals } from '../../styles';
+import BackButton from '../shared/BackButton';
+
+class Conversation extends Component{
+  constructor(){
+    super();
+    this.goBack = this.goBack.bind(this);
+  }
+  goBack(){
+    this.props.navigator.pop();
+  }
+  render(){
+    let { user, currentUser } = this.props;
+    return (
+      <View style={globals.flexContainer}>
+        <NavigationBar
+          tintColor={Colors.brandPrimary}
+          title={{ title: `${user.firstName} ${user.lastName}`, tintColor: 'white' }}
+          leftButton={<BackButton handlePress={this.goBack}/>}
+        />
+        <View style={globals.flexCenter}>
+          <Text style={globals.h2}>Conversation</Text>
+        </View>
+      </View>
+    )
+  }
+};
+
+export default Conversation;
+```
 
 ```javascript
 application/components/messages/MessagesView.js
-import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-  Navigator,
-  Dimensions
-} from 'react-native';
-import Conversations from './Conversations';
-import Conversation from './Conversation';
-import UserProfile from '../profile/UserProfile';
 
-export default class MessagesView extends Component{
+import React, { Component } from 'react';
+import { Navigator } from 'react-native';
+import { flatten, uniq } from 'underscore';
+
+import Conversation from './Conversation';
+import Conversations from './Conversations';
+import { DEV, API } from '../../config';
+import { globals } from '../../styles';
+
+class MessagesView extends Component{
   constructor(){
     super();
     this.state = {
-      conversations: []
-    }
+      conversations : [],
+      ready         : false,
+      users         : [],
+    };
   }
+  componentDidMount(){
+    this._loadConversations();
+  }
+  _loadConversations(){
+    let { currentUser } = this.props;
+    let query = {
+      $or: [
+        { user1Id: currentUser.id },
+        { user2Id: currentUser.id }
+      ],
+      $limit: 10, $sort: { lastMessageDate: -1 }
+    };
+    fetch(`${API}/conversations?${JSON.stringify(query)}`)
+    .then(response => response.json())
+    .then(conversations => this._loadUsers(conversations))
+    .catch(err => this.ready(err))
+    .done();
+  }
+  _loadUsers(conversations){
+    let userIds = uniq(flatten(conversations.map(c => [c.user1Id, c.user2Id])));
+    let query = { id: { $in: userIds }};
+    fetch(`${API}/users?${JSON.stringify(query)}`)
+    .then(response => response.json())
+    .then(users => this.setState({ conversations, users, ready: true }))
+    .catch(err => this.ready(err))
+    .done();
+  }
+  ready(err){
+    this.setState({ ready: true });
+  }
+
   render(){
-    let { conversations } = this.state;
     return (
       <Navigator
-        style={styles.container}
-        initialRoute={{
-          name: 'Conversations'
-        }}
+        style={globals.flex}
+        initialRoute={{ name: 'Conversations' }}
         renderScene={(route, navigator) => {
           switch(route.name){
             case 'Conversations':
               return (
-                <Conversations conversations={conversations} />
-              );
+                <Conversations
+                  {...this.props}
+                  {...this.state}
+                  navigator={navigator}
+                />
+            );
             case 'Conversation':
               return (
-                <Conversation conversation={route.conversation} />
-              );
-            case 'Profile':
-              return (
-                <Profile user={route.user} />
-              );
+                <Conversation
+                  {...this.props}
+                  {...this.state}
+                  {...route}
+                  navigator={navigator}
+                />
+            );
           }
         }}
       />
     )
   }
-};
+}
 
-let styles = StyleSheet.create({
-  container: {
-    flex: 1
-  }
-})
-
+export default MessagesView;
 ```
 
-Now we have to create the components `UserProfile` and `Conversation`. For now we can just create simple components, as we usually start with.
-
-```javascript
-application/components/profile/UserProfile.js
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet
-} from 'react-native';
-
-export default class UserProfile extends Component{
-  render(){
-    <View style={styles.container}>
-      <Text>USER PROFILE</Text>
-    </View>
-  }
-};
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-})
-
-application/components/messages/Conversation.js
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet
-} from 'react-native';
-
-export default class Conversation extends Component{
-  render(){
-    return (
-      <View style={styles.container}>
-        <Text>CONVERSATION</Text>
-      </View>
-    );
-  }
-};
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-})
-
-```
 If done correctly, the Messages View should look exactly the same as before! Don’t worry, we have a long way to go. Let’s commit here.
 
 [Commit]() – "Refactor MessagesView into a Navigation component and create simple Conversation and UserProfile components"
