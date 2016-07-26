@@ -327,59 +327,103 @@ Here you can see that we are first fetching the conversations that are relevant 
 Also notice that we are using queries to fetch our data. In Deployd, we can add these Mongo queries at the end of our API call, preceded by a `?`. In the first query, we are asking for all conversations where the `user1Id` or the `user2Id` is equal to the current user's `id`. In the second we are fetching all users who have an `id` that is contained in the array of `userId`s.
 
 Let’s create another user and another conversation and see how the UI changes.
-![](Screen Shot 2016-07-05 at 7.54.10 PM.png)
 
-![](Screen Shot 2016-07-05 at 7.54.14 PM.png)
+![deployd](Screen Shot 2016-07-26 at 12.05.33 AM.png)
+![screen](Simulator Screen Shot Jul 26, 2016, 12.06.17 AM.png)
+
 
 And now is a good time to make a commit.
 
-[Commit 13]() – "Fetch conversation data and render in Conversations component"
+[Commit 13](https://github.com/buildreactnative/assemblies-tutorial/tree/7297fbd74e3decf4ce402ac69d445d4dbe6de0d5) – "Fetch conversation data and render in Conversations component"
 
 ## Adding Routing to our Messages View
 
 Now that we at least have real `conversation` objects, we need to add routing to an individual `conversation` component.
 
-Let's modify the file `application/components/messages/ConversationRow.js`
+Let's modify the `_renderRow` method in the file `application/components/messages/Conversations.js`
 
 ```javascript
-...
-  render(){
-    let { conversation, user, handlePress } = this.props;
-    let msg = conversation.lastMessageText;
-    let date = new Date(conversation.lastMessageDate);
-    return (
-      <TouchableOpacity style={{ flex: 1 }} onPress={handlePress}>
-...
-```
+import React, { Component } from 'react';
+import { View, Text, Image, TouchableOpacity, ListView } from 'react-native';
+import moment from 'moment';
+import Icon from 'react-native-vector-icons/Ionicons';
+import NavigationBar from 'react-native-navbar';
+import { find } from 'underscore';
 
-Then let's define our new `handlePress` prop in the parent component, `Conversations`.
+import Colors from '../../styles/colors';
+import { globals, messagesStyles } from '../../styles';
+import { rowHasChanged } from '../../utilities';
 
-```javascript
-...
-_renderRow(rowData){
-    console.log('ROW DATA', rowData);
-    let { users, currentUser, navigator } = this.props;
-    let otherUserId = rowData.user1Id == currentUser.id ? rowData.user2Id : rowData.user1Id;
-    let otherUserIdx = users.map(u => u.id).indexOf(otherUserId);
-    let otherUser = users[otherUserIdx];
+const styles = messagesStyles;
+
+class Conversations extends Component{
+  constructor(){
+    super();
+    this.visitConversation = this.visitConversation.bind(this);
+    this._renderRow = this._renderRow.bind(this);
+    this.dataSource = this.dataSource.bind(this);
+  }
+
+  visitConversation(user){
+    this.props.navigator.push({
+      name: 'Conversation',
+      user
+    })
+  }
+  _renderRow(conversation){
+    let { currentUser } = this.props;
+    let otherUserID = find([conversation.user1Id, conversation.user2Id], (id) => id !== currentUser.id);
+    let user = find(this.props.users, ({ id }) => id === otherUserID);
     return (
-      <ConversationRow
-        conversation={rowData}
-        user={otherUser}
-        handlePress={() => {
-          navigator.push({
-            name: 'Conversation',
-            conversation: rowData,
-            user: otherUser
-          });
-        }}
-      />
+      <TouchableOpacity style={globals.flexContainer} onPress={() => this.visitConversation(user)}>
+        <View style={globals.flexRow}>
+          <Image style={globals.avatar} source={{uri: user.avatar}}/>
+          <View style={globals.flex}>
+            <View style={globals.textContainer}>
+              <Text style={styles.h5}>{user.firstName} {user.lastName}</Text>
+              <Text style={styles.h6}>{moment(conversation.lastMessageDate).fromNow()}</Text>
+            </View>
+            <Text style={[styles.h4, globals.mh1]}>{conversation.lastMessageText.substring(0, 40)}...</Text>
+          </View>
+          <View style={styles.arrowContainer}>
+            <Icon size={30} name="ios-arrow-forward" color={Colors.bodyTextLight}/>
+          </View>
+        </View>
+        <View style={styles.divider}/>
+      </TouchableOpacity>
+    )
+  }
+  dataSource(){
+    return (
+      new ListView.DataSource({ rowHasChanged: rowHasChanged }).cloneWithRows(this.props.conversations)
     );
   }
-...
+  render() {
+    return (
+      <View style={globals.flexContainer}>
+        <NavigationBar
+          title={{ title: 'Messages', tintColor: 'white' }}
+          tintColor={Colors.brandPrimary}
+        />
+        <ListView
+          enableEmptySectionHeaders={true}
+          dataSource={this.dataSource()}
+          contentInset={{ bottom: 49 }}
+          renderRow={this._renderRow}
+        />
+      </View>
+    );
+  }
+};
+
+export default Conversations;
+
 ```
 
-![](Screen Shot 2016-07-05 at 8.10.32 PM.png)
+Now when you press on a conversation row, the navigator should go to the `Conversation` screen, which is currently just a placeholder.
+
+![screen](Simulator Screen Shot Jul 26, 2016, 12.11.48 AM.png)
+
 You should now get directed to our `Conversation` screen when you press on a conversation. Now we need to flesh out that view. Ideally we want to have all the messages in reverse chronological order, along with an input field on the bottom to send a new message.
 
 Let's create a few messages in Deployd to get started. Here is some data to get started (replace the userIds with the appropriate ones from your Deployd database):
@@ -410,307 +454,58 @@ text: "I don't know. You tell me."
 
 Now we can query the related messages in the `componentWillMount` phase of our `Conversation` component and then render the messages in reverse chronological order.
 
+First let's install two new packages:
+- `react-native-invertible-scroll-view`
+- `react-native-keyboard-spacer`
+
+And then let's render our component:
+
 ```javascript
 application/components/messages/Conversation.js
 
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  Dimensions
-} from 'react-native';
-import Globals from '../../styles/globals';
-import Colors from '../../styles/colors';
-import NavigationBar from 'react-native-navbar';
-import LeftButton from '../accounts/LeftButton';
-import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import moment from 'moment';
+import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import NavigationBar from 'react-native-navbar';
+import React, { Component } from 'react';
+import { View, Text, Image, TouchableOpacity, TextInput } from 'react-native';
+
+import Colors from '../../styles/colors';
+import { Headers } from '../../fixtures';
+import BackButton from '../shared/BackButton';
 import { DEV, API } from '../../config';
+import { globals, messagesStyles } from '../../styles';
 
+const styles = messagesStyles;
 
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-
-export default class Conversation extends Component{
-  constructor(){
-    super();
-    this.createMessage = this.createMessage.bind(this);
-    this.state = {
-      msg: ''
-    }
-  }
-  componentWillMount(){
-    /* TODO: fetch all messages */
-  }
-  createMessage(msg){
-     /* TODO: save message */
-  }
-  render(){
-    let { user, navigator, currentUser } = this.props;
-    let { msg, messages } = this.state;
-    let titleConfig = { title: `${user.firstName} ${user.lastName}`, tintColor: 'white' };
-    return(
-      <View style={styles.container}>
-        <NavigationBar
-          tintColor={Colors.brandPrimary}
-          title={titleConfig}
-          leftButton={<LeftButton navigator={navigator}/>}
-        />
-        <InvertibleScrollView
-          inverted={true}
-          contentContainerStyle={{paddingTop: 10}}
-          ref="scroll">
-          {messages.map((msg, idx) => (
-            <Message
-              message={msg}
-              user={msg.senderId === currentUser.id ? currentUser : user}
-              key={idx}
-              navigator={navigator}
-            />
-          ))}
-        </InvertibleScrollView>
-
-        <View style={styles.inputBox}>
-          <TextInput
-            multiline={true}
-            value={this.state.newMessage}
-            placeholder='Say something...'
-            placeholderTextColor={Colors.bodyTextLight}
-            onChange={(e) => this.setState({msg: e.nativeEvent.text})}
-            style={styles.input}
-          />
-          <TouchableOpacity
-            style={ msg ? styles.buttonActive : styles.buttonInactive }
-            underlayColor='#D97573'
-            onPress={this.createMessage}>
-            <Text style={ msg ? styles.submitButtonText : styles.inactiveButtonText }>Send</Text>
-          </TouchableOpacity>
-        </View>
-        <KeyboardSpacer topSpacing={-50}/>
-      </View>
-    )
-
-  }
-};
-
-let styles = StyleSheet.create({
-  inputBox: {
-    marginBottom: 50,
-    height: 60,
-    left: 0,
-    right: 0,
-    backgroundColor: '#F3EFEF',
-    backgroundColor: Colors.inactive,
-    flexDirection: 'row',
-  },
-  input: {
-    height: 40,
-    padding: 8,
-    flex: 1,
-    marginRight: 5,
-    fontSize: 14,
-    borderColor: '#E0E0E0',
-    margin: 10,
-    borderColor: '#b4b4b4',
-    borderRadius: 8,
-    color: Colors.bodyText,
-    backgroundColor: 'white',
-  },
-  buttonActive: {
-    flex: 0.4,
-    backgroundColor: "#E0514B",
-    backgroundColor: Colors.brandPrimary,
-    borderRadius: 6,
-    justifyContent: 'center',
-    margin: 10,
-  },
-  buttonInactive: {
-    flex: 0.4,
-    backgroundColor: "#eeeeee",
-    borderWidth: 1,
-    borderColor: '#ffffff',
-    borderRadius: 6,
-    justifyContent: 'center',
-    margin: 10,
-  },
-  buttonText: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 16,
-  },
-  centering: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: deviceHeight,
-  },
-  sentText:{
-    fontSize: 14,
-    padding: 10,
-    marginRight: 15,
-    fontWeight: '300',
-  },
-  backButton: {
-    position: 'absolute',
-    left: 20,
-  },
-  backButtonText: {
-    color: 'white',
-  },
-  fromContainer:{
-    flexDirection: 'row',
-    flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  fromText:{
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  messageTextContainer:{
-    flex: 1,
-  },
-  messageText:{
-    fontSize: 18,
-    fontWeight: '300',
-    paddingHorizontal: 15,
-  },
-  messageContainer:{
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  profile:{
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginHorizontal: 10,
-    marginVertical: 10,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: 'white'
-  },
-  header: {
-    height: 70,
-    backgroundColor: Colors.brandPrimary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerText: {
-    color: 'white',
-    fontSize: 22,
-  },
-  submitButtonText: {
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: '400',
-    color: 'white',
-  },
-  inactiveButtonText: {
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: '400',
-    color: '#999'
-  }
-});
-
-```
-
-We use two new libraries here: `react-native-invertible-scroll-view`, and `react-native-keyboard-spacer`. The first one allows to keep the screen at the bottom of our list of messages. This way when we add a new message, it is easy to scroll to the bottom with `this.refs.scrollView.scroll(0)`. The other package allows us to raise the input field just above the phone's keyboard, which provides a better user experience.
-
-Let's place our `Message` component in the same file below.
-
-```javascript
-const Message = ({ user, message, navigator }) => {
+const Message = ({ user, message }) => {
   return (
-    <View style={messageStyles.container}>
-      <TouchableOpacity>
-        <Image
-          style={messageStyles.icon}
-          source={{uri: user.avatar? user.avatar : DefaultAvatar }}
-        />
-      </TouchableOpacity>
-      <View style={messageStyles.messageBox}>
-        <View style={messageStyles.row}>
-          <Text style={messageStyles.author}>{`${user.firstName} ${user.lastName}`}</Text>
-          <Text style={messageStyles.sent}>{moment(new Date(message.createdAt)).fromNow()}</Text>
-        </View>
-        <View style={messageStyles.messageView}>
-          <Text style={messageStyles.messageText}>{message.text}</Text>
-        </View>
-      </View>
-    </View>
+    <Text>{message}</Text>
   )
 };
 
-let messageStyles = StyleSheet.create({
-  container:{
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    paddingVertical: 10,
-    backgroundColor: 'white',
-  },
-  icon: {
-    marginTop: 10,
-    marginLeft: 13,
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-  },
-  messageBox: {
-    flex: 1,
-    alignItems: 'stretch',
-    padding: 10,
-  },
-  row: {
-    flexDirection: 'row',
-    marginBottom: 2,
-    marginTop: 10
-  },
-  messageView: {
-    backgroundColor: 'white',
-    flex: 1,
-    paddingRight: 15
-  },
-  messageText: {
-    fontSize: 16,
-    fontWeight: '300',
-  },
-  author:{
-    fontSize: 12,
-    fontWeight: '700'
-  },
-  sent:{
-    fontSize: 12,
-    fontWeight: '300',
-    color: '#9B9B9B',
-    marginLeft: 10,
-    color: '#9B9B9B',
-    fontWeight: '300',
-    marginLeft: 10
+class Conversation extends Component{
+  constructor(){
+    super();
+    this.goBack = this.goBack.bind(this);
+    this.createMessage = this.createMessage.bind(this);
+    this.state = {
+      messages  : [],
+      message   : '',
+    }
   }
-})
-```
-
-Now let's fetch our messages, and save new messages.
-
-```javascript
-...
- componentWillMount(){
-    /* TODO: fetch all messages */
+  componentWillMount(){
+    this._loadMessages();
+  }
+  _loadMessages(){
     let { user, currentUser } = this.props;
+    console.log('USER IDS', user.id, currentUser.id);
     let query = {
       $or: [
-        { user1Id: user.id, user2Id: currentUser.id },
-        { user2Id: user.id, user1Id: currentUser.id }
+        { senderId    : user.id, recipientId  : currentUser.id },
+        { recipientId : user.id, senderId     : currentUser.id }
       ],
-      $sort: {
-        createdAt: -1
-      },
+      $sort: { createdAt: -1 },
       $limit: 10
     };
     fetch(`${API}/messages?${JSON.stringify(query)}`)
@@ -719,29 +514,202 @@ Now let's fetch our messages, and save new messages.
     .catch(err => console.log('ERR:', err))
     .done();
   }
+
   createMessage(){
-    /* TODO: create message */
-    let { msg } = this.state;
-    let { currentUser, user } = this.props;
-    fetch(`${API}/messages`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        senderId: currentUser.id,
-        recipientId: user.id,
-        text: msg,
-        createdAt: new Date().valueOf()
-      })
-    })
+    /* TODO: create a message */
+  }
+  goBack(){
+    this.props.navigator.pop();
+  }
+  render(){
+    let { user, currentUser } = this.props;
+    return(
+      <View style={globals.flexContainer}>
+        <InvertibleScrollView inverted={true}>
+          {this.state.messages.map((msg, idx) => (
+            <Message
+              key={idx}
+              message={msg}
+              user={msg.senderId === currentUser.id ? currentUser : user}
+            />
+          ))}
+        </InvertibleScrollView>
+        <View style={styles.navContainer}>
+          <NavigationBar
+            tintColor={Colors.brandPrimary}
+            title={{ title: `${user.firstName} ${user.lastName}`, tintColor: 'white' }}
+            leftButton={<BackButton handlePress={this.goBack}/>}
+          />
+        </View>
+        <View style={styles.inputBox}>
+          <TextInput
+            multiline={true}
+            value={this.state.message}
+            placeholder='Say something...'
+            placeholderTextColor={Colors.bodyTextLight}
+            onChangeText={(msg) => this.setState({ message })}
+            style={styles.input}
+          />
+          <TouchableOpacity
+            style={ this.state.message ? styles.buttonActive : styles.buttonInactive }
+            underlayColor='#D97573'
+            onPress={this.createMessage}>
+            <Text style={ this.state.message ? styles.submitButtonText : styles.inactiveButtonText }>Send</Text>
+          </TouchableOpacity>
+        </View>
+        <KeyboardSpacer topSpacing={-50} />
+      </View>
+    )
+  }
+};
+
+export default Conversation;
+
+```
+
+Here's an overview of what's going on:
+- We use the `InvertibleScrollView` component to keep the screen at the bottom of our list of messages. This way when we add a new message, it is easy to scroll to the bottom of the screen.
+- The `KeyboardSpacer` component allows us to keep the text input just about the keyboard when a user is typing. To simulate typing on the Simulator, just type cmd + sft + k to toggle keyboard mode.
+- We fetch our messages in the `componentDidMount` method. Once the results are fetched, they should render in the `<Messages/>` component.
+
+We still need to create a message, as well as flesh out our `Messages` component. Let's do that.
+
+```javascript
+import React, { Component } from 'react';
+import { View, Text, Image, TouchableOpacity, TextInput } from 'react-native';
+import moment from 'moment';
+import InvertibleScrollView from 'react-native-invertible-scroll-view';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+import NavigationBar from 'react-native-navbar';
+
+import Colors from '../../styles/colors';
+import { Headers, DefaultAvatar } from '../../fixtures';
+import BackButton from '../shared/BackButton';
+import { DEV, API } from '../../config';
+import { globals, messagesStyles } from '../../styles';
+
+const styles = messagesStyles;
+
+const Message = ({ user, message }) => {
+  return (
+    <View style={[globals.centeredRow, globals.pt1]}>
+      <View>
+        <Image style={globals.avatar} source={{uri: user.avatar? user.avatar : DefaultAvatar }} />
+      </View>
+      <View style={[styles.flexCentered, globals.pv1]}>
+        <View style={globals.flexRow}>
+          <Text style={styles.h5}>{`${user.firstName} ${user.lastName}`}</Text>
+          <Text style={styles.h6}>{moment(new Date(message.createdAt)).fromNow()}</Text>
+        </View>
+        <View style={globals.flexContainer}>
+          <Text style={styles.messageText}>{message.text}</Text>
+        </View>
+      </View>
+    </View>
+  )
+};
+
+
+class Conversation extends Component{
+  constructor(){
+    super();
+    this.goBack = this.goBack.bind(this);
+    this.createMessage = this.createMessage.bind(this);
+    this.state = {
+      messages  : [],
+      message   : '',
+    }
+  }
+  componentWillMount(){
+    this._loadMessages();
+  }
+  _loadMessages(){
+    let { user, currentUser } = this.props;
+    console.log('USER IDS', user.id, currentUser.id);
+    let query = {
+      $or: [
+        { senderId    : user.id, recipientId  : currentUser.id },
+        { recipientId : user.id, senderId     : currentUser.id }
+      ],
+      $sort: { createdAt: -1 },
+      $limit: 10
+    };
+    fetch(`${API}/messages?${JSON.stringify(query)}`)
     .then(response => response.json())
-    .then(data => this.setState({ msg: '', messages: [ data, ...this.state.messages ]}))
+    .then(messages => this.setState({ messages }))
     .catch(err => console.log('ERR:', err))
     .done();
   }
-...
+
+  createMessage(){
+    let { currentUser, user } = this.props;
+    fetch(`${API}/messages`, {
+      method: 'POST',
+      headers: Headers,
+      body: JSON.stringify({
+        senderId      : currentUser.id,
+        recipientId   : user.id,
+        text          : this.state.message,
+        createdAt     : new Date().valueOf(),
+      })
+    })
+    .then(response => response.json())
+    .then(data => this.setState({ message: '', messages: [ data, ...this.state.messages ]}) )
+    .catch(err => {})
+    .done();
+  }
+  goBack(){
+    this.props.navigator.pop();
+  }
+  render(){
+    let { user, currentUser } = this.props;
+    return(
+      <View style={globals.flexContainer}>
+        <InvertibleScrollView inverted={true}>
+          {this.state.messages.map((msg, idx) => (
+            <Message
+              key={idx}
+              message={msg}
+              user={msg.senderId === currentUser.id ? currentUser : user}
+            />
+          ))}
+        </InvertibleScrollView>
+        <View style={styles.navContainer}>
+          <NavigationBar
+            tintColor={Colors.brandPrimary}
+            title={{ title: `${user.firstName} ${user.lastName}`, tintColor: 'white' }}
+            leftButton={<BackButton handlePress={this.goBack}/>}
+          />
+        </View>
+        <View style={styles.inputBox}>
+          <TextInput
+            multiline={true}
+            value={this.state.message}
+            placeholder='Say something...'
+            placeholderTextColor={Colors.bodyTextLight}
+            onChangeText={(msg) => this.setState({ message })}
+            style={styles.input}
+          />
+          <TouchableOpacity
+            style={ this.state.message ? styles.buttonActive : styles.buttonInactive }
+            underlayColor='#D97573'
+            onPress={this.createMessage}>
+            <Text style={ this.state.message ? styles.submitButtonText : styles.inactiveButtonText }>Send</Text>
+          </TouchableOpacity>
+        </View>
+        <KeyboardSpacer topSpacing={-50} />
+      </View>
+    )
+  }
+};
+
+export default Conversation;
+
+
 ```
+
+
+
 
 ## Callback to Update Conversations (Optional)
 
