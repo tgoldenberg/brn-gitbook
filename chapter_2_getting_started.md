@@ -55,7 +55,6 @@ To open your project, you should use a text editor such as Atom, Sublime, Vim, E
 
 You should see something like this:
 ```
-
 android
 ios
 node_modules
