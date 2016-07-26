@@ -238,213 +238,93 @@ If done correctly, the Messages View should look exactly the same as before! Don
 
 ## Fetching Message Data
 
-Now we will want to replace our `FAKE_USERS` and `FAKE_MESSAGES` data for real data. First we will create a collection called `conversations`. This will make the data fetching easier. Our collection will have the following fields
+Now we will want to replace our `FAKE_USERS` and `FAKE_MESSAGES` data for real data. To get started, we can create a conversation in the `data` tab of the collection, at `localhost:2403/dashboard`. 
 
-```
-lastMessageText: String
-lastMessageDate: Integer
-user1Id: String
-user2Id: String
-```
+To do this, we should first create a few users, but using the `data` tab of the `users` collection. You can add different emails and names, and copy/paste the location and technologies from the already existing user.
 
-We can also create a fake conversation in the `data` tab of the collection, at `localhost:2403/dashboard`. Once we have a conversation in the database, we can work on fetching the data from the `MessagesView`.
+Once we have some users, we can then do the same for our `conversations` collection. Add your user id as `user1Id` and the other user as `user2Id`. Then fill in the `lastMessageText` with a text string and the `lastMessageDate` with a date value (simply typing `new Date().valueOf()` in the browser console is enough to get this.
 
-![](Screen Shot 2016-07-05 at 9.32.33 AM.png)
+Once we have a conversation in the database, we can work on fetching the data from the `MessagesView`. Replace the instances of `FakeUsers`, `FakeNotifications`, etc. in `Conversations.js`.
 
 ```javascript
-application/components/messages/MessagesView.js
-
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-  Navigator,
-  Dimensions
-} from 'react-native';
-import Conversations from './Conversations';
-import Conversation from './Conversation';
-import UserProfile from '../profile/UserProfile';
-import { DEV, API } from '../../config';
-import _ from 'underscore';
+import { View, Text, Image, TouchableOpacity, ListView } from 'react-native';
+import moment from 'moment';
+import Icon from 'react-native-vector-icons/Ionicons';
+import NavigationBar from 'react-native-navbar';
+import { find } from 'underscore';
 
-export default class MessagesView extends Component{
+import Colors from '../../styles/colors';
+import { globals, messagesStyles } from '../../styles';
+import { rowHasChanged } from '../../utilities';
+
+const styles = messagesStyles;
+
+class Conversations extends Component{
   constructor(){
     super();
-    this.state = {
-      conversations: [],
-      users: [],
-      ready: false,
-    }
+    this._renderRow = this._renderRow.bind(this);
+    this.dataSource = this.dataSource.bind(this);
   }
-  componentDidMount(){
-    let conversationQuery = {
-      $or: [
-        {user1Id: currentUser.id},
-        {user2Id: currentUser.id}
-      ]
-    };
-    fetch(`${API}/conversations?${JSON.stringify(conversationQuery)}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then(conversations => {
-      let userIds = _.uniq(_.flatten(conversations.map(d => ([d.user1Id, d.user2Id]))));
-      let userQuery = {
-        id: { $in: userIds }
-      }
-      fetch(`${API}/users?${userQuery}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => response.json())
-      .then(users => {
-        this.setState({ conversations, users });
-      })
-      .catch(err => { console.log('ERR: ', err)})
-      .done();
-    })
-    .catch(err => { console.log('ERR:', err)})
-    .done();
-  }
-  render(){
-    let { conversations, users } = this.state;
+
+  _renderRow(conversation){
+    let { currentUser } = this.props;
+    let otherUserID = find([conversation.user1Id, conversation.user2Id], (id) => id !== currentUser.id);
+    let user = find(this.props.users, ({ id }) => id === otherUserID);
     return (
-      <Navigator
-        style={styles.container}
-        initialRoute={{
-          name: 'Conversations'
-        }}
-        renderScene={(route, navigator) => {
-          switch(route.name){
-            case 'Conversations':
-              return (
-                <Conversations
-                  {...this.props}
-                  {...route}
-                  conversations={conversations}
-                  users={users}
-                  navigator={navigator}
-                />
-              );
-            case 'Conversation':
-              return (
-                <Conversation
-                  {...this.props}
-                  {...route}
-                  navigator={navigator}
-                />
-              );
-            case 'Profile':
-              return (
-                <Profile user={route.user} />
-              );
-          }
-        }}
-      />
+      <TouchableOpacity style={globals.flexContainer}>
+        <View style={globals.flexRow}>
+          <Image style={globals.avatar} source={{uri: user.avatar}}/>
+          <View style={globals.flex}>
+            <View style={globals.textContainer}>
+              <Text style={styles.h5}>{user.firstName} {user.lastName}</Text>
+              <Text style={styles.h6}>{moment(conversation.lastMessageDate).fromNow()}</Text>
+            </View>
+            <Text style={[styles.h4, globals.mh1]}>{conversation.lastMessageText.substring(0, 40)}...</Text>
+          </View>
+          <View style={styles.arrowContainer}>
+            <Icon size={30} name="ios-arrow-forward" color={Colors.bodyTextLight}/>
+          </View>
+        </View>
+        <View style={styles.divider}/>
+      </TouchableOpacity>
     )
   }
-};
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1
-  }
-})
-
-```
-![](Screen Shot 2016-07-05 at 9.58.43 AM.png)
-Here you can see that we are first fetching the conversations that are relevant to the user. Then we collect the userID’s that are relevant and fetch the user data for those IDs. This data then gets passed on to the `Conversations` component.
-
-Also notice that we are using queries to fetch our data. In Deployd, we can add these Mongo queries at the end of our API call, preceded by a `?`. In the first query, we are asking for all conversations where the `user1Id` or the `user2Id` is equal to the current user's `id`. In the second we are fetching all users who have an `id` that is contained in the array of `userId`s.
-
-We also have to slightly modify our `Conversations.js` component.
-
-```javascript
-
-import React, { Component } from 'react';
-
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  ListView,
-  Image,
-} from 'react-native';
-
-import NavigationBar from 'react-native-navbar';
-import Colors from '../../styles/colors';
-import ConversationRow from './ConversationRow';
-
-import { messages } from '../../fixtures';
-
-export default class Conversations extends Component{
-  _renderRow(rowData){
-    console.log('ROW DATA', rowData);
-    let { users, currentUser } = this.props;
-    let otherUserId = rowData.user1Id == currentUser.id ? rowData.user2Id : rowData.user1Id;
-    let otherUserIdx = users.map(u => u.id).indexOf(otherUserId);
-    let otherUser = users[otherUserIdx];
+  dataSource(){
     return (
-      <ConversationRow conversation={rowData} user={otherUser}/>
+      new ListView.DataSource({ rowHasChanged: rowHasChanged }).cloneWithRows(this.props.conversations)
     );
   }
   render() {
-    let { conversations, users } = this.props;
     return (
-      <View style={{ flex: 1 }}>
+      <View style={globals.flexContainer}>
         <NavigationBar
           title={{ title: 'Messages', tintColor: 'white' }}
           tintColor={Colors.brandPrimary}
         />
         <ListView
-          dataSource={new ListView.DataSource({
-              rowHasChanged: (r1,r2) => r1 != r2
-            })
-            .cloneWithRows(conversations)
-          }
-          enableEmptySections={true}
+          enableEmptySectionHeaders={true}
+          dataSource={this.dataSource()}
           contentInset={{ bottom: 49 }}
-          automaticallyAdjustContentInsets={false}
-          ref='messagesList'
-          renderRow={this._renderRow.bind(this)}
+          renderRow={this._renderRow}
         />
       </View>
     );
   }
 };
 
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  h1: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    padding: 20,
-  },
-});
+export default Conversations;
+
 
 ```
 
-Finally, we have to modify our `ConversationRow` component.
+![screen](Simulator Screen Shot Jul 26, 2016, 12.01.25 AM.png)
 
-```javascript
-…
+Now you should see some real conversation data!
 
-  render(){
-    let { conversation, user } = this.props;
-    let msg = conversation.lastMessageText;
-    let date = new Date(conversation.lastMessageDate);
-…
-```
+Here you can see that we are first fetching the conversations that are relevant to the user. Then we collect the userID’s that are relevant and fetch the user data for those IDs. This data then gets passed on to the `Conversations` component.
+
+Also notice that we are using queries to fetch our data. In Deployd, we can add these Mongo queries at the end of our API call, preceded by a `?`. In the first query, we are asking for all conversations where the `user1Id` or the `user2Id` is equal to the current user's `id`. In the second we are fetching all users who have an `id` that is contained in the array of `userId`s.
 
 Let’s create another user and another conversation and see how the UI changes.
 ![](Screen Shot 2016-07-05 at 7.54.10 PM.png)
@@ -453,7 +333,7 @@ Let’s create another user and another conversation and see how the UI changes.
 
 And now is a good time to make a commit.
 
-[commit]() – Fetch conversation data and render in Conversations component
+[Commit 13]() – "Fetch conversation data and render in Conversations component"
 
 ## Adding Routing to our Messages View
 
