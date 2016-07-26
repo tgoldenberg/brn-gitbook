@@ -1,5 +1,4 @@
-# Chapter 10: Building a Calendar View
-
+# Chapter 10: Building an Activity View
 ## 10.1 Building on the shoulders of giants
 
 All the work we have done so far has led us to this point. We now have some pretty rich data to use for the rest of our app. Here is what we have so far:
