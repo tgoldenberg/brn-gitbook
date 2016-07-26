@@ -133,8 +133,7 @@ class assembliesTutorial extends Component {
 
 Let’s commit at this point.
 
-[Commit - "Add logout" ]()
-
+[Commit 10 - "Add logout" ](https://github.com/buildreactnative/assemblies-tutorial/tree/5ea8b37ecd7d40f66a7270f6c60a0e4115264413)
 
 ## Registration Form - Part 1
 
@@ -335,7 +334,7 @@ Let's go through some new things here:
 
 Let's make a commit there.
 
-[Commit]() - "Add Google Places API configuration and render Register component"
+Commit 11 - "Add Google Places API configuration and render Register component"
 
 ## Saving Location Information
 
@@ -416,6 +415,7 @@ case 'RegisterConfirmation':
   return (
     <RegisterConfirmation 
       {...route}
+      updateUser={this.updateUser}
       navigator={navigator}  
     />
   );
@@ -604,7 +604,7 @@ Here we are using the ES6 spread operator (`...`) to remove technologies. If you
 
 ![screen](Simulator Screen Shot Jul 25, 2016, 10.05.14 PM.png)
 
-We still need to save our user's information, create an account, log in, and then navigate to the `Dashboard` component. We also want to catch any errors and display them for the user. Let's add that functionality.
+We still need to save our user's information, create an account, log in, and then navigate to the `Dashboard` component. We also want to catch any errors and display them for the user. Let's add that functionality. Well create a utility function to test errors and then fill out our submit functionality.
 ```javascript
 application/utilities/index.js
 
@@ -674,16 +674,14 @@ getUserInfo(sid){ /* use session id to retreive user information and store sessi
 ```
 
 After filling out the form, you should be directed to the `Dashboard` again with the newly created user. If we check on `localhost:2403/dashboard`, we should see our new user in the `data` section of the `users` collection.
-![](Screen Shot 2016-07-04 at 7.17.09 PM.png)
-
-
-
-
-![](Screen Shot 2016-07-04 at 7.18.04 PM.png)
+![screen](Simulator Screen Shot Jul 25, 2016, 10.23.51 PM.png)
+![screen](Simulator Screen Shot Jul 25, 2016, 10.24.18 PM.png)
+![screen](Simulator Screen Shot Jul 25, 2016, 10.27.58 PM.png)
+![deployd](Screen Shot 2016-07-25 at 10.28.46 PM.png)
 
 Let's commit there and call it a wrap!
 
-[Commit]() - Create user registration and redirect to Dashboard
+[Commit 12](https://github.com/buildreactnative/assemblies-tutorial/tree/1123b5df4d6067b53a6551e08f8010a435dbd9e6) - "Create user registration and redirect to Dashboard"
 
 ## Summing Up
 
