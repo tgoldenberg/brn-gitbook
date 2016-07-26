@@ -9,13 +9,7 @@ Let’s edit our ProfileView and Dashboard to reflect these changes. We will ref
 ```javascript
 application/components/profile/ProfileView.js
 …
-
-render() {
-  let { currentUser, logout } = this.props;
-  console.log('CURRENT USER', currentUser);
-  return (
-…
-<TouchableOpacity style={styles.logoutButton} onPress={logout}>
+<TouchableOpacity style={styles.logoutButton} onPress={this.props.logout}>
   <Text style={styles.logoutText}>Logout</Text>
 </TouchableOpacity>
 …
@@ -24,248 +18,144 @@ render() {
 
 ```javascript
 application/components/Dashboard.js
-…
-import { DEV, API } from ‘./config’;
-…
-constructor(props){
-  super(props);
-  this.logout = this.logout.bind(this);
-  this.state = {
-    selectedTab: 'Activity',
-  };
-}
-logout(){
-  fetch(`${API}/users/logout`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(response => response.json())
-  .then(data => {
-    this.props.navigator.popToTop();
-  })
-  .catch(err => {})
-  .done();
-}
-…
-<ProfileView currentUser={currentUser} logout={this.logout}/>
-…
-```
+...
+import { Headers } from '../fixtures';
 
-Let’s commit at this point.
-
-## Registration Form - Part 1
-
-Now we’re left with the most complex part of user accounts – registration. This doesn’t have to be complicated; we could just ask for our users email and a password. After all, that’s enough information to create a user with Deployd. However, we want more information about our users. We want to know what city they live in, so we can suggest nearby meetups. We want to know what technologies they are interested in, for similar reasons. We want their first and last name, since many “assemblies” require a person’s real name to be admitted to the venue location. Finally, we want an avatar for our users so that our users are able to know each other a little better.
-
-We could, of course, just make a single view with all of these inputs available. However, that wouldn’t be a very good user experience. Long forms are off-putting to potential users, and we want our registration process to be relatively smooth. That’s why we take a step approach for user registration.
-
-In step 1, the user will enter their email, first and last name, and password – all absolutely necessary information. In step 2, we will ask the user for their interests, location, and a photo to use as their avatar. All of these steps, except for the user’s location, are optional. If the user doesn’t select an avatar, we can use a default image. If the user doesn’t specify their interests, we can ask them for them later.
-
-Let’s flesh out step 1 of our user registration process.
-
-```javascript
-application/components/accounts/Register.js
-
-import React, { Component } from 'react';
-import {
-  Text,
-  View,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  Dimensions
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
-import Colors from '../../styles/colors';
-import Globals from '../../styles/globals';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import {DEV} from '../../config';
-
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-
-const LeftButton = ({ navigator }) => {
-  return (
-    <TouchableOpacity style={Globals.backButton} onPress={()=>{
-      navigator.pop();
-    }}>
-      <Icon name="ios-arrow-back" size={25} color="#ccc" />
-    </TouchableOpacity>
-  );
-};
-
-
-class Register extends Component{
+class Dashboard extends Component{
   constructor(){
     super();
+    this.logout = this.logout.bind(this);
     this.state = {
-      email: '',
-      password: '',
-      firstName: '',
-      lastName: '',
-      location: null
-    }
+      selectedTab: 'Activity'
+    };
+  }
+  logout(){ /* end the current session and redirect to the Landing page */
+    fetch(`${API}/users/logout`, { method: 'POST', headers: Headers })
+    .then(response => response.json())
+    .then(data => this.props.logout())
+    .catch(err => {})
+    .done();
   }
   render(){
-    let { navigator } = this.props;
-    let titleConfig = { title: 'Create Account', tintColor: 'white' };
+    let { user } = this.props;
     return (
-      <View style={styles.container}>
-        <NavigationBar title={titleConfig} tintColor={Colors.brandPrimary} leftButton={<LeftButton navigator={navigator}/>} />
-        <ScrollView>
-        </ScrollView>
-      </View>
+      <TabBarIOS>
+        <TabBarItemIOS
+          title='Activity'
+          selected={this.state.selectedTab === 'Activity'}
+          iconName='ios-pulse'
+          onPress={() => this.setState({ selectedTab: 'Activity' })}
+        >
+          <ActivityView />
+        </TabBarItemIOS>
+        <TabBarItemIOS
+          title='Messages'
+          selected={this.state.selectedTab === 'Messages'}
+          iconName='ios-chatboxes'
+          onPress={() => this.setState({ selectedTab: 'Messages' })}
+        >
+          <MessagesView />
+        </TabBarItemIOS>
+        <TabBarItemIOS
+          title='Profile'
+          selected={this.state.selectedTab === 'Profile'}
+          iconName='ios-person'
+          onPress={() => this.setState({ selectedTab: 'Profile' })}
+        >
+          <ProfileView currentUser={user} logout={this.logout}/>
+        </TabBarItemIOS>
+      </TabBarIOS>
     )
   }
 }
 
-let styles = {
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
+export default Dashboard;
+
+```
+Finally, we need to receive the `logout` callback in our main `Navigator` component, and direct the navigation back to `Landing`. Notice that we add 
+
+`ref={(el) => this.nav = el }` to our `Navigator`.
+
+```javascript
+index.ios.js
+...
+class assembliesTutorial extends Component {
+  constructor(){
+    super();
+    this.logout = this.logout.bind(this);
+    this.updateUser = this.updateUser.bind(this);
+    this.state = {
+      user: null
+    }
+  }
+  logout(){
+    this.nav.push({ name: 'Landing' })
+  }
+  render() {
+    return (
+      <Navigator
+        style={globals.flex}
+        ref={(el) => this.nav = el }
+        initialRoute={{ name: 'Landing' }}
+        renderScene={(route, navigator) => {
+          switch(route.name){
+            case 'Landing':
+              return (
+                <Landing navigator={navigator}/>
+            );
+            case 'Dashboard':
+              return (
+                <Dashboard
+                  navigator={navigator}
+                  logout={this.logout}
+                />
+            );
+            case 'Register':
+              return (
+                <Register navigator={navigator}/>
+            );
+            case 'Login':
+              return (
+                <Login
+                  navigator={navigator}
+                  user={this.state.user}
+                  updateUser={this.updateUser}
+                />
+            );
+          }
+        }}
+      />
+    );
   }
 }
-
-export default Register;
-```
-
-Here we introduce a new `npm` package, `react-native-google-places-autocomplete`. To avoid errors, we have to install it. Remember, `npm install --save react-native-google-places-autocomplete`, and then `rnpm link` to make sure the new package is linked to our iOS and Android code.
-
-Also, you may notice that we refactor the left button of our navigation to a stateless functional component. These are components that have no local state (i.e., no `constructor(){}` method). These components render faster than state-ful components, so we'll try to use them more frequently. If you'll notice the ` ({ navigator }) ` syntax is a way of destructuring our props, and reduces the amount of code. We can now refactor this to its own file and use it in both `Register.js` and `Login.js`. Remember to `import` the file in both components.
-
-![](Screen Shot 2016-07-04 at 12.45.33 PM.png)
-Here's what the refactored component would look like:
-
-```javascript
-import React from 'react';
-import {
-  TouchableOpacity
-} from 'react-native';
-
-import Icon from 'react-native-vector-icons/Ionicons';
-import Globals from '../../styles/globals';
-
-const LeftButton = ({ navigator }) => {
-  return (
-    <TouchableOpacity style={Globals.backButton} onPress={()=>{
-      navigator.pop();
-    }}>
-      <Icon name="ios-arrow-back" size={25} color="#ccc" />
-    </TouchableOpacity>
-  );
-};
-
-export default LeftButton;
-```
-
-Let's make a commit there, and now we can add in some of the form content.
-
-[Commit]() - Add autocomplete package and refactor LeftButton for navigation bar
-
-## Using Google Places Autocomplete
-
-```javascript
-...
-<ScrollView style={styles.formContainer}>
-  <TouchableOpacity onPress={()=> navigator.push({ name: 'Login' })}>
-    <Text style={styles.h5}>
-      Already have an account? <Text style={styles.technologyList}>Login</Text>
-    </Text>
-  </TouchableOpacity>
-  <Text style={styles.h4}>{"* Where are you looking for assemblies?"}</Text>
-  <View ref="location" style={{flex: 1,}}>
-    <GooglePlacesAutocomplete
-      styles={autocompleteStyles}
-      placeholder='Your city'
-      minLength={2}
-      autoFocus={false}
-      fetchDetails={true}
-      onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-        if (DEV) {console.log(data);}
-        if (DEV) {console.log(details);}
-        this.setState({
-          location: _.extend({}, details.geometry.location, {
-            city: _.find(details.address_components, (c) => c.types[0] == 'locality'),
-            state: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_1'),
-            county: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_2'),
-            formattedAddress: details.formatted_address,
-          })
-        });
-      }}
-      getDefaultValue={() => {return '';}}
-      query={{
-        key       : 'YOUR_GOOGLE_PLACES_AUTOCOMPLETE_API_KEY',
-        language  : 'en', // language of the results
-        types     : '(cities)', // default: 'geocode'
-      }}
-      currentLocation={false}
-      currentLocationLabel="Current location"
-      nearbyPlacesAPI='GooglePlacesSearch'
-      GoogleReverseGeocodingQuery={{}}
-      GooglePlacesSearchQuery={{rankby: 'distance',}}
-      filterReverseGeocodingByTypes={['street_address']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-      predefinedPlaces={[]}>
-    </GooglePlacesAutocomplete>
-  </View>
-</ScrollView>
-...
-
-const autocompleteStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  textInputContainer: {
-    backgroundColor: 'white',
-    height: 44,
-    borderTopColor: 'white',
-    borderBottomColor: 'white',
-  },
-  textInput: {
-    backgroundColor: 'white',
-    height: 28,
-    borderRadius: 5,
-    paddingTop: 4.5,
-    paddingBottom: 4.5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginTop: 7.5,
-    marginLeft: 8,
-    marginRight: 8,
-    fontSize: 18,
-  },
-  poweredContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.inactive,
-  },
-  powered: {
-    marginTop: 15,
-  },
-  row: {
-    padding: 13,
-    height: 44,
-    flexDirection: 'row',
-  },
-  separator: {
-    height: 1,
-    backgroundColor: 'white',
-  },
-  loader: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    height: 20,
-  },
-  androidLoader: {
-    marginRight: -15,
-  },
-});
 ...
 ```
 
-You'll notice a few things here. In our `react-native-google-places-autocomplete` package, we need an API key. To do this, go to the website for [Google's Places services](https://developers.google.com/places/). From there, you will want to select the `Google Places API Web Service`, which is an `HTML` button. From there you can follow the steps to get your API key (You will have to create a project, and then access your credentials to get the API key).
+Let’s commit at this point.
+
+[Commit - "Add logout" ]()
+
+
+## Registration Form - Part 1
+
+Now we’re left with the most complex part of user accounts – registration. This doesn’t *have* to be complicated; we could just ask for our users' email and a password. After all, that’s enough information to create a user with Deployd. However, we want more information about our users. We want to know what city they live in, so we can suggest nearby meetups. We want to know what technologies they are interested in, for similar reasons. We want their first and last name, since many “assemblies” require a person’s real name to be admitted to the venue location. Finally, we want an avatar for our users so that our users are able to know each other a little better.
+
+We could, of course, just make a single view with all of these inputs available. However, that wouldn’t be a very good user experience. Long forms are off-putting to potential users, and we want our registration process to be relatively smooth. That’s why we take a step-wise approach for user registration.
+
+In step 1, the user will enter their email, first and last name, and password – all absolutely necessary information. In step 2, we will ask the user for their interests, location, and a photo to use as their avatar. All of these steps, except for the user’s location, are optional. If the user doesn’t select an avatar, we can use a default image. If the user doesn’t specify their interests, we can ask for them later.
+
+Let’s flesh out step 1 of our user registration process. Include these in your `package.json` and then run `npm install`:
+
+```
+"react-native-config": "0.0.7",
+"react-native-google-places-autocomplete": "https://github.com/tgoldenberg/react-native-google-places-autocomplete/tarball/master"
+```
+
+We're using a fork `react-native-google-places-autocomplete` since we've found some errors in different versions of React Native. This version should work fine, though.
+
+### Google Places Autocomplete
+
+We'll be using Google's Places API to get exact latitude and longitude information. To get an API key, which we will need, go to the website for [Google's Places services](https://developers.google.com/places/). From there, you will want to select the `Google Places API Web Service`, which is an `HTML` button. From there you can follow the steps to get your API key (You will have to create a project, and then access your credentials to get the API key).
 
 Once we have the API key, where do we store it? Well, we want to make sure that we don't store it in our `git` repository, especially if our code will be hosted on a service like Github.
 
@@ -288,729 +178,501 @@ If you check `git` with `git status`, you'll see that your file doesn't appear, 
 ```javascript
 ...
 import Config from 'react-native-config'
-...
-key       :  Config.GOOGLE_PLACES_API_KEY,
+const key = Config.GOOGLE_PLACES_API_KEY,
 ...
 ```
 You might have to restart all of the `node` processes to get this to work properly.
 
-
-![](Screen Shot 2016-07-04 at 2.05.02 PM.png)
-
-Another you may notice is that the package we use for `react-native-google-places-autocomplete` is a little buggy. That is, it works, but it throws a few warnings when we use it. If you'd like to use a version without these warnings, follow these steps.
-
-* Run `npm uninstall --save react-native-google-places-autocomplete`
-* Add this line to your `package.json` file under `dependencies`:
-
-```    
-"react-native-google-places-autocomplete": "https://github.com/tgoldenberg/react-native-google-places-autocomplete/tarball/master",
-```
-* Run `npm install` and restart the `node` processes.
-
-[Commit]() - Add environment variables and Google Places Autocomplete to registration form
-
-## Registration Form - Part 2
-
-Alright, so that was the toughest part of building the first part of our registration form. Let's fill in the rest.
+Now that we've set up our Google Places credentials, we can use them with the `react-native-google-places-autocomplete` package to help our users communicate their hometown.
 
 ```javascript
 application/components/accounts/Register.js
-...
-<Text style={styles.h4}>* Email</Text>
-  <View ref="email" style={styles.formField}>
-    <TextInput
-      ref="emailField"
-      returnKeyType="next"
-      onSubmitEditing={() => this.refs.passwordField.focus()}
-      onChangeText={(text) => this.setState({email: text})}
-      keyboardType="email-address"
-      autoCapitalize="none"
-      maxLength={144}
-      placeholderTextColor='#bbb'
-      style={styles.input}
-      placeholder="Your email address"
-    />
-  </View>
-  <Text style={styles.h4}>* Password</Text>
 
-  <View style={styles.formField} ref="password">
-    <TextInput
-      ref="passwordField"
-      returnKeyType="next"
-      onSubmitEditing={() => this.refs.firstNameField.focus()}
-      onChangeText={(text) => this.setState({password: text})}
-      secureTextEntry={true}
-      autoCapitalize="none"
-      maxLength={20}
-      placeholderTextColor='#bbb'
-      style={styles.input}
-      placeholder="Your password"
-    />
-  </View>
-  <Text style={styles.h4}>* First Name</Text>
-  <View style={styles.formField} ref="firstName">
-    <TextInput
-      ref="firstNameField"
-      returnKeyType="next"
-      onSubmitEditing={() => this.refs.lastNameField.focus()}
-      maxLength={20}
-      onChangeText={(text) => this.setState({ firstNameError: ''})}
-      placeholderTextColor='#bbb'
-      style={styles.input}
-      placeholder="Your first name"
-    />
-  </View>
-  <Text style={styles.h4}>* Last name</Text>
-  <View style={styles.formField} ref="lastName">
-    <TextInput
-      returnKeyType="next"
-      maxLength={20}
-      ref="lastNameField"
-      onChangeText={(text) => this.setState({lastName: text})}
-      placeholderTextColor='#bbb'
-      style={styles.input}
-      placeholder="Your last name"
-    />
- </View>
-</ScrollView>
-<TouchableOpacity style={Globals.submitButton} onPress={()=>{
-  this.props.navigator.push({
-    name: 'RegisterConfirm',
-    email: this.state.email,
-    password: this.state.password,
-    firstName: this.state.firstName,
-    lastName: this.state.lastName,
-    location: this.state.location,
-  })
-}}>
-  <Text style={Globals.submitButtonText}>Next</Text>
-</TouchableOpacity>
-</View>
-...
-```
-
-The page should now look something like this:
-![](Screen Shot 2016-07-04 at 2.27.50 PM.png)
-
-Notice also that we have to define a new route in our `index.ios.js` file, with the name `RegisterConfirm`.
-
-```javascript
-application/components/accounts/RegisterConfirm.js
 import React, { Component } from 'react';
-import {
-  View,
-  Text
-} from 'react-native';
+import Config from 'react-native-config';
+import { Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import NavigationBar from 'react-native-navbar';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
-export default class RegisterConfirm extends Component{
+import Colors from '../../styles/colors';
+import BackButton from '../shared/BackButton';
+import { DEV } from '../../config';
+import { formStyles, autocompleteStyles, globals } from '../../styles';
+
+const styles = formStyles;
+const GooglePlacesKey = Config.GOOGLE_PLACES_API_KEY;
+
+class Register extends Component{
+  constructor(){
+    super();
+    this.goBack = this.goBack.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.selectLocation = this.selectLocation.bind(this);
+    this.state = {
+      email       : '',
+      firstName   : '',
+      lastName    : '',
+      location    : null,
+      password    : '',
+    }
+  }
+  goBack(){
+    this.props.navigator.pop();
+  }
+  selectLocation(data, details){
+    /* TODO: handle location selection */
+  }
+  handleSubmit(){
+    /* TODO: handle submit and direct to pt. 1 */
+  }
   render(){
     return (
-      <View style={styles.container}>
-        <Text>RegisterConfirm</Text>
+      <View style={globals.flexContainer}>
+        <NavigationBar
+          leftButton={<BackButton handlePress={this.goBack}/>}
+          tintColor={Colors.brandPrimary}
+          title={{ title: 'Create Account', tintColor: 'white' }}
+        />
+        <ScrollView style={styles.container}>
+          <Text style={styles.h4}>* Where are you looking for assemblies?</Text>
+          <View style={globals.flex}>
+            <GooglePlacesAutocomplete
+              autoFocus={false}
+              currentLocation={false}
+              currentLocationLabel="Current location"
+              fetchDetails={true}
+              filterReverseGeocodingByTypes={['street_address']}
+              getDefaultValue={() => {return '';}}
+              GooglePlacesSearchQuery={{rankby: 'distance',}}
+              GoogleReverseGeocodingQuery={{}}
+              minLength={2}
+              nearbyPlacesAPI='GooglePlacesSearch'
+              onPress={this.selectLocation}
+              placeholder='Your city'
+              predefinedPlaces={[]}
+              query={{
+                key: GooglePlacesKey,
+                language: 'en',
+                types: '(cities)',
+              }}
+              styles={autocompleteStyles}>
+            </GooglePlacesAutocomplete>
+          </View>
+          <Text style={styles.h4}>* Email</Text>
+          <View style={styles.formField}>
+            <TextInput
+              autoCapitalize="none"
+              keyboardType="email-address"
+              maxLength={144}
+              onChangeText={(email) => this.setState({ email })}
+              onSubmitEditing={() => this.password.focus()}
+              placeholder="Your email address"
+              placeholderTextColor={Colors.copyMedium}
+              returnKeyType="next"
+              style={styles.input}
+            />
+          </View>
+          <Text style={styles.h4}>* Password</Text>
+          <View style={styles.formField}>
+            <TextInput
+              autoCapitalize="none"
+              maxLength={20}
+              onChangeText={(password) => this.setState({ password })}
+              onSubmitEditing={() => this.firstName.focus()}
+              placeholder="Your password"
+              placeholderTextColor={Colors.copyMedium}
+              ref={(el) => this.password = el }
+              returnKeyType="next"
+              secureTextEntry={true}
+              style={styles.input}
+            />
+          </View>
+          <Text style={styles.h4}>* First Name</Text>
+          <View style={styles.formField}>
+            <TextInput
+              maxLength={20}
+              onChangeText={(firstName) => this.setState({ firstName })}
+              onSubmitEditing={() => this.lastName.focus()}
+              placeholder="Your first name"
+              placeholderTextColor='#bbb'
+              ref={(el) => this.firstName = el }
+              returnKeyType="next"
+              style={styles.input}
+            />
+          </View>
+          <Text style={styles.h4}>* Last name</Text>
+          <View style={styles.formField}>
+            <TextInput
+              maxLength={20}
+              onChangeText={(lastName) => this.setState({ lastName })}
+              placeholder="Your last name"
+              placeholderTextColor='#bbb'
+              ref={(el) => this.lastName = el }
+              returnKeyType="next"
+              style={styles.input}
+            />
+         </View>
+       </ScrollView>
+        <TouchableOpacity  style={styles.submitButton} onPress={this.handleSubmit}>
+          <Text style={globals.largeButtonText}>Next</Text>
+        </TouchableOpacity>
       </View>
     )
   }
 }
 
-let styles = {
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
+export default Register;
+
+```
+Let's go through some new things here:
+- Try not to be perplexed by the number of properties our `GooglePlacesAutocomplete` component takes in. The `query` field is where we establish our credentials, as well as specify whether we are searching for cities, addresses, etc. 
+- There are many other options to customize the autocomplete component, but we find that the default settings as described on the Github repo work just fine. 
+- The inputs for first name, last name, email, and password should look very familiar. They use the same properties that we discussed when building the Login component.
+- We still need to fill in two functions -- `selectLocation` and `handleSubmit`. We've defined them but haven't added any code yet.
+
+![screen](Simulator Screen Shot Jul 25, 2016, 9.06.26 PM.png)
+
+Let's make a commit there.
+
+[Commit]() - "Add Google Places API configuration and render Register component"
+
+## Saving Location Information
+
+Alright, so that was the toughest part of building the first part of our registration form. Let's fill in the rest. We'll start by defining the methods `selectLocation` and `handleSubmit`. 
+
+```javascript
+...
+selectLocation(data, details){
+  if ( ! details ) { return; }
+  let location = {
+    ...details.geometry.location,
+    city: find(details.address_components, (c) => c.types[0] === 'locality'),
+    state: find(details.address_components, (c) => c.types[0] === 'administrative_area_level_1'),
+    county: find(details.address_components, (c) => c.types[0] === 'administrative_area_level_2'),
+    formattedAddress: details.formatted_address
+  };
+  this.setState({ location });
 }
+handleSubmit(){
+  this.props.navigator.push({
+    name: 'RegisterConfirmation',
+    ...this.state
+  })
+}
+...
+```
+
+Here's what is happening:
+- The Google Places API gives us a lot of data. We are mainly concerned with the latitude, longitude (included in `details.geometry.location`), but also, the city, state, county, and formatted address information. Therefore, we save this information to  a location object.
+- As for our `handleSubmit` method, we simply pass the component state to the next route, `RegisterConfirm`. 
+
+Now we have to define our new route, `RegisterConfirm`. Let's start with a simple component, as we usually do.
+
+```javascript
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import NavigationBar from 'react-native-navbar';
+
+import Colors from '../../styles/colors';
+import BackButton from '../shared/BackButton';
+import { globals } from '../../styles';
+
+class RegisterConfirmation extends Component{
+  constructor(){
+    super();
+    this.goBack = this.goBack.bind(this);
+  }
+  goBack(){
+    this.props.navigator.pop();
+  }
+  render(){
+    return (
+      <View style={globals.flexContainer}>
+        <NavigationBar
+          leftButton={<BackButton handlePress={this.goBack}/>}
+          tintColor={Colors.brandPrimary}
+          title={{ title: 'Create Account', tintColor: 'white' }}
+        />
+        <View style={globals.flexCenter}>
+          <Text style={globals.h2}>RegisterConfirmation</Text>
+        </View>
+      </View>
+    );
+  }
+};
+
+export default RegisterConfirmation;
+
 ```
 
 and let's reference it in our `index.ios.js` file:
 ```javascript
 ...
-import RegisterConfirm from './application/components/accounts/RegisterConfirm';
+import RegisterConfirmation from './application/components/accounts/RegisterConfirmation';
 ...
-case 'RegisterConfirm':
+case 'RegisterConfirmation':
   return (
-    <RegisterConfirm navigator={navigator} {...route} />
+    <RegisterConfirmation 
+      {...route}
+      navigator={navigator}  
+    />
   );
 ...
 ```
 
 Now when you press `Next` on the `Register.js` screen, you should be directed to a screen that looks like this:
-![](Screen Shot 2016-07-04 at 2.45.14 PM.png)
 
-Also notice that by passing in `{...route}` to our component, we pass it as `props` all the variable that the `route` object contains. This means that we'll have access to the `email`, `password`, and other values from the first part of the registration form.
+![screen](Simulator Screen Shot Jul 25, 2016, 9.24.39 PM.png)
+
+Also notice that by passing in `{...route}` to our component, we pass as `props` all the variable that the `route` object contains. This means that we'll have access to the `email`, `password`, and other values from the first part of the registration form.
 
 ## Adding User Avatars
 
-Now let's fill in `RegisterConfirm` component. We want to ask the user for their interests, i.e. which technologies they are interested in. We also want to ask them for an avatar, an image we can display about them. Finally we want to display any errors on submission.
+Now let's fill in `RegisterConfirmation` component. We want to ask the user for their interests, i.e. which technologies they are interested in. We also want to ask them for an avatar, an image we can display about them. Finally we want to display any errors on submission.
+
+First let's install the `react-native-image-picker` and `react-native-selectme` package for uploading user avatars and for a dropdown menu of technologies.
+
+```
+npm install --save react-native-image-picker react-native-selectme
+```
+
+```
+rnpm link
+```
+
+You may need to shut down the Node processes and restart the app to avoid any errors from the new packages.
 
 ```javascript
 application/components/accounts/RegisterConfirm.js
 
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  Dimensions
-} from 'react-native';
-import Colors from '../../styles/colors';
-import Globals from '../../styles/globals';
+import { Image, ScrollView, Text, TouchableOpacity, View, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import ImagePicker from 'react-native-image-picker';
 import NavigationBar from 'react-native-navbar';
-import _ from 'underscore';
-import { Technologies, ImageOptions, DefaultAvatar } from '../../fixtures';
-import { DEV, API } from '../../config';
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-import LeftButton from './LeftButton';
-let ImagePickerManager = require('NativeModules').ImagePickerManager;
+import Dropdown, { Select, Option, OptionList } from 'react-native-selectme';
 
-export default class RegisterConfirm extends Component{
+import { uniq, extend } from 'underscore';
+import Colors from '../../styles/colors';
+import { Headers } from '../../fixtures';
+import BackButton from '../shared/BackButton';
+import { DEV, API } from '../../config';
+import { Technologies, ImageOptions, DefaultAvatar } from '../../fixtures';
+import { formStyles, globals, selectStyles, optionTextStyles, overlayStyles } from '../../styles';
+
+const styles = formStyles;
+const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+
+/* selected technologies by user */
+const TechnologyList = ({ technologies, handlePress }) => (
+  <View style={styles.textContainer}>
+    {technologies.map((technology, idx) => (
+      <TouchableOpacity key={idx} onPress={() => handlePress(idx)} style={styles.technology}>
+        <Text style={[styles.h6, globals.primaryText]}>{technology}</Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+)
+
+class RegisterConfirm extends Component{
   constructor(){
     super();
-    this.showImagePicker = this.showImagePicker.bind(this)
-    this.state = {
-      technologies: [],
-      avatar: DefaultAvatar,
-    }
-  }
-  showImagePicker(){
-    ImagePickerManager.showImagePicker(ImageOptions, (response) => {
-      if (DEV) {console.log('Response = ', response);}
-
-      if (response.didCancel) {
-        if (DEV) {console.log('User cancelled image picker');}
-      }
-      else if (response.error) {
-        if (DEV) {console.log('ImagePickerManager Error: ', response.error);}
-      }
-      else if (response.customButton) {
-        if (DEV) {console.log('User tapped custom button: ', response.customButton);}
-      }
-      else {
-        const source = 'data:image/png;base64,' + response.data;
-        if (DEV) {console.log('SRC', source);}
-        this.setState({ avatar: source });
-      }
-    });
-  }
-  render(){
-    let { navigator } = this.props;
-    let titleConfig = {title: 'Confirm Account', tintColor: 'white'};
-    return (
-      <View style={styles.container}>
-        <NavigationBar title={titleConfig} leftButton={<LeftButton navigator={navigator}/>} tintColor={Colors.brandPrimary}/>
-        <ScrollView ref="scrollView" style={styles.formContainer}>
-          <TouchableOpacity style={styles.addPhotoContainer} onPress={this.showImagePicker}>
-            <Icon name="camera" size={30} color={Colors.brandPrimary}/>
-            <Text style={styles.photoText}>Add a Profile Photo</Text>
-          </TouchableOpacity>
-          <View style={{height: 120, alignItems: 'center'}}>
-            <Image source={{uri: this.state.avatar}} style={styles.avatar}/>
-          </View>
-        </ScrollView>
-        <TouchableOpacity style={Globals.submitButton}>
-          <Text style={Globals.submitButtonText}>Create Account</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-}
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    padding: 20,
-  },
-  technologyList:{
-    textAlign: 'left',
-    fontSize: 18,
-    fontWeight: 'bold',
-    backgroundColor: 'transparent',
-    color: Colors.brandPrimary,
-    paddingHorizontal: 2,
-    paddingVertical: 4,
-  },
-  backButton: {
-    paddingLeft: 20,
-    backgroundColor: 'transparent',
-    paddingBottom: 10,
-  },
-  formContainer: {
-    backgroundColor: Colors.inactive,
-    flex: 1,
-    paddingTop: 15,
-  },
-  submitButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.brandPrimary,
-    height: 80,
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 25,
-    fontWeight: '400'
-  },
-  h4: {
-    fontSize: 20,
-    fontWeight: '300',
-    marginTop: 15,
-    color: 'black',
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  formField: {
-    backgroundColor: 'white',
-    height: 50,
-    paddingTop: 5,
-    marginBottom: 10,
-  },
-  techContainer: {
-    paddingHorizontal: 2,
-    marginHorizontal: 2,
-    marginVertical: 4,
-  },
-  largeFormField: {
-    backgroundColor: 'white',
-    height: 100,
-  },
-  addPhotoContainer: {
-    backgroundColor: 'white',
-    marginVertical: 15,
-    marginHorizontal: (deviceWidth - 250) / 2,
-    width: 250,
-    borderRadius: 30,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  photoText: {
-    fontSize: 18,
-    paddingHorizontal: 10,
-    color: Colors.brandPrimary
-  },
-  input: {
-    color: '#ccc',
-    fontSize: 18,
-    fontWeight: '300',
-    height: 40,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  largeInput: {
-    color: '#777',
-    fontSize: 18,
-    backgroundColor: 'white',
-    fontWeight: '300',
-    height: 100,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  formField:{
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 30,
-    paddingVertical: 10,
-    backgroundColor: 'white',
-    marginVertical: 25,
-  },
-  formName:{
-    fontWeight: '300',
-    fontSize: 20,
-  },
-});
-
-```
-Notice here that we use an external library for selecting images - `react-native-image-picker`. Let's install and link that package.
-```
-npm install --save react-native-image-picker
-rnpm link
-```
-Then you should be able to select photos.![](Screen Shot 2016-07-04 at 3.34.10 PM.png)
-![](Screen Shot 2016-07-04 at 3.34.15 PM.png)
-![](Screen Shot 2016-07-04 at 3.34.58 PM.png)
-
-## Adding User Technologies
-
-To get our users to select interested technologies from a list, we'll use the `npm` package `react-native-selectme`. As per usual, we install the package and link it.
-```
-npm install --save react-native-selectme
-rnpm link
-```
-
-Here's how our final component, complete with a dropdown for selecting technologies.
-
-```javascript
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  Dimensions
-} from 'react-native';
-import Colors from '../../styles/colors';
-import Globals from '../../styles/globals';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import NavigationBar from 'react-native-navbar';
-import _ from 'underscore';
-import { Technologies, ImageOptions, DefaultAvatar } from '../../fixtures';
-import { DEV, API } from '../../config';
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-import LeftButton from './LeftButton';
-let ImagePickerManager = require('NativeModules').ImagePickerManager;
-import Dropdown, {
-  Select,
-  Option,
-  OptionList
-} from 'react-native-selectme';
-
-const TechnologyList = ({ technologies, handlePress }) => {
-  return (
-    <View style={styles.techOuterContainer}>
-      {technologies.map((technology, idx) => (
-        <TouchableOpacity key={idx} style={styles.techContainer} onPress={() => handlePress(idx)}>
-          <Text style={styles.technologyList}>{technology}</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
-  )
-};
-
-export default class RegisterConfirm extends Component{
-  constructor(){
-    super();
+    this.goBack = this.goBack.bind(this);
+    this.removeTechnology = this.removeTechnology.bind(this);
+    this.selectTechnology = this.selectTechnology.bind(this);
     this.showImagePicker = this.showImagePicker.bind(this);
     this.submitForm = this.submitForm.bind(this);
-    this.selectTechnology = this.selectTechnology.bind(this);
-    this.getOptions = this.getOptions.bind(this);
-    this.removeTechnology = this.removeTechnology.bind(this);
     this.state = {
-      technologies: [],
-      avatar: DefaultAvatar,
-      errorMsg: ''
+      avatar        : DefaultAvatar,
+      errorMsg      : '',
+      technologies  : [],
     }
   }
   submitForm(){
-    let { technologies, avatar } = this.state;
-    let { email, password, firstName, lastName, location } = this.props;
-    console.log('PROPS', this.props, this.state);
-    if (email === ''){
-      this.setState({ errorMsg: 'Email not yet set.'});
-    } else if (password === ''){
-      this.setState({ errorMsg: 'Password not yet set.'});
-    } else if (firstName === '') {
-      this.setState({ errorMsg :'First name not yet set.'});
-    } else if (lastName === ''){
-      this.setState({ errorMsg: 'Last name not yet set.'});
-    } else if (location === null){
-      this.setState({ errorMsg: 'Location not yet set.'})
-    } else {
-      let userParams = { username: email, password, firstName, lastName, technologies, avatar, location };
-      fetch(`${API}/users`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(userParams)
-      })
-      .then(response => response.json())
-      .then(data => {
-        fetch(`${API}/users/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({username: email, password: password})
-        })
-        .then(response => response.json())
-        .then(data => {
-          fetch(`${API}/users/me`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Set-Cookie': `sid=${data.id}`
-            }
-          })
-          .then(response => response.json())
-          .then(data => {
-            this.props.updateUser(data);
-            this.props.navigator.push({
-              name: 'Dashboard'
-            });
-          })
-          .catch((err) => { console.log('ERROR', err) })
-          .done();
-        })
-        .catch((err) => { console.log('ERROR: ', err) })
-        .done();
-      })
-      .catch((err) => { console.log('ERROR: ', err) })
-      .done();
-    }
+    /* TODO: submit completed user information */
   }
-  showImagePicker(){
-    ImagePickerManager.showImagePicker(ImageOptions, (response) => {
-      if (DEV) {console.log('Response = ', response);}
-
-      if (response.didCancel) {
-        if (DEV) {console.log('User cancelled image picker');}
-      }
-      else if (response.error) {
-        if (DEV) {console.log('ImagePickerManager Error: ', response.error);}
-      }
-      else if (response.customButton) {
-        if (DEV) {console.log('User tapped custom button: ', response.customButton);}
-      }
-      else {
-        const source = 'data:image/png;base64,' + response.data;
-        if (DEV) {console.log('SRC', source);}
-        this.setState({ avatar: source });
-      }
+  showImagePicker(){ /* select image from camera roll for avatar */
+    ImagePicker.showImagePicker(ImageOptions, (response) => {
+      if (response.didCancel || response.error) { return; }
+      const avatar = 'data:image/png;base64,' + response.data;
+      this.setState({ avatar });
     });
   }
   selectTechnology(technology){
-    this.setState({ technologies: this.state.technologies.concat(technology)});
-  }
-  getOptions(){
-    return this.refs.optionList;
+    /* TODO: choose technology from dropdown */
   }
   removeTechnology(index){
-    let { technologies } = this.state;
-    this.setState({ technologies: [
-      ...technologies.slice(0, index),
-      ...technologies.slice(index + 1)
-    ]})
+     /* TODO: remove pressed technology */
+  }
+  goBack(){
+    this.props.navigator.pop();
   }
   render(){
-    let { navigator } = this.props;
-    let { technologies, errorMsg } = this.state;
-    let titleConfig = {title: 'Confirm Account', tintColor: 'white'};
     return (
-      <View style={styles.container}>
-        <NavigationBar title={titleConfig} leftButton={<LeftButton navigator={navigator}/>} tintColor={Colors.brandPrimary}/>
-        <ScrollView ref="scrollView" style={styles.formContainer}>
-          <View style={{ flex: 1 }}>
+      <View style={[globals.flex, globals.inactive]}>
+        <NavigationBar
+          title={{ title: 'Confirm Account', tintColor: 'white' }}
+          leftButton={<BackButton handlePress={this.goBack}/>}
+          tintColor={Colors.brandPrimary}
+        />
+        <ScrollView style={styles.container}>
+          <View style={globals.flex}>
             <Text style={styles.h4}>{"Select technologies"}</Text>
             <Select
-              width={deviceWidth}
-              height={55}
-              ref="select"
-              styleText={optionTextStyles}
-              style={selectStyles}
-              optionListRef={this.getOptions}
               defaultValue="Add a technology"
-              onSelect={this.selectTechnology}>
-              {Technologies.map((tech, idx) => (
+              height={55}
+              onSelect={this.selectTechnology}
+              optionListRef={() => this.options}
+              style={selectStyles}
+              styleText={optionTextStyles}
+              width={deviceWidth}
+            >
+              {Technologies.map((technology, idx) => (
                 <Option styleText={optionTextStyles} key={idx}>
-                  {tech}
+                  {technology}
                 </Option>
               ))}
             </Select>
-            <OptionList ref="optionList" overlayStyles={overlayStyles}/>
+            <OptionList overlayStyles={overlayStyles} ref={(el) => this.options = el }/>
           </View>
           <View>
-            { technologies.length ? <TechnologyList technologies={technologies} handlePress={this.removeTechnology}/> : null }
+            <TechnologyList technologies={this.state.technologies} handlePress={this.removeTechnology} />
           </View>
-          <TouchableOpacity style={styles.addPhotoContainer} onPress={this.showImagePicker}>
+          <TouchableOpacity style={styles.avatarContainer} onPress={this.showImagePicker}>
             <Icon name="camera" size={30} color={Colors.brandPrimary}/>
-            <Text style={styles.photoText}>Add a Profile Photo</Text>
+            <Text style={[styles.h4, globals.primaryText]}>Add a Profile Photo</Text>
           </TouchableOpacity>
-          <View style={{height: 120, alignItems: 'center'}}>
-            <Image source={{uri: this.state.avatar}} style={styles.avatar}/>
+          <View style={styles.avatarImageContainer}>
+            <Image source={{uri: this.state.avatar}} style={styles.avatarImage}/>
           </View>
-          <View style={styles.error}>
-            <Text style={styles.errorText}>{errorMsg}</Text>
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{this.state.errorMsg}</Text>
           </View>
         </ScrollView>
-        <TouchableOpacity style={Globals.submitButton} onPress={this.submitForm}>
-          <Text style={Globals.submitButtonText}>Create Account</Text>
+        <TouchableOpacity style={styles.submitButton} onPress={this.submitForm}>
+          <Text style={globals.largeButtonText}>Create Account</Text>
         </TouchableOpacity>
       </View>
     )
   }
 }
 
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    padding: 20,
-  },
-  technologyList:{
-    textAlign: 'left',
-    fontSize: 18,
-    fontWeight: 'bold',
-    backgroundColor: 'transparent',
-    color: Colors.brandPrimary,
-    paddingHorizontal: 2,
-    paddingVertical: 4,
-  },
-  backButton: {
-    paddingLeft: 20,
-    backgroundColor: 'transparent',
-    paddingBottom: 10,
-  },
-  formContainer: {
-    backgroundColor: Colors.inactive,
-    flex: 1,
-    paddingTop: 15,
-  },
-  submitButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.brandPrimary,
-    height: 80,
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 25,
-    fontWeight: '400'
-  },
-  h4: {
-    fontSize: 20,
-    fontWeight: '300',
-    marginTop: 15,
-    color: 'black',
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  formField: {
-    backgroundColor: 'white',
-    height: 50,
-    paddingTop: 5,
-    marginBottom: 10,
-  },
-  techContainer: {
-    paddingHorizontal: 2,
-    marginHorizontal: 2,
-    marginVertical: 4,
-  },
-  techOuterContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 10
-  },
-  largeFormField: {
-    backgroundColor: 'white',
-    height: 100,
-  },
-  addPhotoContainer: {
-    backgroundColor: 'white',
-    marginVertical: 15,
-    marginHorizontal: (deviceWidth - 250) / 2,
-    width: 250,
-    borderRadius: 30,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  photoText: {
-    fontSize: 18,
-    paddingHorizontal: 10,
-    color: Colors.brandPrimary
-  },
-  input: {
-    color: '#ccc',
-    fontSize: 18,
-    fontWeight: '300',
-    height: 40,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  largeInput: {
-    color: '#777',
-    fontSize: 18,
-    backgroundColor: 'white',
-    fontWeight: '300',
-    height: 100,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  formField:{
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 30,
-    paddingVertical: 10,
-    backgroundColor: 'white',
-    marginVertical: 25,
-  },
-  formName:{
-    fontWeight: '300',
-    fontSize: 20,
-  },
-  error: {
-    backgroundColor: Colors.inactive,
-    paddingHorizontal: 15,
-    marginTop: 20
-  },
-  errorText: {
-    fontSize: 16,
-    fontWeight: '300',
-    color: 'red',
-    textAlign: 'center'
-  },
-});
+export default RegisterConfirm;
 
-let selectStyles = {
-  backgroundColor: 'white',
-  justifyContent: 'center',
-  paddingLeft: 10,
-  borderTopWidth: 0,
-  borderBottomWidth: 0,
-};
+```
 
-let optionTextStyles = {
-  fontSize: 18,
-  fontWeight: '300',
+Once again, let's break down what's happening:
+- We have several methods that are just placeholders for now
+  - `selectTechnology` is invoked when a user chooses a technology
+  - `removeTechnology` is for when a user wants to remove a technology
+  - `showImagePicker` is where we display our widget for uploading a photo
+  - `submitForm` is form submitting the final form
+
+- We are using the package `react-native-selectme` for a dropdown functionality, and provide it a list of technologies from our `fixtures` file. More info on this package can be found in the [documentation](https://github.com/gs-akhan/react-native-select).
+- The `react-native-image-picker` code should be pretty straightforward. This component provides many options for saving photos. Here we are saving the photo as a Base64 string. You can find more information on customizing the ImagePicker in their [documentation](https://github.com/marcshilling/react-native-image-picker) as well.
+
+With the `ImagePicker` component, we are able to set the `avatar` object in our component state to the image source. We then render the uploaded image. Try it out now!
+
+![screen](Simulator Screen Shot Jul 25, 2016, 10.01.23 PM.png)
+![screen](Simulator Screen Shot Jul 25, 2016, 10.01.28 PM.png)
+![screen](Simulator Screen Shot Jul 25, 2016, 10.01.31 PM.png)
+
+## Adding User Technologies
+
+We still have to flesh out our component with some methods. For one, we need to add and remove technologies. Let's add in those first:
+
+```javascript
+selectTechnology(technology){
+  this.setState({
+    technologies: uniq(this.state.technologies.concat(technology))
+  });
+}
+removeTechnology(index){
+  let { technologies } = this.state;
+  this.setState({
+    technologies: [
+    ...technologies.slice(0, index),
+    ...technologies.slice(index + 1)
+    ]
+  })
+}
+```
+
+Here we are using the ES6 spread operator (`...`) to remove technologies. If you're not familiar with the way this works, please check out the appendix chapter on ES6 syntax. Now we should be able to add and remove technologies.
+
+![screen](Simulator Screen Shot Jul 25, 2016, 10.05.14 PM.png)
+
+We still need to save our user's information, create an account, log in, and then navigate to the `Dashboard` component. We also want to catch any errors and display them for the user. Let's add that functionality.
+```javascript
+application/utilities/index.js
+
+export function setRegistrationErrorMsg({ email, password, location, firstName, lastName}){
+  if (! /@/.test(email)) { return 'Invalid email address'; }
+  if (! password.length) { return 'Must set a password.'; }
+  if (! location || typeof location !== "object") { return "Must set a valid location."; }
+  if (firstName === '') { return 'Must set a first name.' }
+  if (lastName === '') { return 'Must set a last name.' }
+  return '';
+}
+```
+```javascript
+...
+import { setRegistrationErrorMsg } from '../../utilities';
+...
+submitForm(){ /* aggregate user information from <Register/> and <RegisterConfirm/> */
+  let errorMsg = setRegistrationErrorMsg(this.props);
+  if (errorMsg !== '') { /* return error if missing information */
+    this.setState({ errorMsg: errorMsg}); return;
+  }
+  let user = {
+    avatar: this.state.avatar,
+    firstName: this.props.firstName,
+    lastName: this.props.lastName,
+    location: this.props.location,
+    password: this.props.password,
+    technologies: this.state.technologies,
+    username: this.props.email,
+  };
+  fetch(`${API}/users`, {
+    method: 'POST',
+    headers: Headers,
+    body: JSON.stringify(user)
+  })
+  .then(response => response.json())
+  .then(user => this.loginUser(this.props.email, this.props.password))
+  .catch(err => {})
+  .done();
+}
+loginUser(email, password){ /* email and password based authentication with Deployd */
+  fetch(`${API}/users/login`, {
+    method: 'POST',
+    headers: Headers,
+    body: JSON.stringify({username: email, password: password})
+  })
+  .then(response => response.json())
+  .then(data => this.getUserInfo(data.id))
+  .catch(err => {})
+  .done();
+}
+getUserInfo(sid){ /* use session id to retreive user information and store session id in local storage */
+  fetch(`${API}/users/me`, { headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`}) })
+  .then(response => response.json())
+  .then(user => {
+    this.props.updateUser(user);
+    this.props.navigator.push({
+      name: 'Dashboard'
+    });
+  })
+  .catch((err) => {})
+  .done();
 }
 
-let overlayStyles = {
-  position: 'relative',
-  width: window.width,
-  height: window.height,
-  flex : 1,
-  justifyContent : "flex-start",
-  alignItems : "center",
-  backgroundColor : "#ffffff",
-};
+...
 
 ```
 
-Since we are referencing `this.props.updateUser`, we have to pass that function as `props` to our component.
-```javascript
-case 'RegisterConfirm':
-  return (
-    <RegisterConfirm
-      {...route}
-      navigator={navigator}
-      updateUser={this.updateUser}
-    />
-  );
-```
 After filling out the form, you should be directed to the `Dashboard` again with the newly created user. If we check on `localhost:2403/dashboard`, we should see our new user in the `data` section of the `users` collection.
 ![](Screen Shot 2016-07-04 at 7.17.09 PM.png)
 
