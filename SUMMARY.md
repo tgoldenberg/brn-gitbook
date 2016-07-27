@@ -19,4 +19,5 @@
 * [Chapter 16: Deploying an API](chapter_16_deployment.md)
 * [Chapter 17: Mobile Design Principles](chapter_17_mobile_design_principles.md)
 * [Chapter 18: Adding Redux to your App](chapter_18_adding_redux_to_your_app.md)
+* Chapter 10: Swipe Left, Swipe Right
 
