@@ -249,6 +249,7 @@ class CreateEvent extends Component{
 
 export default CreateEvent;
 ```
+![create event](/images/chapter-9/create-event-1.png)
 
 Now if the user selects `Create Event`, they should be directed to this page. Now we need to fill in the form to create an event. Remember that our `events` have the following schema: 
 
@@ -265,7 +266,6 @@ capacity: Number
 
 Since many of these fields require a numeric value, we’re going to explore using a Picker component. As far as the starting time and ending time, we will need some type of date selector.  Let’s design our form to take the name, location, and capacity in the first part, and the start and end times for the 2nd part.
 
-![blank create event](Screen Shot 2016-07-14 at 6.35.37 PM.png)
 
 ```javascript
 application/components/groups/CreateEvent.js
