@@ -783,7 +783,7 @@ class CreateGroup extends Component{
   handleSubmit(){
     let { name, location, summary, description } = this.state;
     this.props.navigator.push({
-      name        : 'CreateGroupConfirm',
+      name        : 'CreateGroupConfirmation',
       groupName   : name,
       description,
       location,
@@ -889,110 +889,94 @@ In the second part, we want our users to select a background image, a color, and
 
 ### Confirmation Form for Creating Groups
 
-
-
-Here is the interfact of our `CreateGroupConfirm` component. Notice many of the similarities between it and our `RegisterConfirm` form from before. In both we are using `react-native-image-picker` to set user images, and we are using the `Dropdown` component to select technologies. The only novelty is selecting the colors, which implements the `flex-wrap` functionality of flexbox.
+Here is the interface of our `CreateGroupConfirm` component. Notice many of the similarities between it and our `RegisterConfirm` form from before. In both we are using `react-native-image-picker` to set user images, and we are using the `Dropdown` component to select technologies. The only novelty is selecting the colors, which implements the `flex-wrap` functionality of flexbox.
 
 ```javascript
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
-  Image,
-  Dimensions,
-  StyleSheet,
-  ActivityIndicator
-} from 'react-native';
-import _ from 'underscore';
 import Icon from 'react-native-vector-icons/Ionicons';
-import LeftButton from '../accounts/LeftButton';
+import ImagePicker from 'react-native-image-picker';
 import NavigationBar from 'react-native-navbar';
-import Colors from '../../styles/colors';
-import Globals from '../../styles/globals';
-import { Technologies, ImageOptions, DefaultAvatar } from '../../fixtures';
 import Dropdown, {
   Select,
   Option,
   OptionList
 } from 'react-native-selectme';
-import { API, DEV } from '../../config';
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-let ImagePickerManager = require('NativeModules').ImagePickerManager;
-const SolidColors = ['red','deepPurple','indigo','teal','orange','blueGrey','purple','green'];
-const TechnologyList = ({ technologies, handlePress }) => {
-  return (
-    <View style={styles.techOuterContainer}>
-      {technologies.map((technology, idx) => (
-        <TouchableOpacity key={idx} style={styles.techContainer} onPress={() => handlePress(technology)}>
-          <Text style={styles.technologyList}>{technology}</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
-  )
-};
+import React, { Component } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { uniq } from 'underscore';
 
-class CreateGroupConfirm extends Component{
+import Colors from '../../styles/colors';
+import BackButton from '../shared/BackButton';
+import { API, DEV } from '../../config';
+import { Technologies, ImageOptions, DefaultAvatar, Headers } from '../../fixtures';
+import { SolidColors, BackgroundImage } from '../../fixtures';
+import { globals, formStyles, selectStyles, optionTextStyles, overlayStyles } from '../../styles';
+const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+
+const styles = formStyles;
+
+const TechnologyList = ({ technologies, handlePress }) => (
+  <View style={styles.textContainer}>
+    {technologies.map((technology, idx) => (
+      <TouchableOpacity key={idx} onPress={() => handlePress(idx)} style={styles.technology}>
+        <Text style={[styles.h6, globals.primaryText]}>{technology}</Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+)
+
+class CreateGroupConfirmation extends Component{
   constructor(){
     super();
-    this.getOptions = this.getOptions.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.showImagePicker = this.showImagePicker.bind(this);
     this.selectTechnology = this.selectTechnology.bind(this);
+    this.goBack = this.goBack.bind(this);
     this.removeTechnology = this.removeTechnology.bind(this);
     this.state = {
-      image: '',
-      color: '#3F51B5',
-      technologies: []
+      color         : '#3F51B5',
+      errorMsg      : '',
+      image         : BackgroundImage,
+      technologies  : [],
     }
   }
-  getOptions(){
-    return this.refs.optionList;
+  handleSubmit(){
+    /* TODO: submit group creation form */
   }
-handleSubmit(){
-	/* TODO: handle submit functionality */
-}
-  showImagePicker(){
-    ImagePickerManager.showImagePicker(ImageOptions, (response) => {
-      if (DEV) {console.log('Response = ', response);}
-
-      if (response.didCancel) {
-        if (DEV) {console.log('User cancelled image picker');}
-      }
-      else if (response.error) {
-        if (DEV) {console.log('ImagePickerManager Error: ', response.error);}
-      }
-      else if (response.customButton) {
-        if (DEV) {console.log('User tapped custom button: ', response.customButton);}
-      }
-      else {
-        const source = 'data:image/png;base64,' + response.data;
-        // if (DEV) {console.log('SRC', source);}
-        this.setState({ image: source });
-      }
+  showImagePicker(){ /* select image from camera roll for groupImage */
+    ImagePicker.showImagePicker(ImageOptions, (response) => {
+      if (response.didCancel || response.error) { return; }
+      const image = 'data:image/png;base64,' + response.data;
+      this.setState({ image });
     });
   }
   selectTechnology(technology){
-    this.setState({ technologies: _.uniq(this.state.technologies.concat(technology))})
+    this.setState({
+      technologies: uniq(this.state.technologies.concat(technology))
+    });
   }
-  removeTechnology(technology){
-    this.setState({ technologies: this.state.technologies.filter(tech => tech !== technology)})
+  removeTechnology(index){
+    let { technologies } = this.state;
+    this.setState({
+      technologies: [
+      ...technologies.slice(0, index),
+      ...technologies.slice(index + 1)
+      ]
+    })
+  }
+  goBack(){
+    this.props.navigator.pop();
   }
   render(){
     let { navigator } = this.props;
-    let { technologies, image, color } = this.state;
-    let titleConfig = {title: 'Create Assembly', tintColor: 'white'}
+    let { technologies, image, color, errorMsg } = this.state;
     return (
-      <View style={styles.container}>
+      <View style={[globals.flexContainer, globals.inactive]}>
         <NavigationBar
-          title={titleConfig}
+          title={{ title: 'Create Assembly', tintColor: 'white' }}
           tintColor={Colors.brandPrimary}
-          leftButton={<LeftButton navigator={navigator}/>}
+          leftButton={<BackButton handlePress={this.goBack}/>}
         />
-        <ScrollView
-          style={styles.formContainer}>
+        <ScrollView style={styles.formContainer} contentInset={{ bottom: 49 }}>
           <Text style={styles.h4}>{"My technologies"}</Text>
           <Select
             width={deviceWidth}
@@ -1000,7 +984,7 @@ handleSubmit(){
             ref="select"
             styleText={optionTextStyles}
             style={selectStyles}
-            optionListRef={this.getOptions}
+            optionListRef={() => this.options}
             defaultValue="Add a technology"
             onSelect={this.selectTechnology}>
             {Technologies.map((tech, idx) => (
@@ -1009,235 +993,120 @@ handleSubmit(){
               </Option>
             ))}
           </Select>
-          <OptionList ref='optionList' overlayStyles={overlayStyles}/>
+          <OptionList
+            ref={(el) => this.options = el }
+            overlayStyles={overlayStyles}
+          />
           <View>
-            { technologies.length ? <TechnologyList technologies={technologies} handlePress={this.removeTechnology}/> : null }
+            <TechnologyList technologies={technologies} handlePress={this.removeTechnology}/>
           </View>
-          <TouchableOpacity style={styles.addPhotoContainer} onPress={this.showImagePicker.bind(this)}>
+          <TouchableOpacity style={styles.avatarContainer} onPress={this.showImagePicker.bind(this)}>
             <Icon name="ios-camera" size={30} color={Colors.brandPrimary}/>
-            <Text style={styles.photoText}>Add a Photo</Text>
+            <Text style={[styles.h4, globals.primaryText]}>Add a Photo</Text>
           </TouchableOpacity>
-          <View style={{height: 200, alignItems: 'center', backgroundColor: 'black'}}>
-            <Image source={image === '' ? require('../../assets/images/welcome.png') : {uri: image}} style={styles.avatar}/>
+          <View style={styles.groupImageContainer}>
+            <Image source={{ uri: image ? image : BackgroundImage }} style={styles.groupImage}/>
           </View>
           <Text style={styles.h4}>What background color would you like?</Text>
-          <View style={styles.colorContainer}>
+          <View style={styles.colorsContainer}>
             {SolidColors.map((color, idx) => (
               <TouchableOpacity
                 key={idx}
-                onPress={()=>this.setState({color: Colors[color]})}
                 style={[styles.colorBox, {backgroundColor: Colors[color], borderColor: this.state.color == Colors[color] ? Colors.highlight : 'transparent' }]}
+                onPress={() => this.setState({color: Colors[color]})}
               >
               </TouchableOpacity>
             ))}
           </View>
+          <View style={[styles.error, globals.ma1]}>
+            <Text style={styles.errorText}>{errorMsg}</Text>
+          </View>
         </ScrollView>
-        <TouchableOpacity style={[Globals.submitButton, {marginBottom: 50}]} onPress={this.handleSubmit}>
-          <Text style={Globals.submitButtonText}>Create group</Text>
+        <TouchableOpacity style={[styles.submitButton, styles.buttonMargin]} onPress={this.handleSubmit}>
+          <Text style={globals.largeButtonText}>Create group</Text>
         </TouchableOpacity>
       </View>
     )
   }
-}
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  colorContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'stretch',
-    flexWrap: 'wrap'
-  },
-  colorBox: {
-    flex: 1,
-    height: (deviceWidth / 4) - 20,
-    width: (deviceWidth / 4) - 20,
-    margin: 10,
-    borderWidth: 4,
-  },
-  avatar: {
-    height: 200,
-    width: deviceWidth,
-    borderRadius: 3,
-    padding: 20,
-  },
-  technologyList:{
-    textAlign: 'left',
-    fontSize: 18,
-    fontWeight: 'bold',
-    backgroundColor: 'transparent',
-    color: Colors.brandPrimary,
-    paddingHorizontal: 2,
-    paddingVertical: 4,
-  },
-  backButton: {
-    paddingLeft: 20,
-    backgroundColor: 'transparent',
-    paddingBottom: 10,
-  },
-  formContainer: {
-    backgroundColor: Colors.inactive,
-    flex: 1,
-    paddingTop: 15,
-  },
-  submitButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.brandPrimary,
-    height: 80,
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 25,
-    fontWeight: '400'
-  },
-  h4: {
-    fontSize: 20,
-    fontWeight: '300',
-    marginTop: 15,
-    color: 'black',
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  formField: {
-    backgroundColor: 'white',
-    height: 50,
-    paddingTop: 5,
-    marginBottom: 10,
-  },
-  techContainer: {
-    paddingHorizontal: 2,
-    marginHorizontal: 2,
-    marginVertical: 4,
-  },
-  largeFormField: {
-    backgroundColor: 'white',
-    height: 100,
-  },
-  addPhotoContainer: {
-    backgroundColor: 'white',
-    marginVertical: 15,
-    marginHorizontal: (deviceWidth - 250) / 2,
-    width: 250,
-    borderRadius: 30,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  photoText: {
-    fontSize: 18,
-    paddingHorizontal: 10,
-    color: Colors.brandPrimary
-  },
-  input: {
-    color: '#ccc',
-    fontSize: 18,
-    fontWeight: '300',
-    height: 40,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  largeInput: {
-    color: '#777',
-    fontSize: 18,
-    backgroundColor: 'white',
-    fontWeight: '300',
-    height: 100,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  formField:{
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 30,
-    paddingVertical: 10,
-    backgroundColor: 'white',
-    marginVertical: 25,
-  },
-  formName:{
-    fontWeight: '300',
-    fontSize: 20,
-  },
-  techContainer: {
-    paddingHorizontal: 2,
-    marginHorizontal: 2,
-    marginVertical: 4,
-  },
-  techOuterContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 10
-  },
-});
-
-let selectStyles = {
-  backgroundColor: 'white',
-  justifyContent: 'center',
-  paddingLeft: 10,
-  borderTopWidth: 0,
-  borderBottomWidth: 0,
 };
 
-let optionTextStyles = {
-  fontSize: 18,
-  fontWeight: '300',
-}
+export default CreateGroupConfirmation;
 
-let overlayStyles = {
-  position: 'relative',
-  width: window.width,
-  height: window.height,
-  flex : 1,
-  justifyContent : "flex-start",
-  alignItems : "center",
-  backgroundColor : "#ffffff",
-};
-
-export default CreateGroupConfirm;
 ```
+![create group confirmation](/images/chapter-8/create-group-confirmation.png)
 
-![create group confirm](Screen Shot 2016-07-11 at 6.57.56 PM.png)
-Now all we have to do is pass all of our data to the `handleSubmit` function and create a new group. We should also watch for errors and alert the user of any. Let’s fill in that function.
+Let's review:
+- Just as in our registration component, we use the `react-native-selectme` package to select relevant technologies.
+- Although we render the image differently, our use of the `react-native-image-picker` package is exactly the same as in user registration.
+
+Now all we have to do is pass all of our data to the `handleSubmit` function and create a new group. We should also watch for errors and alert the user of any. Let’s fill in that function. We'll also create a function `setErrors` to check for errors.
 
 ```javascript
-handleSubmit(){
-  let { color, image, technologies } = this.state;
-  let { name, description, location, updateGroups, navigator } = this.props;
+application/components/groups/CreateGroupConfirmation.js
+
+function setErrorMsg({ location, name }){
   if (! location ){
-    this.setState({ errorMsg: 'You must provide a location.'})
+    return 'You must provide a location.';
   } else if (! name ){
-    this.setState({ errorMsg: 'You must provide a name.'})
-  } else if (! description){
-    this.setState({ errorMsg: 'You must provide a description.'})
+    return 'You must provide a name.';
   } else {
-    let group = { color, image, technologies, name, description, location };
-    fetch(`${API}/groups`, {
-      method: 'POST',
-      body: JSON.stringify(group);
-    })
-    .then(response => response.json())
-    .then(group => {
-      updateGroups(group);
-      navigator.push({
-        name: 'Group',
-        group: group
-      })
-    })
-    .catch(err => console.log('ERR:', err))
-    .done();
+    return '';
   }
 }
+class CreateGroupConfirm extends Component{
+  constructor(){
+    super();
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.showImagePicker = this.showImagePicker.bind(this);
+    this.selectTechnology = this.selectTechnology.bind(this);
+    this.goBack = this.goBack.bind(this);
+    this.removeTechnology = this.removeTechnology.bind(this);
+    this.state = {
+      color         : '#3F51B5',
+      errorMsg      : '',
+      image         : BackgroundImage,
+      technologies  : [],
+    }
+  }
+  handleSubmit(){
+    let errorMsg = setErrorMsg(this.props);
+    if (errorMsg !== '') { /* return error if missing information */
+      this.setState({ errorMsg: errorMsg }); return;
+    }
+    let group = {
+      color: this.state.color,
+      image: this.state.image,
+      technologies: this.state.technologies,
+      description: this.props.description,
+      location: this.props.location,
+      name: this.props.groupName,
+      members: [{
+        userId: this.props.currentUser.id,
+        role: 'owner',
+        joinedAt: new Date().valueOf(),
+        confirmed: true
+      }],
+      createdAt: new Date().valueOf()
+    };
+    fetch(`${API}/groups`, {
+      method: 'POST',
+      headers: Headers,
+      body: JSON.stringify(group)
+    })
+    .then(response => response.json())
+    .then(group => this.addGroup(group))
+    .catch(err => { console.log('ERR', err)})
+    .done();
+  }
+  addGroup(group){
+    console.log('GROUP', group)
+    this.props.addGroup(group);
+    this.props.navigator.popToTop();
+  }
+...
 ```
 
-Notice that we invoke a function `updateGroups` after the successful submission. This is because we want to update the `groups` array that we have in our parent `GroupsView` component. We then use `navigator` to navigate to our newly created `group`. Let’s make sure we create the function `updateGroups` and that we add a new route `Group` with a corresponding component.
+Notice that we invoke a function `updateGroups` after the successful submission. This is because we want to update the `groups` array that we have in our parent `GroupsView` component. We then use `navigator` to navigate back to the groups screen. Let’s make sure we create the function `updateGroups` and that we add a new route `Group` with a corresponding component.
 
 ```javascript
 application/components/groups/GroupsView.js
@@ -1249,12 +1118,16 @@ constructor(){
   this.addGroup = this.addGroup.bind(this);
 …
 addGroup(group){
-  this.setState({ groups: this.state.groups.concat(group)})
+  this.setState({
+    groups: [
+      ...this.state.groups, group
+    ]
+  })
 }
 …
-case 'CreateGroupConfirm':
+case 'CreateGroupConfirmation':
   return (
-    <CreateGroupConfirm 
+    <CreateGroupConfirmation 
       {...this.props} 
       {...route} 
       navigator={navigator}
@@ -1270,306 +1143,194 @@ case 'Group':
     />
   )
 ```
-Now let’s create the file `application/components/groups/Group.js`. Like usual, we’ll start off with a very simple component.
+
+Now if we fill out the form with a new group, we should see it in our groups screen.
+
+![create group example](/images/chapter-8/create-group-example-1.png)
+![create group example](/images/chapter-8/create-group-example-2.png)
+![create group example](/images/chapter-8/create-group-example-3.png)
+
+Let's make a commit here.
+
+[Commit 19]() - "Successfully create group"
+
+
+## Viewing a Group
+
+Now that we're able to create groups, we want to flesh out our `Group` view. Ideally, we want to show the group's background image, information on how many users it has, and a list of events. Let's edit `application/components/groups/Group.js`.
 
 ```javascript
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet
-} from 'react-native';
-
-const Group = ({group}) => (
-  <View style={styles.container}>
-    <Text>{group.name}</Text>
-  </View>
-);
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white'
-  }
-});
-
-export default Group;
-
-```
-
-Now when we create a new group, we should be directed to a blank screen with the group name. If we refresh, we will see the new group in our `Groups` view.
-![meteor ny](Screen Shot 2016-07-11 at 10.30.00 PM.png)
-
-
-![new groups](Screen Shot 2016-07-11 at 10.52.07 PM.png)
-
-
-## 8.5 Viewing a Group
-
-Now that we're able to create groups, we want to flesh out our `Group` view. Ideally, we want to show the group's background image, information on how many users it has, and a list of events. Let's edit `application/components/groups/Group.js`. We should also change `Groups.js` to make each group box link to `Group`. 
-
-```javascript
-application/components/groups/Groups.js
-
-...
-const GroupBoxes = ({ groups, navigator }) => (
-  <View style={{justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap'}}>
-    {groups.map((group, idx) => {
-      if (!group) { return <EmptyGroupBox key={idx}/>}
-      return (
-        <TouchableOpacity
-          key={idx}
-          style={styles.groupsContainer}
-          onPress={() => navigator.push({
-            name: 'Group',
-            group
-          })}
-        >
-          <Image source={{uri: group.image}} style={styles.groupImage}>
-            <View style={[styles.group, {backgroundColor: group.color,}]} >
-              <Text style={styles.groupText}>{group.name}</Text>
-            </View>
-          </Image>
-        </TouchableOpacity>
-      )
-    })}
-  </View>
-);
-...
-
 application/components/Group.js
-
-import React, { Component } from 'react';
-import {
-  View,
-  ScrollView,
-  Dimensions,
-  TouchableOpacity,
-  ActivityIndicator,
-  Text,
-  Image,
-  StyleSheet
-} from 'react-native';
-
-import NavigationBar from 'react-native-navbar';
+import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
-import LeftButton from '../accounts/LeftButton';
+import NavigationBar from 'react-native-navbar';
+import React, { Component } from 'react';
+import { View, ListView, ScrollView, TouchableOpacity, Text, Image, ActionSheetIOS } from 'react-native';
+import { find, findIndex, isEqual } from 'underscore';
+
+import BackButton from '../shared/BackButton';
 import { API, DEV } from '../../config';
+import { Headers } from '../../fixtures';
+import { globals, groupsStyles } from '../../styles';
 
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+const styles = groupsStyles;
 
-class Group extends Component{
-  constructor(){
-    super();
-    this.state = {
-      users: []
-    }
-  }
-  componentDidMount(){
-    let { group } = this.props;
-    let query = {
-      id: { $in: group.members.map(member => member.userId) }
-    }
-    fetch(`${API}/users?${JSON.stringify(query)}`)
-    .then(response => response.json())
-    .then(users => this.setState({ users, ready: true }))
-    .catch(err => this.setState({ ready: true }))
-    .done();
-  }
+function isMember(group, currentUser){
+  return findIndex(group.members, ({ userId }) => isEqual(userId, currentUser.id)) !== -1;
+};
+
+function showJoinButton(users, currentUser){
+  return findIndex(users, ({ id }) => isEqual(id, currentUser.id)) === -1;
+}
+
+class EventList extends Component{
   render(){
-    let { users } = this.state;
-    let { group, currentUser, navigator } = this.props;
+    <View>
+      {this.props.events.map((event, idx) => (
+        <Text>{event.name}</Text>
+      ))}
+    </View>
+  }
+};
+
+class JoinButton extends Component{
+  render(){
+    let { addUserToGroup, group, currentUser } = this.props
+    let hasJoined = isMember(group, currentUser);
     return (
-      <View style={styles.container}>
-        <NavigationBar
-          title={{title: group.name, tintColor: 'white'}}
-          tintColor={Colors.brandPrimary}
-          leftButton={<LeftButton navigator={navigator}/>}
-        />
-        <ScrollView style={styles.scrollView}>
-          <Image source={{uri: group.image}} style={styles.topImage}>
-            <View style={styles.overlayBlur}>
-              <Text style={styles.h1}>{group.name}</Text>
-            </View>
-            <View style={styles.bottomPanel}>
-              <Text style={styles.memberText}>{group.members.length} {group.members.length === 1 ? 'member' : 'members'}</Text>
-            </View>
-          </Image>
-          <Text style={styles.h2}>Summary</Text>
-          <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{group.description}</Text>
-          <Text style={styles.h2}>Technologies</Text>
-          <Text style={styles.h3}>{group.technologies.join(', ')}</Text>
-          { group.members.map(m => m.userId).indexOf(currentUser.id) === -1 ? this._renderJoin() : null}
-          <Text style={styles.h2}>Events</Text>
-          <Text style={styles.h2}>Members</Text>
-          <View style={styles.break} />
-          {group.members.map((member, idx) => {
-            if (DEV) {console.log('MEMBER', member)}
-            let user = users[users.map(u => u.id).indexOf(member.userId)];
-            let isOwner = member.role === 'owner';
-            let isAdmin = member.role === 'admin';
-            let status = isOwner ? 'owner' : isAdmin ? 'admin' : 'member'
-            if ( ! user ) { return; }
-            return (
-              <TouchableOpacity key={idx} style={styles.memberContainer}>
-                <Image source={{uri: user.avatar}} style={styles.avatar}/>
-                <View style={styles.memberInfo}>
-                  <Text style={styles.h5}>{user.firstName} {user.lastName}</Text>
-                  <Text style={styles.h4}>{status}</Text>
-                </View>
-              </TouchableOpacity>
-            )
-          })}
-        </ScrollView>
+      <View style={[styles.joinButtonContainer, globals.mv1]}>
+        <TouchableOpacity onPress={() => addUserToGroup(group, currentUser)} style={styles.joinButton}>
+          <Text style={styles.joinButtonText}>{ hasJoined ? 'Joined' : 'Join'}</Text>
+            <Icon
+              name={hasJoined ? "ios-checkmark" : "ios-add"}
+              size={30}
+              color='white'
+              style={styles.joinIcon}
+            />
+        </TouchableOpacity>
       </View>
     )
   }
 }
 
-let styles = StyleSheet.create({
-  backButton: {
-    paddingLeft: 20,
-    paddingBottom: 10,
-    backgroundColor: 'transparent',
-  },
-  addButton: {
-    backgroundColor: 'transparent',
-    paddingRight: 20,
-    paddingBottom: 10,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  topImage: {
-    width: deviceWidth,
-    height: 200,
-    flexDirection: 'column',
-  },
-  overlayBlur: {
-    backgroundColor: '#333',
-    opacity: 0.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
-  },
-  h1: {
-    fontSize: 22,
-    color: 'white',
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  bottomPanel: {
-    flex: 0.3,
-    backgroundColor: 'white',
-    opacity: 0.8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  memberText: {
-    textAlign: 'center',
-    color: Colors.brandPrimary,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  h4: {
-    fontSize: 16,
-    fontWeight: '300',
-  },
-  h3: {
-    fontSize: 16,
-    color: Colors.brandPrimary,
-    paddingHorizontal: 18,
-    paddingVertical: 5,
-    fontWeight: '400',
-  },
-  break: {
-    height: 1,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    marginHorizontal: 15,
-    marginVertical: 5,
-  },
-  h2: {
-    fontSize: 20,
-    fontWeight: '400',
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  eventContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  joinContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  joinButton: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    backgroundColor: Colors.brandPrimary,
-  },
-  joinText: {
-    fontSize: 22,
-    color: 'white',
-    fontWeight: 'bold',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    textAlign: 'center',
-  },
-  joinIcon: {
+export const GroupMembers = ({ users, members, handlePress }) => {
+  return (
+    <View>
+      {members.map((member, idx) => {
+        let user = find(users, ({ id }) => isEqual(id, member.userId));
+        if ( ! user ) { return; }
+        return (
+          <TouchableOpacity key={idx} style={globals.flexRow} onPress={() => handlePress(user)}>
+            <Image source={{uri: user.avatar}} style={globals.avatar}/>
+            <View style={globals.textContainer}>
+              <Text style={globals.h5}>{user.firstName} {user.lastName}</Text>
+              <Text style={[styles.h4, globals.mh1]}>{member.role}</Text>
+            </View>
+          </TouchableOpacity>
+        )
+      })}
+    </View>
+  );
+}
 
-  },
-  eventInfo: {
-    flex: 1,
-  },
-  h5: {
-    fontSize: 18,
-    fontWeight: '500',
-  },
-  goingContainer: {
-    flex: 0.8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  goingText: {
-    fontSize: 17,
-    color: Colors.brandPrimary
-  },
-  memberContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  avatar: {
-    height: 70,
-    width: 70,
-    borderRadius: 35,
-  },
-  memberInfo: {
-    paddingLeft: 30,
-  },
-});
+class Group extends Component{
+  constructor(){
+    super();
+    this.goBack = this.goBack.bind(this);
+    this.visitProfile = this.visitProfile.bind(this);
+    this.state = {
+      events    : [],
+      ready     : false,
+      users     : [],
+    }
+  }
+
+  componentDidMount(){
+    this._loadUsers();
+  }
+
+  _loadUsers(events){
+    this.setState({ events })
+    let query = {
+      id: { $in: this.props.group.members.map(({ userId }) => userId ) },
+      $limit: 100
+    };
+    fetch(`${API}/users?${JSON.stringify(query)}`)
+    .then(response => response.json())
+    .then(users => this.setState({ users, ready: true }))
+    .catch(err => {})
+    .done();
+  }
+  goBack(){
+    this.props.navigator.replacePreviousAndPop({ name: 'Groups' });
+  }
+  visitProfile(user){
+    this.props.navigator.push({
+      name: 'Profile',
+      user
+    })
+  }
+  visitCreateEvent(group){
+    this.props.navigator.push({
+      name: 'CreateEvent',
+      group
+    })
+  }
+  render(){
+    let { group, currentUser } = this.props;
+    let showButton = showJoinButton(this.state.users, currentUser) && this.state.ready;
+    return (
+      <View style={globals.flexContainer}>
+        <NavigationBar
+          title={{title: group.name, tintColor: 'white'}}
+          tintColor={Colors.brandPrimary}
+          leftButton={<BackButton handlePress={this.goBack}/>}
+        />
+        <ScrollView style={globals.flex}>
+          <Image source={{uri: group.image}} style={styles.groupTopImage}>
+            <View style={styles.overlayBlur}>
+              <Text style={styles.h1}>{group.name}</Text>
+            </View>
+            <View style={styles.bottomPanel}>
+              <Text style={[globals.h4, globals.primaryText]}>
+                {group.members.length} {group.members.length === 1 ? 'member' : 'members'}
+              </Text>
+            </View>
+          </Image>
+          <Text style={styles.h2}>Summary</Text>
+          <Text style={[globals.h5, globals.ph2]}>{group.description}</Text>
+          <Text style={styles.h2}>Technologies</Text>
+          <Text style={[globals.h5, globals.ph2]}>{group.technologies.join(', ')}</Text>
+          <View style={globals.lightDivider}/>
+          { showButton ? <JoinButton addUserToGroup={this.props.addUserToGroup} group={group} currentUser={currentUser} /> : null }
+          <Text style={styles.h2}>Events</Text>
+          <View style={globals.lightDivider} />
+          <Text style={styles.h2}>Members</Text>
+          <View style={globals.lightDivider} />
+          <GroupMembers
+            members={group.members}
+            users={this.state.users}
+            handlePress={this.visitProfile}
+          />
+        </ScrollView>
+      </View>
+    )
+  }
+};
 
 export default Group;
 
+
 ```
+![new group example](/images/chapter-8/new-group-example-1.png)
+
+Let's review the new code:
+- In our `componentDidMount` lifecycle method, we fetch the users related to the group. We use the mongodb `$in` operator for this, fetching all the users that have an id in the groups members array. We also utilize the `$limit` option, to keep the users being fetched to 10 in number.
+- We pass our fetched users to a `<GroupMembers/>` component which renders each one at the bottom of the screen. Currently, these are pressable but lead to a blank screen. Later, we will have them direct to a user profile screen.
+- We also have an `events` section that isn't being used currently. We will need implement functionality to create and render events before fleshing this out further.
+- Also notice that if the user isn't a member, the "join" button will appear, but it throws an error when pressed. This is because we haven't defined an `addUserToGroup` method in our top-level `GroupsView` component.
+
  
 ## Wrapping Up
 
 So far in this chapter, we rendered groups that belong to a user and that are nearby. We created a form for making new groups and rendered individual groups. Next we have to add the ability to join different groups and create events for them. 
-
-![group](Screen Shot 2016-07-11 at 11.17.18 PM.png)
