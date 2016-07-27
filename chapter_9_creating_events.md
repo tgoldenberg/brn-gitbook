@@ -61,47 +61,70 @@ class GroupsView extends Component{
     )
 
 ```
+![join group](/images/chapter-9/join-group-2.png)
 
+![join group](/images/chapter-9/join-group-1.png)
 
 
 Now when you click to join a group, our button should change its content to a success message, and the group should be added to our joined groups in the top level `Groups` component. Notice that we don’t just change the component state but also update our database through a `PUT` call to our Deployd server.
 
-What about removing oneself from a group? For that, we can have an `ActionSheetIOS` component that gives us a list of actions, one of which can be to leave the group.
+What about removing oneself from a group? For that, we can have an `ActionSheetIOS` component that gives us a list of actions, one of which can be to leave the group. Let's add an ellipses icon as the right button of our navigation bar, and have it open up the `ActionSheetIOS` component.
 
 ```javascript
+application/components/groups/Group.js
+
 …
 const OptionsButton = ({ openActionSheet }) => {
   return (
-    <TouchableOpacity style={styles.addButton} onPress={openActionSheet}>
+    <TouchableOpacity style={globals.pa1} onPress={openActionSheet}>
       <Icon name="ios-more" size={25} color="#ccc" />
-    </TouchableOpacity >
+    </TouchableOpacity>
   )
 }
 …
 class Group extends Component{
   constructor(){
     super();
-    this._renderJoin = this._renderJoin.bind(this);
+    this.goBack = this.goBack.bind(this);
+    this.visitProfile = this.visitProfile.bind(this);
+    this.visitCreateEvent = this.visitCreateEvent.bind(this);
     this.openActionSheet = this.openActionSheet.bind(this);
     this.state = {
-      users: [],
-      ready: false,
+      events    : [],
+      ready     : false,
+      users     : [],
     }
   }
   openActionSheet(){
-    let { group, currentUser, unsubscribeFromGroup } = this.props;
+    let { group, currentUser } = this.props;
+    let member = find(group.members, ({ userId }) => isEqual(userId, currentUser.id));
+    let buttonActions = ['Unsubscribe', 'Cancel'];
+    if (member && member.role === 'owner') {
+      buttonActions.unshift('Create Event');
+    }
     let options = {
-      options: ['Unsubscribe', 'Cancel'],
-      cancelButtonIndex: 1
+      options: buttonActions,
+      cancelButtonIndex: buttonActions.length-1
     };
     ActionSheetIOS.showActionSheetWithOptions(options, (buttonIndex) => {
-      switch(buttonIndex){
-        case 0:
-          unsubscribeFromGroup(group, currentUser);
+      switch(buttonActions[buttonIndex]){
+        case 'Unsubscribe':
+          this.props.unsubscribeFromGroup(group, currentUser);
+          break;
+        case 'Create Event':
+          this.visitCreateEvent(group);
+          break;
         default:
           return;
       }
     });
+  }
+
+  visitCreateEvent(group){
+    this.props.navigator.push({
+      name: 'CreateEvent',
+      group
+    })
   }
 …
 <NavigationBar
@@ -112,55 +135,59 @@ class Group extends Component{
 />
 ```
 
-![group unsubscribe](Screen Shot 2016-07-13 at 11.28.25 PM.png)
-
-
-Now that we’ve invoked a `prop` `unsubscribeFromGroup`, we have to define it in our `GroupsView` component and pass it as a `prop`.
+We also have to define the method of `unsubscribeFromGroup` in our main `GroupsView.js` component.
 
 ```javascript
-unsubscribeFromGroup(group, currentUser){
-  let { groups, suggestedGroups } = this.state;
-  group.members = group.members.filter(member => member.userId !== currentUser.id);
-  groups = groups.filter(g => g.id !== group.id);
-  suggestedGroups = suggestedGroups.concat(group);
-  this.setState({ groups, suggestedGroups })
-  this.updateGroup(group);
-}
-```
-
-Now notice that there is a lit of jumpiness when transitioning from the `Group` page to the `Groups` page when `pop`ping from the navigation stack. To eliminate this, we need to specify a `replaceAndPop` method instead of `pop` for the navigator. Let's modify our `LeftButton` component to take a `handlePress` function and then invoke it. Remember to modify the `props` of `<LeftButton` in other files that use it. 
-
-```javascript
-application/components/accounts/LeftButton.js
-
-import React from 'react';
-import {
-  TouchableOpacity
-} from 'react-native';
-
-import Icon from 'react-native-vector-icons/Ionicons';
-import Globals from '../../styles/globals';
-
-const LeftButton = ({ handlePress }) => {
-  return (
-    <TouchableOpacity style={Globals.backButton} onPress={handlePress}>
-      <Icon name="ios-arrow-back" size={25} color="#ccc" />
-    </TouchableOpacity>
-  );
-};
-
-export default LeftButton;
-
-
-application/components/groups/Group.js
 ...
-<NavigationBar
-  title={{title: group.name, tintColor: 'white'}}
-  tintColor={Colors.brandPrimary}
-  leftButton={<LeftButton handlePress={() => navigator.replacePreviousAndPop({name: 'Groups'})}/>}
-  rightButton={<OptionsButton openActionSheet={this.openActionSheet}/>}
-/>
+class GroupsView extends Component{
+  constructor(){
+    super();
+    this.addGroup = this.addGroup.bind(this);
+    this.unsubscribeFromGroup = this.unsubscribeFromGroup.bind(this);
+    this.addUserToGroup = this.addUserToGroup.bind(this);
+    this.state = {
+      groups            : [],
+      ready             : false,
+      suggestedGroups   : [],
+    }
+  }
+  ...
+  unsubscribeFromGroup(group, currentUser){
+    let { groups, suggestedGroups } = this.state;
+    group.members = group.members.filter(member => member.userId !== currentUser.id);
+    groups = groups.filter(g => g.id !== group.id);
+    suggestedGroups = [
+      ...suggestedGroups, group
+    ];
+    this.setState({ groups, suggestedGroups })
+    this.updateGroup(group);
+  }
+  ...
+  case 'Group':
+    return (
+      <Group
+        {...this.props}
+        {...this.state}
+        {...route}
+        addUserToGroup={this.addUserToGroup}
+        navigator={navigator}
+        unsubscribeFromGroup={this.unsubscribeFromGroup}
+      />
+  );
+...
 ```
+
+Let's review:
+- We render a button as our right icon of our navigation bar. When it is pressed, we show the `ActionSheetIOS` by invoking the `showActionSheetWithOptions` function. We give two main options - either cancel the action sheet or unsubscribe from the group. We also give a 3rd option of creating an event if the user is an "owner" of the group. 
+- When a user presses "unsubscribe", we filter the user out of the group's members and pass the group to the suggested groups array. We then update the state of both our groups and suggested groups. Last, we make changes to the database through an API call.
+
+![group unsubscribe](/images/chapter-9/group-unsubscribe-1.png)
+![group unsubscribe](/images/chapter-9/group-unsubscribe-2.png)
+![group unsubscribe](/images/chapter-9/group-unsubscribe.png)
+
+Let's make a commit here. 
+
+[Commit 20](https://github.com/buildreactnative/assemblies-tutorial/tree/eadafaaa4dad011e4deda51874fc0f90d51aff19) - "Create join and unsubscribe functionality for groups"
 
 ## 9.2 Creating Events
 
