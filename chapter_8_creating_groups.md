@@ -744,237 +744,151 @@ export default CreateGroupConfirmation;
 
 Now we link to our new routes when a user presses the `Add Group` button in `Groups.js`.
 
-[create group](/images/chapter-8/create-group-initial.png)
+![create group](/images/chapter-8/create-group-initial.png)
 
-Now we need to flesh out the form a bit.
+
+Now we need to flesh out the form a bit. First let's install another `npm` package - `react-native-keyboard-aware-scroll-view`. This package will ensure that our input fields don't get hidden by the keyboard. We simply use it in the same way as we have used the `ScrollView` component.
 
 ```javascript
 application/components/groups/CreateGroup.js
-import React, { Component } from 'react';
+
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import Colors from '../../styles/colors';
-import Globals from '../../styles/globals';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import LeftButton from '../accounts/LeftButton';
+import React, { Component } from 'react';
 import Config from 'react-native-config';
-import _ from 'underscore';
-import { autocompleteStyles } from '../accounts/Register';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { find, extend } from 'underscore';
 
-import {
-  ScrollView,
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  Dimensions
-} from 'react-native';
+import Colors from '../../styles/colors';
+import BackButton from '../shared/BackButton';
+import { globals, autocompleteStyles, formStyles } from '../../styles';
 
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+const styles = formStyles;
 
 class CreateGroup extends Component{
   constructor(){
     super();
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handlePress = this.handlePress.bind(this);
+    this.goBack = this.goBack.bind(this);
     this.state = {
-      name: '',
-      description: '',
-      location: null,
-      errorMsg: ''
+      description   : '',
+      errorMsg      : '',
+      location      : null,
+      name          : '',
     }
   }
   handleSubmit(){
-    let { name, location, summary } = this.state;
+    let { name, location, summary, description } = this.state;
     this.props.navigator.push({
       name        : 'CreateGroupConfirm',
       groupName   : name,
+      description,
       location,
-      summary
+      summary,
     })
   }
   handlePress(data, details){
-    this.setState({
-      location: _.extend({}, details.geometry.location, {
-        city: _.find(details.address_components, (c) => c.types[0] == 'locality'),
-        state: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_1'),
-        county: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_2'),
-        formattedAddress: details.formatted_address,
-      })
-    })
+    if ( ! details ) { return; }
+    let location = {
+      ...details.geometry.location,
+      city: find(details.address_components, (c) => c.types[0] === 'locality'),
+      state: find(details.address_components, (c) => c.types[0] === 'administrative_area_level_1'),
+      county: find(details.address_components, (c) => c.types[0] === 'administrative_area_level_2'),
+      formattedAddress: details.formatted_address
+    };
+    this.setState({ location });
+    this.name.focus();
+  }
+  goBack(){
+    this.props.navigator.pop();
   }
   render(){
     let { navigator } = this.props;
-    let titleConfig = {title: 'Create Assembly', tintColor: 'white'}
-    let leftButtonConfig = <LeftButton navigator={navigator}/>
     return (
-      <View style={styles.container}>
+      <View style={[globals.flexContainer, globals.inactive]}>
         <NavigationBar
-          title={titleConfig}
+          title={{ title: 'Create Assembly', tintColor: 'white' }}
           tintColor={Colors.brandPrimary}
-          leftButton={leftButtonConfig}
+          leftButton={<BackButton handlePress={this.goBack}/>}
         />
-        <ScrollView
-          style={styles.formContainer}
-          contentContainerStyle={styles.scrollView}>
+        <KeyboardAwareScrollView style={styles.formContainer} contentInset={{ bottom: 49}}>
+          <Text style={styles.h4}>* Where is your group located?</Text>
+          <GooglePlacesAutocomplete
+            styles={autocompleteStyles}
+            placeholder='Your city'
+            minLength={2} 
+            autoFocus={false}
+            fetchDetails={true}
+            onPress={this.handlePress}
+            getDefaultValue={() => { return ''; }}
+            query={{
+              key: Config.GOOGLE_PLACES_API_KEY,
+              language: 'en',
+              types: '(cities)',
+            }}
+            currentLocation={false}
+            currentLocationLabel="Current location"
+            nearbyPlacesAPI='GooglePlacesSearch'
+            GoogleReverseGeocodingQuery={{}}
+            GooglePlacesSearchQuery={{ rankby: 'distance',}}
+            filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']}
+            predefinedPlaces={[]}
+          />
           <Text style={styles.h4}>* Name of your assembly</Text>
           <View style={styles.formField}>
             <TextInput
-              ref="name"
               returnKeyType="next"
               autofocus={true}
-              onChangeText={(text)=> this.setState({name: text})}
+              ref={(el) => this.name = el }
+              onSubmitEditing={() => this.description.focus()}
+              onChangeText={(name) => this.setState({ name })}
               placeholderTextColor='#bbb'
               style={styles.input}
               placeholder="Name of your assembly"
             />
           </View>
-          <Text style={styles.h4}>* Where is your group located?</Text>
-          <GooglePlacesAutocomplete
-            styles={autocompleteStyles}
-            placeholder='Your city'
-            minLength={2} // minimum length of text to search
-            autoFocus={false}
-            ref="location"
-            fetchDetails={true}
-            onPress={this.handlePress}
-            getDefaultValue={() => { return ''; }}
-            query={{
-              key       : Config.GOOGLE_PLACES_API_KEY,
-              language  : 'en', // language of the results
-              types     : '(cities)', // default: 'geocode'
-            }}
-            currentLocation={false} // Will add a 'Current location' button at the top of the predefined places list
-            currentLocationLabel="Current location"
-            nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-            GoogleReverseGeocodingQuery={{}}
-            GooglePlacesSearchQuery={{ rankby: 'distance',}}
-            filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-            predefinedPlaces={[]}
-          />
           <Text style={styles.h4}>Who should join and why?</Text>
           <TextInput
-            ref="summary"
+            ref={(el) => this.description = el }
             returnKeyType="next"
             blurOnSubmit={true}
             clearButtonMode='always'
-            onChangeText={(text)=> this.setState({summary: text})}
+            onChangeText={(text)=> this.setState({ description: text })}
             placeholderTextColor='#bbb'
             style={styles.largeInput}
             multiline={true}
             placeholder="Type a message to get people interested in your group..."
           />
-        </ScrollView>
+        </KeyboardAwareScrollView>
         <TouchableOpacity
           onPress={this.handleSubmit}
-          style={[Globals.submitButton, {marginBottom: 50}]}>
-          <Text style={Globals.submitButtonText}>Next</Text>
+          style={[styles.submitButton, styles.buttonMargin]}>
+          <Text style={globals.largeButtonText}>Next</Text>
         </TouchableOpacity>
       </View>
     )
   }
 }
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white'
-  },
-  backButton: {
-    paddingLeft: 20,
-    backgroundColor: 'transparent',
-    paddingBottom: 10,
-  },
-  formContainer: {
-    backgroundColor: Colors.inactive,
-    flex: 1,
-    paddingTop: 25,
-  },
-  submitButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.brandPrimary,
-    height: 80,
-    marginBottom: 50,
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 25,
-    fontWeight: '400'
-  },
-  h4: {
-    fontSize: 20,
-    fontWeight: '300',
-    color: 'black',
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  formField: {
-    backgroundColor: 'white',
-    height: 50,
-    paddingTop: 5,
-  },
-  largeFormField: {
-    backgroundColor: 'white',
-    height: 100,
-  },
-  addPhotoContainer: {
-    backgroundColor: 'white',
-    marginVertical: 15,
-    marginHorizontal: (deviceWidth - 200) / 2,
-    borderRadius: 30,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  photoText: {
-    fontSize: 18,
-    paddingHorizontal: 10,
-    color: Colors.brandPrimary
-  },
-  technologyList:{
-    textAlign: 'left',
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.brandPrimary,
-    paddingHorizontal: 20,
-    paddingVertical: 4,
-  },
-  input: {
-    color: '#777',
-    fontSize: 18,
-    fontWeight: '300',
-    height: 40,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  avatar: {
-    height: 200,
-    width: deviceWidth,
-    borderRadius: 3,
-    padding: 20,
-  },
-  largeInput: {
-    color: '#777',
-    fontSize: 18,
-    backgroundColor: 'white',
-    fontWeight: '300',
-    height: 120,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-});
 
 export default CreateGroup;
 
 ```
-![create group form](Screen Shot 2016-07-11 at 9.52.46 AM.png)
+![create group form](/images/chapter-8/create-assembly-1.png)
+
+Let's go over this:
+- Many parts of this form will look very similar. That's because they are the same components we used in our user registration process. This is the easy part. The next part we will have to be a bit more creative.
+- Our `handleSubmit` method takes the saved component state and passes it to the next route - `CreateGroupConfirmation`. We pass in the field `groupName` because the field `name` is already taken by the `Navigator` component.
+
+In the second part, we want our users to select a background image, a color, and a list of related technologies. Let's make a commit at this point.
+
+[Commit 18](https://github.com/buildreactnative/assemblies-tutorial/tree/90d955ba98c87ecc330727a70ad143f2c91eb7ab) - "Render first part of group creation form"
 
 
-You'll notice that this first part is very similar to the forms we created for user registration. In the second part, we want our user to select a possible background image, a color, and technologies for their group. Here we will have to be a little more creative.
+### Confirmation Form for Creating Groups
+
 
 
 Here is the interfact of our `CreateGroupConfirm` component. Notice many of the similarities between it and our `RegisterConfirm` form from before. In both we are using `react-native-image-picker` to set user images, and we are using the `Dropdown` component to select technologies. The only novelty is selecting the colors, which implements the `flex-wrap` functionality of flexbox.
