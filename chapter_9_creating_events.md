@@ -193,36 +193,9 @@ Let's make a commit here.
 
 In the last part we added the ability to join or unsubscribe from a group. Next we want to give the group owners the ability to create and edit events. We can see that each member to a group has a specific role, currently either `member` or `owner`. We want users with `owner` privileges to be able to create and edit events, while users with `member` privileges have the ability to RSVP or cancel their reservation for an event.
 
-Let’s add a button to our `ActionSheetIOS` to create an event if the user is an owner.
+We've already added the code that allows an "owner" to Create an Event on the `ActionSheetIOS`. However, it doesn't lead anywhere. Therefore, we have to create another route for `CreateEvent`.
 
-```javascript
-…
-openActionSheet(){
-  let { group, currentUser, unsubscribeFromGroup, navigator } = this.props;
-  let role = find(group.members, (member) => member.userId === currentUser.id).role;
-  let buttonActions = ['Unsubscribe', 'Cancel'];
-  if (role === 'admin' || role === 'owner')
-    buttonActions.unshift('Create Event');
-  let options = {
-    options: buttonActions,
-    cancelButtonIndex: buttonActions.length-1
-  };
-  ActionSheetIOS.showActionSheetWithOptions(options, (buttonIndex) => {
-    switch(buttonActions[buttonIndex]){
-      case 'Unsubscribe':
-        unsubscribeFromGroup(group, currentUser);
-      case 'Create Event':
-        navigator.push({ name: 'Create Event', group })
-      default:
-        return;
-    }
-  });
-}
-
-```
-![create event](Screen Shot 2016-07-14 at 6.28.11 PM.png)
-
-Since we are redirecting after the user selects `Create Event`, we also need to define the `Create Event` route and create a `CreateEvent` component.
+Let's modify `GroupsViews.js` and add a new file for `application/components/groups/CreateEvents.js`.
 
 ```javascript
 application/components/groups/GroupsView.js
@@ -238,33 +211,43 @@ import CreateEvent from './CreateEvent';
       />
     )
 …
+```
+```javascript
+application/components/groups/CreateEvent.js
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import NavigationBar from 'react-native-navbar';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-application/groups/CreateEvent.js
+import BackButton from '../shared/BackButton';
+import Colors from '../../styles/colors';
+import { globals } from '../../styles';
 
-import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet
-} from 'react-native';
-
-const CreateEvent = () => (
-  <View style={styles.container}>
-    <Text>CREATE EVENT</Text>
-  </View>
-);
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white'
+class CreateEvent extends Component{
+  constructor(){
+    super();
+    this.goBack = this.goBack.bind(this);
   }
-});
+  goBack(){
+    this.props.navigator.pop();
+  }
+  render(){
+    return (
+      <View style={globals.flexContainer}>
+        <NavigationBar
+          title={{ title: 'Create Event', tintColor: 'white' }}
+          tintColor={Colors.brandPrimary}
+          leftButton={<BackButton handlePress={this.goBack}/>}
+        />
+        <View style={globals.flexCenter}>
+          <Text style={globals.h2}>CreateEvent</Text>
+        </View>
+      </View>
+    );
+  }
+};
 
 export default CreateEvent;
-
 ```
 
 Now if the user selects `Create Event`, they should be directed to this page. Now we need to fill in the form to create an event. Remember that our `events` have the following schema: 
