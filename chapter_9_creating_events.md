@@ -72,7 +72,6 @@ What about removing oneself from a group? For that, we can have an `ActionSheetI
 
 ```javascript
 application/components/groups/Group.js
-
 …
 const OptionsButton = ({ openActionSheet }) => {
   return (
@@ -119,7 +118,6 @@ class Group extends Component{
       }
     });
   }
-
   visitCreateEvent(group){
     this.props.navigator.push({
       name: 'CreateEvent',
@@ -251,7 +249,7 @@ export default CreateEvent;
 ```
 ![create event](/images/chapter-9/create-event-1.png)
 
-### Selecting Date and Numerical Information
+## Selecting Date and Numerical Information
 
 Now if the user selects `Create Event`, they should be directed to this page. Now we need to fill in the form to create an event. Remember that our `events` have the following schema: 
 
@@ -268,251 +266,156 @@ capacity: Number
 
 Since many of these fields require a numeric value, we’re going to explore using a Picker component. As far as the starting time and ending time, we will need some type of date selector.  Let’s design our form to take the name, location, and capacity in the first part, and the start and end times for the 2nd part.
 
-Before we start `CreateEvent`, 
-
-
-
-
 ```javascript
-application/components/groups/CreateEvent.js
-import React, { Component, PropTypes } from 'react';
-import {
-  ScrollView,
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Slider,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
-import Picker from 'react-native-picker';
-import Colors from '../../styles/colors';
-import Globals from '../../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
+import React, { Component, PropTypes } from 'react';
+import { ScrollView, View, Text, TextInput, Slider, TouchableOpacity } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { extend, find, range } from 'underscore';
-import { autocompleteStyles } from '../accounts/Register';
-import LeftButton from '../accounts/LeftButton';
-import Config from 'react-native-config';
+import { find } from 'underscore';
 
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+import Colors from '../../styles/colors';
+import BackButton from '../shared/BackButton';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Config from 'react-native-config';
+import { globals, formStyles, autocompleteStyles } from '../../styles';
+
+const styles = formStyles;
 
 class CreateEvent extends Component{
   constructor(){
     super();
-    this.submitForm = this.submitForm.bind(this);
     this.saveLocation = this.saveLocation.bind(this);
+    this.submitForm = this.submitForm.bind(this);
+    this.goBack = this.goBack.bind(this);
     this.state = {
-      location: null,
-      name: '',
-      capacity: 50,
-      showPicker: false,
+      capacity    : 50,
+      location    : null,
+      name        : '',
+      showPicker  : false,
     };
   }
   submitForm(){
-    let { location, name, capacity } = this.state;
-    let { navigator, group } = this.props;
-    navigator.push({
-      name: 'CreateEventConfirm',
-      group,
-      location,
-      capacity,
-      eventName: name
+    this.props.navigator.push({
+      name: 'CreateEventConfirmation',
+      group: this.props.group,
+      location: this.state.location,
+      capacity: this.state.capacity,
+      eventName: this.state.name,
     })
   }
   saveLocation(data, details=null){
-    this.setState({
-      location: extend({}, details.geometry.location, {
-        city: find(details.address_components, (c) => c.types[0] == 'locality'),
-        state: find(details.address_components, (c) => c.types[0] == 'administrative_area_level_1'),
-        county: find(details.address_components, (c) => c.types[0] == 'administrative_area_level_2'),
-        formattedAddress: details.formatted_address,
-      })
-    });
+    if ( ! details ) { return; }
+    let location = {
+      ...details.geometry.location,
+      city: find(details.address_components, (c) => c.types[0] === 'locality'),
+      state: find(details.address_components, (c) => c.types[0] === 'administrative_area_level_1'),
+      county: find(details.address_components, (c) => c.types[0] === 'administrative_area_level_2'),
+      formattedAddress: details.formatted_address
+    };
+    this.setState({ location });
+    this.name.focus();
+  }
+  goBack(){
+    this.props.navigator.pop();
   }
   render(){
-    let { navigator } = this.props;
-    let { capacity, showPicker } = this.state;
-    let titleConfig = {title: 'Create Event', tintColor: 'white'};
+    let { capacity } = this.state;
     return (
-      <View style={styles.container}>
+      <View style={[globals.flexContainer, globals.inactive]}>
         <NavigationBar
-          title={titleConfig}
+          title={{ title: 'Create Event', tintColor: 'white' }}
           tintColor={Colors.brandPrimary}
-          leftButton={<LeftButton handlePress={() => navigator.pop()}/>}
+          leftButton={<BackButton handlePress={this.goBack}/>}
         />
-        <ScrollView style={styles.formContainer} contentContainerStyle={styles.scrollViewContainer}>
+        <KeyboardAwareScrollView style={[styles.formContainer, globals.mt1]} contentInset={{bottom: 49}}>
+          <Text style={styles.h4}>* Where is the event?</Text>
+          <View style={globals.flex}>
+            <GooglePlacesAutocomplete
+              styles={autocompleteStyles}
+              placeholder='Type a place or street address'
+              minLength={2}
+              autoFocus={true}
+              fetchDetails={true}
+              onPress={this.saveLocation}
+              getDefaultValue={() => ''}
+              query={{
+                key: Config.GOOGLE_PLACES_API_KEY,
+                language: 'en'
+              }}
+              currentLocation={false}
+              currentLocationLabel='Current Location'
+              nearbyPlacesAPI='GooglePlacesSearch'
+              GoogleReverseGeocodingQuery={{}}
+              GooglePlacesSearchQuery={{ rankby: 'distance' }}
+              filterReverseGeocodingByTypes={['locality', 'adminstrative_area_level_3']}
+              predefinedPlaces={[]}
+            />
+          </View>
           <Text style={styles.h4}>{"* What's the event name?"}</Text>
           <View style={styles.formField}>
             <TextInput
-              ref="name"
               returnKeyType="next"
-              onChangeText={(text)=> this.setState({ name: text })}
+              ref={(el) => this.name = el }
+              onChangeText={(name) => this.setState({ name })}
               placeholderTextColor='#bbb'
               style={styles.input}
               placeholder="Type a name"
             />
           </View>
-          <Text style={styles.h4}>* Where is the event?</Text>
-          <GooglePlacesAutocomplete
-            styles={autocompleteStyles}
-            placeholder='Type a place or street address'
-            minLength={2}
-            autoFocus={false}
-            fetchDetails={true}
-            onPress={this.saveLocation}
-            getDefaultValue={() => ''}
-            query={{
-              key       :  Config.GOOGLE_PLACES_API_KEY,
-              language  : 'en', // language of the results
-            }}
-            currentLocation={false}
-            currentLocationLabel='Current Location'
-            nearbyPlacesAPI='GooglePlacesSearch'
-            GoogleReverseGeocodingQuery={{}}
-            GooglePlacesSearchQuery={{ rankby: 'distance' }}
-            filterReverseGeocodingByTypes={['locality', 'adminstrative_area_level_3']}
-            predefinedPlaces={[]}
-          />
           <Text style={styles.h4}>Attendee capacity</Text>
           <View style={styles.formField}>
             <View style={styles.pickerButton}>
               <Text style={styles.input}>{capacity ? capacity : 'Choose a duration'}</Text>
             </View>
           </View>
-          <Slider
-            style={styles.slider}
-            defaultValue={capacity}
-            step={10}
-            minimumValue={10}
-            maximumValue={200}
-            onValueChange={(val) => this.setState({capacity: val})}
-          />
-        </ScrollView>
+          <View style={globals.mv1}>
+            <Slider
+              style={styles.slider}
+              defaultValue={capacity}
+              value={capacity}
+              step={10}
+              minimumValue={10}
+              maximumValue={200}
+              onValueChange={(val) => this.setState({capacity: val})}
+            />
+          </View>
+        </KeyboardAwareScrollView>
         <TouchableOpacity
           onPress={this.submitForm}
-          style={[Globals.submitButton, {marginBottom: 50}]}>
-          <Text style={Globals.submitButtonText}>Next</Text>
+          style={[styles.submitButton, styles.buttonMargin]}>
+          <Text style={globals.largeButtonText}>Next</Text>
         </TouchableOpacity>
       </View>
     )
   }
 }
 
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  slider: {
-    marginHorizontal: 20,
-    marginVertical: 15,
-  },
-  pickerButton: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  backButton: {
-    paddingLeft: 20,
-    backgroundColor: 'transparent',
-    paddingBottom: 10,
-  },
-  formContainer: {
-    backgroundColor: Colors.inactive,
-    flex: 1,
-    paddingTop: 25,
-  },
-  submitButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.brandPrimary,
-    height: 80,
-    marginBottom: 50,
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 25,
-    fontWeight: '400'
-  },
-  h4: {
-    fontSize: 20,
-    fontWeight: '300',
-    color: 'black',
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  formField: {
-    backgroundColor: 'white',
-    height: 50,
-    paddingTop: 5,
-  },
-  largeFormField: {
-    backgroundColor: 'white',
-    height: 100,
-  },
-  addPhotoContainer: {
-    backgroundColor: 'white',
-    marginVertical: 15,
-    marginHorizontal: (deviceWidth - 200) / 2,
-    width: 200,
-    borderRadius: 30,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  photoText: {
-    fontSize: 18,
-    paddingHorizontal: 10,
-    color: Colors.brandPrimary
-  },
-  input: {
-    color: '#777',
-    fontSize: 18,
-    fontWeight: '300',
-    height: 40,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  largeInput: {
-    color: '#777',
-    fontSize: 18,
-    backgroundColor: 'white',
-    fontWeight: '300',
-    height: 120,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-});
-
 export default CreateEvent;
-
 ```
 
-![create event page](Screen Shot 2016-07-15 at 1.58.00 AM.png)
- 
-Notice that this is the first time we use the `Slider` component. This is one of many nice React Native components that work equally well in Android as in iOS.
+Let's review the code:
+- Our use of Google Places autocomplete should be pretty familiar by now. Notice, however, that we only pass in 2 options to the `query` property, which allows us to search actual addresses, rather than just cities.
+- This is the first time we are using the `<Slider/>` component. This is a nice way to get values that are along some sort of numerical range. The API for `Slider` is very simple and straightforward.
 
-Now that we've saved the `name`, `location`, and `capacity` or our event, we can move on to the second part of the form and collect the start and end times. Once we save the event, we can redirect to the `Group` page again.
+After the user fills out this part of the form and presses "Next", they reach a blank screen. That's because we haven't yet defined the second part of event creation -- 'CreateEventConfirmation.'
 
-## 9.3 Collecting Event Information
+![create event](/images/chapter-9/create-event-2.png)
+
+### Using Mobile Picker Components
 
 In order to render the second part of our `events` form, let's modify `GroupsView.js` to include our new `CreateEventConfirm` route.
 
 ```javascript
 application/components/groups/GroupsView.js
 ...
-import CreateEventConfirm from './CreateEventConfirm';
+import CreateEventConfirmation from './CreateEventConfirmation';
 ...
-case 'CreateEventConfirm':
+case 'CreateEventConfirmation':
   return (
-    <CreateEventConfirm
+    <CreateEventConfirmation
       {...this.props}
+      {...this.state}
       {...route}
       navigator={navigator}
     />
@@ -520,37 +423,45 @@ case 'CreateEventConfirm':
  
 ```
 
-And let's add our new `CreateEventConfirm` component:
+And let's add a simple component as our new `CreateEventConfirm` component:
 
 ```javascript
-import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet
-} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import NavigationBar from 'react-native-navbar';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-const CreateEventConfirm = () => (
-  <View style={styles.container}>
-    <Text>CREATE EVENT CONFIRM</Text>
-  </View>
-);
+import Colors from '../../styles/colors';
+import BackButton from '../shared/BackButton';
+import { globals } from '../../styles';
 
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white'
+class CreateEventConfirmation extends Component{
+  render(){
+    return (
+      <View style={globals.flexContainer}>
+        <NavigationBar
+          title={{ title: 'Create Event', tintColor: 'white' }}
+          tintColor={Colors.brandPrimary}
+          leftButton={<BackButton handlePress={this.goBack}/>}
+        />
+        <View style={globals.flexCenter}>
+          <Text style={globals.h2}>CreateEventConfirmation</Text>
+        </View>
+      </View>
+    )
   }
-});
+};
 
-export default CreateEventConfirm;
+export default CreateEventConfirmation;
 
 ```
-We should direct to a simple page now after the first part of the form. Now it's time to fill in the rest!
-![create event confirm](Screen Shot 2016-07-15 at 2.13.51 AM.png)
+We should direct to a simple page now after the first part of the form. Now it's time to fill in the rest! But first, let's make a commit here.
 
+[Commit 21](https://github.com/buildreactnative/assemblies-tutorial/tree/fd1808d98d749c4a9b70c80ed6168e125540646a) - "Render first part of event creation form"
+
+![create event](/images/chapter-9/create-event-3.png)
+
+Now let's move on to fleshing out the second part of our form.
 ```javascript
 import React, { Component, PropTypes } from 'react';
 import {
