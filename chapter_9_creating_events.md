@@ -461,100 +461,148 @@ We should direct to a simple page now after the first part of the form. Now it's
 
 ![create event](/images/chapter-9/create-event-3.png)
 
-Now let's move on to fleshing out the second part of our form.
+Now let's move on to fleshing out the second part of our form. First we'll have to `npm` install the package `react-native-picker`. Once that is done we can fill in our content.
+
 ```javascript
-import React, { Component, PropTypes } from 'react';
-import {
-  ScrollView,
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  DatePickerIOS,
-  Modal,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
-import Picker from 'react-native-picker';
-import Colors from '../../styles/colors';
-import Globals from '../../styles/globals';
+import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { extend, find, range } from 'underscore';
-import { autocompleteStyles } from '../accounts/Register';
-import LeftButton from '../accounts/LeftButton';
-import moment from 'moment';
-import Config from 'react-native-config';
+import Picker from 'react-native-picker';
+import React, { Component, PropTypes } from 'react';
+import { ScrollView, View, Text, TextInput, DatePickerIOS, Modal, TouchableOpacity } from 'react-native';
 
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+import Colors from '../../styles/colors';
+import { Headers } from '../../fixtures';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import BackButton from '../shared/BackButton';
+import { API, DEV } from '../../config';
+import { globals, formStyles } from '../../styles';
 
-class CreateEvent extends Component{
+const styles = formStyles;
+
+function setErrorMsg({ location, name }){
+  if (! location ){
+    return 'You must provide a location.';
+  } else if (! name ){
+    return 'You must provide a name.';
+  } else {
+    return '';
+  }
+};
+
+class CreateEventConfirm extends Component{
   constructor(){
     super();
+    this.goBack = this.goBack.bind(this);
+    this.saveStart = this.saveStart.bind(this);
+    this.saveEnd = this.saveEnd.bind(this);
     this.submitForm = this.submitForm.bind(this);
+    this.toggleStartModal = this.toggleStartModal.bind(this);
+    this.toggleEndModal = this.toggleEndModal.bind(this);
     this.state = {
-      start: new Date(),
-      showStartModal: false,
-      showEndModal: false,
-      end: new Date(),
-      description: '',
-      finalStart: new Date(),
-      finalEnd: new Date()
+      description       : '',
+      end               : new Date(),
+      errorMsg          : '',
+      finalEnd          : new Date(),
+      finalStart        : new Date(),
+      showEndModal      : false,
+      showStartModal    : false,
+      start             : new Date(),
     };
   }
   submitForm(){
-    /* TODO: submit form */
+    let errorMsg = setErrorMsg({...this.props, ...this.state});
+    console.log('SUBMIT', errorMsg);
+    if (errorMsg !== ''){
+      this.setState({ errorMsg }); return;
+    }
+    let event = {
+      capacity    : this.props.capacity,
+      description : this.state.description,
+      createdAt   : new Date().valueOf(),
+      end         : this.state.finalEnd.valueOf(),
+      going       : [ this.props.currentUser.id ],
+      groupId     : this.props.group.id,
+      location    : this.props.location || {},
+      name        : this.props.eventName,
+      start       : this.state.finalStart.valueOf(),
+    };
+    fetch(`${API}/events`, {
+      method: 'POST',
+      headers: Headers,
+      body: JSON.stringify(event)
+    })
+    .then(response => response.json())
+    .then(data => this.props.navigator.push({ name: 'Group', group: this.props.group }))
+    .catch(err => {
+      console.log('ERR', err);
+      this.setState({ errorMsg: err.reason })
+    })
+    .done();
+  }
+  goBack(){
+    this.props.navigator.pop();
+  }
+  toggleStartModal(){
+    this.setState({ showStartModal: ! this.state.showStartModal })
+  }
+  toggleEndModal(){
+    this.setState({ showEndModal: ! this.state.showEndModal })
+  }
+  saveStart(){
+    this.setState({ showStartModal: false, finalStart: this.state.start, end: this.state.start, finalEnd: this.state.start })
+  }
+  saveEnd(){
+    this.setState({ showEndModal: false, finalEnd: this.state.end })
   }
   render(){
-    let { navigator } = this.props;
-    let { start, end, finalStart, finalEnd, showStartModal, showEndModal, description } = this.state;
-    let titleConfig = {title: 'Confirm Event', tintColor: 'white'};
+    let { finalStart, finalEnd } = this.state;
     return (
-      <View style={styles.container}>
+      <View style={[globals.flexContainer, globals.inactive]}>
         <NavigationBar
-          title={titleConfig}
+          title={{ title: 'Confirm Event', tintColor: 'white' }}
           tintColor={Colors.brandPrimary}
-          leftButton={<LeftButton handlePress={() => navigator.pop()}/>}
+          leftButton={<BackButton handlePress={this.goBack}/>}
         />
-        <ScrollView style={styles.formContainer} contentContainerStyle={styles.scrollViewContainer}>
+        <KeyboardAwareScrollView style={[styles.formContainer, globals.pv1]} contentInset={{bottom: 49}}>
           <Text style={styles.h4}>{"* When does the event start?"}</Text>
           <View style={styles.formField}>
-            <TouchableOpacity style={styles.pickerButton} onPress={() => this.setState({ showStartModal: ! showStartModal })}>
+            <TouchableOpacity style={styles.flexRow} onPress={this.toggleStartModal}>
               <Text style={styles.input}>{finalStart ? moment(finalStart).format('dddd MMM Do, h:mm a') : 'Choose a starting time'}</Text>
-              <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
+              <Icon name="ios-arrow-forward" color='#777' size={30} style={globals.mr1}/>
             </TouchableOpacity>
           </View>
           <Text style={styles.h4}>* When does the event end?</Text>
           <View style={styles.formField}>
-            <TouchableOpacity style={styles.pickerButton} onPress={() => this.setState({ showEndModal: ! showEndModal })}>
+            <TouchableOpacity style={styles.flexRow} onPress={this.toggleEndModal}>
               <Text style={styles.input}>{finalEnd ? moment(finalEnd).format('dddd MMM Do, h:mm a') : 'Choose an ending time'}</Text>
-              <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
+              <Icon name="ios-arrow-forward" color='#777' size={30} style={globals.mr1}/>
             </TouchableOpacity>
           </View>
           <Text style={styles.h4}>Leave a note for your attendees</Text>
           <TextInput
-            ref="summary"
+            ref={(el) => this.description = el }
             returnKeyType="next"
             blurOnSubmit={true}
             clearButtonMode='always'
-            onChangeText={(text)=> this.setState({ description: text })}
+            onChangeText={(description) => this.setState({ description })}
             placeholderTextColor='#bbb'
             style={styles.largeInput}
             multiline={true}
             placeholder="Type a summary of the event..."
           />
-        </ScrollView>
-        <TouchableOpacity
-          onPress={this.submitForm}
-          style={[Globals.submitButton, {marginBottom: 50}]}>
-          <Text style={Globals.submitButtonText}>Save</Text>
+          <View style={[styles.error, globals.ma1]}>
+            <Text style={styles.errorText}>{this.state.errorMsg}</Text>
+          </View>
+        </KeyboardAwareScrollView>
+        <TouchableOpacity onPress={this.submitForm} style={[styles.submitButton, styles.buttonMargin]}>
+          <Text style={globals.largeButtonText}>Save</Text>
         </TouchableOpacity>
         <Modal
-          animationType={"slide"}
+          animationType='slide'
           transparent={true}
-          visible={showStartModal}
-          onRequestClose={() => this.setState({ showStartModal: false, finalStart: this.state.start })}
+          visible={this.state.showStartModal}
+          onRequestClose={this.saveStart}
           >
          <View style={styles.modal}>
            <View style={styles.datepicker}>
@@ -563,31 +611,24 @@ class CreateEvent extends Component{
                minimumDate={new Date()}
                minuteInterval={15}
                mode='datetime'
-               onDateChange={(date) => this.setState({ start: date })}
+               onDateChange={(start) => this.setState({ start })}
              />
              <View style={styles.btnGroup}>
-               <TouchableOpacity
-                 style={styles.pickerBtn}
-                 onPress={() => this.setState({ showStartModal: false })}
-                 >
+               <TouchableOpacity style={styles.pickerButton} onPress={() => this.setState({ showStartModal: false })}>
                  <Text style={styles.btnText}>Cancel</Text>
                </TouchableOpacity>
-               <TouchableOpacity
-                 style={[styles.pickerBtn, styles.btnPrimary]}
-                 onPress={() => this.setState({ showStartModal: false, finalStart: this.state.start })}
-                 >
+               <TouchableOpacity style={[styles.pickerButton, globals.brandPrimary]} onPress={this.saveStart}>
                  <Text style={[styles.btnText, { color: 'white' }]}>Save</Text>
                </TouchableOpacity>
              </View>
            </View>
-
          </View>
         </Modal>
         <Modal
           animationType={"slide"}
           transparent={true}
-          visible={showEndModal}
-          onRequestClose={() => this.setState({ showEndModal: false, finalEnd: this.state.end })}
+          visible={this.state.showEndModal}
+          onRequestClose={this.saveEnd}
           >
          <View style={styles.modal}>
            <View style={styles.datepicker}>
@@ -596,24 +637,17 @@ class CreateEvent extends Component{
                minimumDate={new Date()}
                minuteInterval={15}
                mode='datetime'
-               onDateChange={(date) => this.setState({ end: date })}
+               onDateChange={(end) => this.setState({ end })}
              />
              <View style={styles.btnGroup}>
-               <TouchableOpacity
-                 style={styles.pickerBtn}
-                 onPress={() => this.setState({ showEndModal: false })}
-                 >
+               <TouchableOpacity style={styles.pickerButton} onPress={() => this.setState({ showEndModal: false })}>
                  <Text style={styles.btnText}>Cancel</Text>
                </TouchableOpacity>
-               <TouchableOpacity
-                 style={[styles.pickerBtn, styles.btnPrimary]}
-                 onPress={() => this.setState({ showEndModal: false, finalEnd: this.state.end })}
-                 >
-                 <Text style={[styles.btnText, { color: 'white' }]}>Save</Text>
+               <TouchableOpacity style={[styles.pickerButton, globals.brandPrimary]} onPress={this.saveEnd}>
+                 <Text style={[styles.btnText, globals.buttonText]}>Save</Text>
                </TouchableOpacity>
              </View>
            </View>
-
          </View>
         </Modal>
       </View>
@@ -621,147 +655,26 @@ class CreateEvent extends Component{
   }
 }
 
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  modal: {
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20
-  },
-  datepicker: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 3,
-  },
-  btnGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  btnText: {
-    fontSize: 15,
-  },
-  btnPrimary: {
-    backgroundColor: Colors.brandPrimary,
-  },
-  pickerBtn: {
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    backgroundColor: Colors.inactive,
-    marginHorizontal: 5
-  },
-  backButton: {
-    paddingLeft: 20,
-    backgroundColor: 'transparent',
-    paddingBottom: 10,
-  },
-  formContainer: {
-    backgroundColor: Colors.inactive,
-    flex: 1,
-    paddingTop: 25,
-  },
-  submitButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.brandPrimary,
-    height: 80,
-    marginBottom: 50,
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 25,
-    fontWeight: '400'
-  },
-  h4: {
-    fontSize: 20,
-    fontWeight: '300',
-    color: 'black',
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  formField: {
-    backgroundColor: 'white',
-    height: 50,
-    paddingTop: 5,
-  },
-  largeFormField: {
-    backgroundColor: 'white',
-    height: 100,
-  },
-  addPhotoContainer: {
-    backgroundColor: 'white',
-    marginVertical: 15,
-    marginHorizontal: (deviceWidth - 200) / 2,
-    width: 200,
-    borderRadius: 30,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  photoText: {
-    fontSize: 18,
-    paddingHorizontal: 10,
-    color: Colors.brandPrimary
-  },
-  input: {
-    color: '#777',
-    fontSize: 18,
-    fontWeight: '300',
-    height: 40,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  largeInput: {
-    color: '#777',
-    fontSize: 18,
-    backgroundColor: 'white',
-    fontWeight: '300',
-    height: 120,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-});
-
-export default CreateEvent;
-
+export default CreateEventConfirm;
 
 ```
 
-Notice that we use the `Modal` component for the first time, with some custom modifications. Now all we have to do is finish our `submitForm` function to save the results and/or display error messages.
+This has a lot to go over. Let's go step by step.
 
-```javascript
-...
-submitForm(){
-  let { finalStart, finalEnd, description } = this.state;
-  let { group, eventName, location, capacity, currentUser, navigator } = this.props;
-  let event = {
-    start: finalStart.valueOf(),
-    end: finalEnd.valueOf(),
-    description,
-    createdAt: new Date().valueOf(),
-    groupId: group.id,
-    name: eventName,
-    location: location || {},
-    capacity,
-    going: [ currentUser.id ]
-  };
-  fetch(`${API}/events`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(event)
-  })
-  .then(response => response.json())
-  .then(data => navigator.push({ name: 'Group', group }))
-  .catch(err => this.setState({ errorMsg: err.reason }))
-  .done();
-}
-```
+- We are using the `Picker` component from `react-native-picker` to select dates. This component provides more customization in regards to styling than the out-of-the-box `Picker` component from React native. 
+- We are also using the `Modal` component. We are able to toggle the visibility of both the starting time modal and the ending time modal through our state object. We are also modifying the ending time once the starting time is selected.
+- Our `handleSubmit` method gathers all of the event information and posts it to the database. From there, we direct the navigator to the `Group` screen. 
+
+Right now, the form will save the event and redirect correctly. However, we don't see our events on the group screen. This is because we aren't fetching them from the database. That is what we will fix next.
+
+![create event](/images/chapter-9/create-event-4.png)
+![create event](/images/chapter-9/create-event-5.png)
+
+
+
+
+
+
 
 Now when a user completes the form and submits, they should be directed back to the `Group` page. From here, we will want to fetch the events related to that group on `componentDidMount` and then render them in the `events` section. Let's modify `Group.js`.
 
