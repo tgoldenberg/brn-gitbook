@@ -10,7 +10,7 @@
 * [Chapter 7: Building a Messaging System](chapter_7_establishing_a_database_schema.md)
 * [Chapter 8: Creating Groups](chapter_8_creating_groups.md)
 * [Chapter 9: Creating Events](chapter_9_creating_events.md)
-* Chapter 10: Swipe Left, Swipe Right
+* [Chapter 10: Swipe Left, Swipe Right](chapter_10_swipe_left,_swipe_right.md)
 * [Chapter 10: Building an Activity View](chapter_10_building_a_calendar_view.md)
 * [Chapter 11: Building an Activity View](chapter_11_building_an_activity_view.md)
 * [Chapter 12: Final Touches](chapter_12_final_touches.md)
