@@ -324,11 +324,11 @@ I've gone ahead and wired up a few tabs. In all, there will be five tabs, but fo
 
 ### Using Fake Data to Prototype
 
-Now that we're about to build out the app, there are a couple of things I want to clarify:
+Now that we're about to build out the app, there are a couple of things we should clarify:
 
 *Why are we starting out with fake data?*
 
-This is something were are strong believers in. Fake it and then make it. The wireframing process helps to funnel the idea of the product into a visual representation. A developer's job is to translate that into an actual product. It's very easy to focus on the programming problems like integration with a backend system and server, scalability, and so on. However, most often, the best thing to do at this point is to make a fake product. This helps get the UI components of the product in place so that you can think of the data integration later. This is the process we use and find it works extremely well. That said, different things work for different people, so sue the method that works for you on your own projects.
+This is something we are strong believers in. Fake it and then make it. The wireframing process helps to funnel the idea of the product into a visual representation. A developer's job is to translate that into an actual product. It's very easy to focus on the programming problems like integration with a backend system and server, scalability, and so on. However, most often, the best thing to do at this point is to make a fake product. This helps get the UI components of the product in place so that you can think of the data integration later. This is the process we use and find it works extremely well. That said, different things work for different people, so sue the method that works for you on your own projects.
 
 ### Should We Be Using Redux?
 
