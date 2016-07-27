@@ -116,12 +116,12 @@ Let's review:
 
 Now is a good time for a commit.
 
-[Commit 21]() - "Render created events on Group screen"
+[Commit 21](https://github.com/buildreactnative/assemblies-tutorial/tree/f84c739f60c28a5d4355a4e7193755da1354af23) - "Render created events on Group screen"
 
 ![group](/images/chapter-9/group-with-event-2.png)
 
 
-## 9.4 Joining an event
+## Joining an event
 
 Once we have created an event, we want our users to be able to RSVP for them, or cancel their reservation. Now is a good opportunity to use a swipe-to-join functionality. When our user swipes left on the event, we want to show them the option to either join or leave the event. We can use the package `react-native-swipeout` for this. As usual, install the package via `npm` - `npm install --save react-native-swipeout`. 
 
