@@ -4,131 +4,37 @@
 
 When we left off in chapter 8, we had added the ability to view groups, to create groups, and to view an individual group. We now need to add in the ability to join a group, as well as the ability to create and join events for a group.
 
-From the `Groups` screen, let’s make suggested groups clickable, and add an icon for users to join them.
+Let's add this functionality in `GroupsView.js`.
 
 ```javascript
-application/components/groups/Groups.js
-
-…
-const SuggestedGroupBoxes = ({ groups, navigator }) => (
-  <View style={{justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap'}}>
-    {groups.map((group, idx) => {
-      if (!group) { return <EmptyGroupBox key={idx}/>}
-      return (
-        <TouchableOpacity
-          key={idx}
-          style={styles.groupsContainer}
-          onPress={() => navigator.push({ name: 'Group', group})}
-        >
-          <Image source={{uri: group.image}} style={styles.groupImage}>
-            <View style={[styles.group, {backgroundColor: group.color,}]} >
-              <Text style={styles.groupText}>{group.name}</Text>
-            </View>
-          </Image>
-        </TouchableOpacity>
-      );
-    })}
-  </View>
-);
-
-class Groups extends Component{
-  constructor(){
-    super();
-    this._renderAddButton = this._renderAddButton.bind(this);
-  }
-  _renderAddButton(){
-    return (
-      <TouchableOpacity style={styles.navButton} onPress={()=>{
-        this.props.navigator.push({
-          name: 'CreateGroup'
-        })
-      }}>
-        <Icon name="add-circle" size={25} color="#ccc" />
-      </TouchableOpacity>
-    )
-  }
-  render(){
-    let { groups, suggestedGroups, ready, navigator } = this.props;
-    if (! ready ) { return <Loading /> }
-    if (groups.length % 2 === 1){
-      groups = groups.concat(null);
-    }
-    let rightButtonConfig = this._renderAddButton()
-    let titleConfig = {title: 'My Groups', tintColor: 'white'}
-    return (
-      <View style={styles.container}>
-        <NavigationBar
-          statusBar={{style: 'light-content', hidden: false}}
-          title={titleConfig}
-          tintColor={Colors.brandPrimary}
-          rightButton={rightButtonConfig}
-        />
-        <ScrollView style={styles.assembliesContainer}>
-          <Text style={styles.h2}>Your Assemblies</Text>
-          {groups.length ? <GroupBoxes groups={groups} navigator={navigator}/> : <EmptyGroupBoxes navigator={navigator}/>}
-          <Text style={styles.h2}>You Might Like</Text>
-          {suggestedGroups.length ? <SuggestedGroupBoxes groups={suggestedGroups} navigator={navigator}/> : <EmptySuggestedGroupBoxes />}
-        </ScrollView>
-      </View>
-    )
-  }
-};
-…
-
-application/components/groups/Group.js
-
-const Join = () => (
-  <Icon name='ios-add' size={30} color='white' style={styles.joinIcon} />
-)
-
-const Joined = () => (
-  <View style={styles.joinedContainer}>
-    <Icon name="ios-checkmark" size={30} color='white' style={styles.joinIcon}/>
-  </View>
-)
-
-class Group extends Component{
-  constructor(){
-    super();
-    this._renderJoin = this._renderJoin.bind(this);
-    this.state = {
-      users: [],
-      ready: false,
-    }
-  }
-…
-_renderJoin(){
-    let {group, currentUser, addUserToGroup} = this.props;
-    let isMember = group.members.map(m => m.userId).indexOf(currentUser.id) !== -1;
-    return (
-      <View style={styles.joinContainer}>
-        <TouchableOpacity
-          onPress={() => addUserToGroup(group, currentUser)}
-          style={styles.joinButton}>
-          <Text style={styles.joinText}>{ isMember ? 'Joined' : 'Join'}</Text>
-          { isMember ? <Joined /> : <Join /> }
-        </TouchableOpacity>
-      </View>
-    )
-  }
-…
-
 application/components/groups/GroupsView.js
 …
+class GroupsView extends Component{
+  constructor(){
+    super();
+    this.addGroup = this.addGroup.bind(this);
+    this.addUserToGroup = this.addUserToGroup.bind(this);
+    this.state = {
+      groups            : [],
+      ready             : false,
+      suggestedGroups   : [],
+    }
+  }
+  ...
   addUserToGroup(group, currentUser){
     let { groups, suggestedGroups } = this.state;
     let member = {
-      userId: currentUser.id,
-      role: 'member',
-      joinedAt: new Date().valueOf(),
+      userId    : currentUser.id,
+      role      : 'member',
+      joinedAt  : new Date().valueOf(),
       notifications: {
         email: true
       }
     };
-    if (group.members.map(m => m.userId).indexOf(currentUser.id) === -1){
-      group.members = group.members.concat(member);
-      groups = groups.concat(group);
-      suggestedGroups = suggestedGroups.filter(g => g.id !== group.id);
+    if (! find(group.members, ({ userId}) => isEqual(userId, currentUser.id))){
+      group.members = [ ...group.members, member ];
+      groups = [ ...groups, group ];
+      suggestedGroups = suggestedGroups.filter(({ id }) => ! isEqual(id, group.id));
       this.setState({ groups, suggestedGroups })
       this.updateGroup(group);
     }
@@ -136,15 +42,14 @@ application/components/groups/GroupsView.js
   updateGroup(group){
     fetch(`${API}/groups/${group.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: Headers,
       body: JSON.stringify(group)
     })
     .then(response => response.json())
-    .then(data => console.log('RES', data))
-    .catch(err => console.log('ERROR', err))
-    .done();
+    .then(data => {})
+    .catch(err => {})
   }
-…
+  …
   case 'Group':
     return (
       <Group
@@ -157,9 +62,9 @@ application/components/groups/GroupsView.js
 
 ```
 
-![join group button](Screen Shot 2016-07-13 at 11.28.35 PM.png)
 
-Now when you click to join a group, our button should change its content to a success message, and the group should be added to our joined groups in the top level `Groups` component. Notice that we don’t just change the component state but also update our database through a PUT call to our Deployd server.
+
+Now when you click to join a group, our button should change its content to a success message, and the group should be added to our joined groups in the top level `Groups` component. Notice that we don’t just change the component state but also update our database through a `PUT` call to our Deployd server.
 
 What about removing oneself from a group? For that, we can have an `ActionSheetIOS` component that gives us a list of actions, one of which can be to leave the group.
 
