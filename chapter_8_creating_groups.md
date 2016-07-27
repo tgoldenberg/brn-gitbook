@@ -591,14 +591,11 @@ Just as we did for our groups screen, it's a good standard to show a spinner or 
 
 ```javascript
 application/components/messages/Conversations.js
-
 ...
 import Loading from '../shared/Loading';
 ...
-
 class Conversations extends Component{
   ....
-  
   dataSource(){
     return (
       new ListView.DataSource({ rowHasChanged: rowHasChanged }).cloneWithRows(this.props.conversations)
@@ -624,48 +621,6 @@ class Conversations extends Component{
 };
 
 export default Conversations;
-
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Let's add this functionality to our Messages view as well. Just edit `application/components/messages/Conversations.js`.
-
-```javascript
-...
-import React, { Component } from 'react';
-
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  ListView,
-  Image,
-  ActivityIndicator
-} from 'react-native';
-
-const Loading = () => (
-  <View style={styles.loadingContainer}>
-    <ActivityIndicator size='large'/>
-  </View>
-)
-...
-render() {
-    let { conversations, users, ready } = this.props;
-    if (! ready ) { return <Loading /> }
 ```
 
 Now if we refresh and visit the messages tab, we should see a spinner before the data is loaded. A better experience, don't you think?
@@ -692,127 +647,104 @@ The last two fields are really optional, but we can include them in our form too
 application/components/groups/GroupsView.js
 ...
 import CreateGroup from './CreateGroup';
-import CreateGroupConfirm from './CreateGroupConfirm';
+import CreateGroupConfirmation from './CreateGroupConfirmation';
 ...
 switch(route.name){
   case 'Groups':
     return (
-      <Groups {...route} {...this.props} {...this.state} naviagator={navigator}/>
-    );
+      <Groups
+        {...this.props}
+        {...this.state}
+        navigator={navigator}
+      />
+  );
   case 'CreateGroup':
     return (
-      <CreateGroup {...this.props} navigator={navigator}/>
-    );
-  case 'CreateGroupConfirm':
+      <CreateGroup
+        {...this.props}
+        {...this.state}
+        {...route}
+        navigator={navigator}
+      />
+  );
+  case 'CreateGroupConfirmation':
     return (
-      <CreateGroupConfirm {...this.props} {...route} navigator={navigator}/>
-    )
+      <CreateGroupConfirmation
+        {...this.props}
+        {...this.state}
+        {...route}
+        navigator={navigator}
+      />
+  );
 }
 ...
 ```
 
-Now of course we have to define `CreateGroup.js` and `CreateGroupConfirm.js`.
+Now of course we have to define `CreateGroup.js` and `CreateGroupConfirmation.js`.
 
 ```javascript
 application/components/groups/CreateGroup.js
 
 import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import NavigationBar from 'react-native-navbar';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import {
-  View,
-  Text,
-  StyleSheet
-} from 'react-native';
+import BackButton from '../shared/BackButton';
+import { globals } from '../../styles';
 
-const CreateGroup = () => (
-  <View style={styles.container}>
-    <Text>CREATE GROUP</Text>
-  </View>
-);
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center'
+class CreateGroup extends Component{
+  render(){
+    return (
+      <View style={globals.flexContainer}>
+        <NavigationBar
+          title={{ title: 'Create Group', tintColor: Colors.brandPrimary }}
+          leftButton={<BackButton handlePress={this.goBack}/>}
+        />
+        <View style={globals.flex}>
+          <Text style={globals.h2}>CreateGroup</Text>
+        </View>
+      </View>
+    );
   }
-});
+};
 
 export default CreateGroup;
-
-application/components/groups/CreateGroupConfirm.js
-
-import React, { Component } from 'react';
-
-import {
-  View,
-  Text,
-  StyleSheet
-} from 'react-native';
-
-const CreateGroupConfirm = (props) => (
-  <View style={styles.container}>
-    <Text>CREATE GROUP CONFIRM</Text>
-  </View>
-);
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-});
-
-export default CreateGroupConfirm;
 ```
-
-Now we can link to our new routes when a user presses the `Add Group` button in `Groups.js`.
 
 ```javascript
-...
-const EmptyGroupBoxes = ({ navigator }) => (
-  <View style={styles.assemblyBoxContainer}>
-    <View style={styles.groupsContainer}>
-      <AddGroupBox navigator={navigator}/>
-      <EmptyGroupBox />
-    </View>
-  </View>
-);
+application/components/groups/CreateGroupConfirmation.js
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import NavigationBar from 'react-native-navbar';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-const AddGroupBox = ({ navigator }) => (
-  <TouchableOpacity
-    onPress={()=> {
-      navigator.push({ name: 'CreateGroup' })
-    }}
-    style={styles.groupImage}>
-    <View style={[styles.group, {backgroundColor: Colors.inactive,}]} >
-      <Icon name="add-circle" size={60} color={Colors.brandPrimary} />
-    </View>
-  </TouchableOpacity>
-);
-...
-_renderAddButton(){
-  return (
-    <TouchableOpacity style={styles.navButton} onPress={()=>{
-      this.props.navigator.push({
-        name: 'CreateGroup'
-      })
-    }}>
-      <Icon name="add-circle" size={25} color="#ccc" />
-    </TouchableOpacity>
-  )
-}
-render(){
-    let { groups, suggestedGroups, ready, navigator } = this.props;
-...
-    {groups.length ? <GroupBoxes groups={groups} /> : <EmptyGroupBoxes navigator={navigator}/>}
-...
+import BackButton from '../shared/BackButton';
+import { globals } from '../../styles';
+
+class CreateGroupConfirmation extends Component{
+  render(){
+    return (
+      <View style={globals.flexContainer}>
+        <NavigationBar
+          title={{ title: 'Create Group', tintColor: Colors.brandPrimary }}
+          leftButton={<BackButton handlePress={this.goBack}/>}
+        />
+        <View style={globals.flex}>
+          <Text style={globals.h2}>CreateGroupConfirmation</Text>
+        </View>
+      </View>
+    );
+  }
+};
+
+export default CreateGroupConfirmation;
+
 ```
-Now when you press the `Add Group` button, you should see a simple screen like this: 
-![create group](Screen Shot 2016-07-11 at 9.36.05 AM.png)
+
+Now we link to our new routes when a user presses the `Add Group` button in `Groups.js`.
+
+
 
 Now we need to flesh out the form a bit.
 
