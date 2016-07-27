@@ -10,6 +10,7 @@
 * [Chapter 7: Building a Messaging System](chapter_7_establishing_a_database_schema.md)
 * [Chapter 8: Creating Groups](chapter_8_creating_groups.md)
 * [Chapter 9: Creating Events](chapter_9_creating_events.md)
+* Chapter 10: Swipe Left, Swipe Right
 * [Chapter 10: Building an Activity View](chapter_10_building_a_calendar_view.md)
 * [Chapter 11: Building an Activity View](chapter_11_building_an_activity_view.md)
 * [Chapter 12: Final Touches](chapter_12_final_touches.md)
@@ -19,5 +20,4 @@
 * [Chapter 16: Deploying an API](chapter_16_deployment.md)
 * [Chapter 17: Mobile Design Principles](chapter_17_mobile_design_principles.md)
 * [Chapter 18: Adding Redux to your App](chapter_18_adding_redux_to_your_app.md)
-* Chapter 10: Swipe Left, Swipe Right
 
