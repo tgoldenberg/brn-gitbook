@@ -673,6 +673,7 @@ getUserInfo(sid){ /* use session id to retreive user information and store sessi
 ```
 
 After filling out the form, you should be directed to the `Dashboard` again with the newly created user. If we check on `localhost:2403/dashboard`, we should see our new user in the `data` section of the `users` collection.
+
 ![screen](Simulator Screen Shot Jul 25, 2016, 10.23.51 PM.png)
 ![screen](Simulator Screen Shot Jul 25, 2016, 10.24.18 PM.png)
 ![screen](Simulator Screen Shot Jul 25, 2016, 10.27.58 PM.png)
