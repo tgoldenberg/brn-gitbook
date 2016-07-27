@@ -744,7 +744,7 @@ export default CreateGroupConfirmation;
 
 Now we link to our new routes when a user presses the `Add Group` button in `Groups.js`.
 
-
+[create group](/images/chapter-8/create-group-initial.png)
 
 Now we need to flesh out the form a bit.
 
