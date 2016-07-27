@@ -1330,6 +1330,10 @@ Let's review the new code:
 - We also have an `events` section that isn't being used currently. We will need implement functionality to create and render events before fleshing this out further.
 - Also notice that if the user isn't a member, the "join" button will appear, but it throws an error when pressed. This is because we haven't defined an `addUserToGroup` method in our top-level `GroupsView` component.
 
+Let's remember to make a commit at this point.
+
+[Commit 19](https://github.com/buildreactnative/assemblies-tutorial/tree/95fedabf381a3f3cfffe180ab51c6b7d2cbd45b5) - "Render individual groups in Group component"
+
  
 ## Wrapping Up
 
