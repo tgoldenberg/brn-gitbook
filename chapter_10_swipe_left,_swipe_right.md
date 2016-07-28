@@ -185,51 +185,84 @@ Now we should be able to reveal either a "cancel" or "join" button when you swip
 ![swipeout](/images/chapter-10/swipeout-1.png)
 
 
+In the `Swipeout` component we are referencing three actions, `this.props.cancelRSVP`, `this.props.visitEvent` and `this.props.joinEvent`. We should now define them in our `Group` component.
 
-
-
-
-Although we are updating the `state` of the event, we also have to make sure we make the corresponding changes to the API. Let's add our API update methods in `Group`.
+Here are the methods we need to add to `Group`:
 
 ```javascript
-application/components/groups/Group.js
-
-...
-cancelRSVP(event, currentUser){
+joinEvent(event, currentUser){
   let { events } = this.state;
-  event.going = event.going.filter(userId => userId !== currentUser.id);
-  let idx = events.map(evt => evt.id).indexOf(event.id);
-  this.setState({ events: [
-    ...events.slice(0, idx),
-    event,
-    ...events.slice(idx + 1)
-  ]});
+  let updatedEvent = {
+    ...event,
+    going: [ ...event.going, currentUser.id ]
+  };
+  let index = findIndex(this.state.events, ({ id }) => isEqual(id, event.id));
+  let updatedEvents = [
+    ...this.state.events.slice(0, index),
+    updatedEvent,
+    ...this.state.events.slice(index + 1)
+  ];
+  this.setState({ events: updatedEvents })
   this.updateEventGoing(event);
+}
+cancelRSVP(event, currentUser){
+  let updatedEvent = {
+    ...event,
+    going: event.going.filter((userId) => ! isEqual(userId, currentUser.id))
+  };
+  let index = findIndex(this.state.events, ({ id }) => isEqual(id, event.id));
+  let updatedEvents = [
+    ...this.state.events.slice(0, index),
+    updatedEvent,
+    ...this.state.events.slice(index + 1)
+  ];
+  this.setState({ events: updatedEvents })
+  this.updateEventGoing(event);
+}
+visitEvent(event){
+  this.props.navigator.push({
+    name: 'Event',
+    group: this.props.group,
+    updateEvents: this.updateEvents,
+    event,
+  })
+}
+updateEvents(event){
+  let idx = findIndex(this.state.events, ({ id }) => isEqual(id, event.id));
+  let events = [
+    ...this.state.events.slice(0, idx),
+    event,
+    ...this.state.events.slice(idx + 1)
+  ];
+  this.setState({ events })
 }
 updateEventGoing(event){
   fetch(`${API}/events/${event.id}`, {
     method: 'PUT',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ going: event.going })
+    headers: Headers,
+    body: JSON.stringify({
+      going: event.going
+    })
   })
   .then(response => response.json())
-  .then(data => console.log('RESPONSE', data))
-  .catch(err => console.log('ERROR', err))
+  .then(data => {})
+  .catch(err => {})
   .done();
 }
-joinEvent(event, currentUser){
-  let { events } = this.state;
-  event.going = event.going.concat(currentUser.id);
-  let idx = events.map(evt => evt.id).indexOf(event.id);
-  this.setState({ events: [
-    ...events.slice(0, idx),
-    event,
-    ...events.slice(idx + 1)
-  ]});
-  this.updateEventGoing(event);
-}
-
 ```
+And then we add the methods in our `render` method:
+
+```javascript
+<EventList
+  {...this.state}
+  {...this.props}
+  visitEvent={this.visitEvent}
+  joinEvent={this.joinEvent}
+  cancelRSVP={this.cancelRSVP}
+/>
+```
+Let's go over what we just added:
+- 
 
 
 Now that we can join and leave a group, we should enable our user to view an individual event and its relevant information. Let’s create a new route, ‘Event’, and direct to it when the user presses on the event section..
