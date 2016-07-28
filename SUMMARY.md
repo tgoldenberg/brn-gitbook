@@ -16,7 +16,7 @@
 * [Chapter 13: Final Touches](chapter_12_final_touches.md)
 * [Chapter 14: Understanding ES6 with React Native](chapter_13_understanding_es6_with_react_native.md)
 * [Chapter 15: Deploying to the App Store](chapter_14_deploying_to_the_app_store.md)
-* [Chapter 15: Deploying to the Google Play Store](chapter_15_deploying_to_the_google_play_store.md)
+* [Chapter 16: Deploying to the Google Play Store](chapter_15_deploying_to_the_google_play_store.md)
 * [Chapter 16: Deploying an API](chapter_16_deployment.md)
 * [Chapter 17: Mobile Design Principles](chapter_17_mobile_design_principles.md)
 * [Chapter 18: Adding Redux to your App](chapter_18_adding_redux_to_your_app.md)
