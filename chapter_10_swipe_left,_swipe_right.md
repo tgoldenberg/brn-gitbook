@@ -123,7 +123,11 @@ Now is a good time for a commit.
 
 ## Joining an event
 
-Once we have created an event, we want our users to be able to RSVP for them, or cancel their reservation. Now is a good opportunity to use a swipe-to-join functionality. When our user swipes left on the event, we want to show them the option to either join or leave the event. We can use the package `react-native-swipeout` for this. As usual, install the package via `npm` - `npm install --save react-native-swipeout`. 
+Once we have created an event, we want our users to be able to RSVP for them, or cancel their reservation. Now is a good opportunity to use a swipe-to-join functionality. When our user swipes left on the event, we want to show them the option to either join or leave the event. We can use the package `react-native-swipeout` for this. Add this line to your `package.json` file and then `npm install`.
+
+```
+"react-native-swipeout": "git+https://git@github.com/dancormier/react-native-swipeout.git",
+```
 
 ```javascript
 application/components/groups/Group.js
