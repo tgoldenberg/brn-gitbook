@@ -126,129 +126,68 @@ Now is a good time for a commit.
 Once we have created an event, we want our users to be able to RSVP for them, or cancel their reservation. Now is a good opportunity to use a swipe-to-join functionality. When our user swipes left on the event, we want to show them the option to either join or leave the event. We can use the package `react-native-swipeout` for this. Add this line to your `package.json` file and then `npm install`.
 
 ```
-"react-native-swipeout": "git+https://git@github.com/dancormier/react-native-swipeout.git",
+    "react-native-swipeout": "dancormier/react-native-swipeout#829b7c01ba969cd70509944bc210289b759d48a6",
 ```
 
 ```javascript
 application/components/groups/Group.js
 ...
 import Swipeout from 'react-native-swipeout';
-import {
-  View,
-  ListView,
 ...
 class EventList extends Component{
   constructor(){
     super();
     this._renderRow = this._renderRow.bind(this);
   }
-  _renderRow(event, sectionID, rowID){
-    let { currentUser, cancelRSVP, joinEvent, events } = this.props;
-    let going = find(event.going, (g) => g === currentUser.id);
-    let right = [{
-      text: 'RSVP',
-      type: 'primary',
-      onPress: () => { joinEvent(event, currentUser) }
-    }];
-    if (going) {
-      right = [{
+  getButtons(isGoing, event, currentUser){
+    if (isGoing){
+      return [{
         text: 'Cancel',
         type: 'delete',
-        onPress: () => { cancelRSVP(event, currentUser) }
+        onPress: () => { this.props.cancelRSVP(event, currentUser) }
+      }];
+    } else {
+      return [{
+        text: 'RSVP',
+        type: 'primary',
+        onPress: () => { this.props.joinEvent(event, currentUser) }
       }];
     }
+  }
+  _renderRow(event, sectionID, rowID){
+    let { currentUser, events, group } = this.props;
+    let isGoing = find(event.going, (id) => isEqual(id, currentUser.id));
+    let right = this.getButtons(isGoing, event, currentUser);
     return (
-      <Swipeout
-        backgroundColor='white'
-        rowID={rowID}
-        right={right}
-      >
+      <Swipeout backgroundColor='white' rowID={rowID} right={right}>
         <View style={styles.eventContainer}>
-          <TouchableOpacity style={styles.eventInfo}>
-            <Text style={styles.h5}>{event.name}</Text>
+          <TouchableOpacity style={globals.flex} onPress={() => this.props.visitEvent(event)}>
+            <Text style={globals.h5}>{event.name}</Text>
             <Text style={styles.h4}>{moment(event.start).format('dddd, MMM Do')}</Text>
             <Text style={styles.h4}>{event.going.length} Going</Text>
           </TouchableOpacity>
-          <View style={styles.goingContainer}>
-            <Text style={styles.goingText}>{going ? "You're Going" : "Want to go?"}</Text>
-            {going ? <Icon name="ios-checkmark" size={30} color={Colors.brandPrimary} /> : <Icon name="ios-add" size={30} color={Colors.brandPrimary} /> }
+          <View style={[globals.flexRow, globals.pa1]}>
+            <Text style={[globals.primaryText, styles.h4, globals.ph1]}>
+              {isGoing ? "You're Going" : "Want to go?"}
+            </Text>
+            <Icon name={ isGoing ? "ios-checkmark" : "ios-add" } size={30} color={Colors.brandPrimary} />
           </View>
         </View>
       </Swipeout>
     )
   }
-  render(){
-    let { events } = this.props
-    return (
-      <ListView
-        enableEmptySections={true}
-        dataSource={new ListView.DataSource({rowHasChanged: (r1, r2) => r1 != r2 }).cloneWithRows(events)}
-        renderRow={this._renderRow.bind(this)}
-        style={styles.listview}
-      />
-    )
-  }
-};
-
-...
-cancelRSVP(event, currentUser){
-  let { events } = this.state;
-  event.going = event.going.filter(userId => userId !== currentUser.id);
-  let idx = events.map(evt => evt.id).indexOf(event.id);
-  this.setState({ events: [
-    ...events.slice(0, idx),
-    event,
-    ...events.slice(idx + 1)
-  ]});
-}
-joinEvent(event, currentUser){
-  console.log('JOIN RSVP', event, currentUser);
-  let { events } = this.state;
-  event.going = event.going.concat(currentUser.id);
-  let idx = events.map(evt => evt.id).indexOf(event.id);
-  this.setState({ events: [
-    ...events.slice(0, idx),
-    event,
-    ...events.slice(idx + 1)
-  ]});
-}
-...
-<Text style={styles.h2}>Events</Text>
-<EventList
-  {...this.state}
-  {...this.props}
-  joinEvent={this.joinEvent}
-  cancelRSVP={this.cancelRSVP}
-/>
-
-```
-
-However, notice how we get an error when we use the `react-native-swipeout` package... This is beacuse of breaking changes in the latest versions of React Native. When this happens, there is often a simple solution -- use the source code of the package in your project and modify the part that is buggy. In this case, the only change needed is to `import` `React` from `react` and not from `'react-native'`. Let's change our `import` statement to this:
-```import Swipeout from '../3rd_party/react-native-swipeout` and add a new directory called `3rd_party`. Inside that directory, create another directory called `react-native-swipeout` with an `index.js` and a `styles.js` file. From there, we can copy over the source code for those files. The only part that needs to be changed is this:
-
-```javascript
-application/components/3rd_party/react-native-swipeout/index.js
-
-var React = require('react')
-var ReactNative = require('react-native')
-var tweenState = require('react-tween-state')
-var {PanResponder, TouchableHighlight, StyleSheet, Text, View} = ReactNative
 ...
 
 ```
-and this:
 
-```javascript
-application/components/3rd_party/react-native-swipeout/styles.js
+Now we should be able to reveal either a "cancel" or "join" button when you swipe left on each event row.
 
-var ReactNative = require('react-native')
-var {StyleSheet} = ReactNative
-```
+![swipeout](/images/chapter-10/swipeout-1.png)
 
-Now we should be able to see our swipe-left functionality.
 
-![swipeout 1](Screen Shot 2016-07-18 at 9.39.19 AM.png)
-![swipeout 2](Screen Shot 2016-07-18 at 9.39.27 AM.png)
+
+
+
 
 Although we are updating the `state` of the event, we also have to make sure we make the corresponding changes to the API. Let's add our API update methods in `Group`.
 
