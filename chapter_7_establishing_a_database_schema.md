@@ -234,26 +234,38 @@ export default MessagesView;
 
 If done correctly, the Messages View should look exactly the same as before! Don’t worry, we have a long way to go. Let’s commit here.
 
-[Commit]() – "Refactor MessagesView into a Navigation component and create simple Conversation and UserProfile components"
+[Commit]() – "Refactor MessagesView into a Navigation component and create simple Conversation"
 
 ## Fetching Message Data
 
-Now we will want to replace our `FAKE_USERS` and `FAKE_MESSAGES` data for real data. To get started, we can create a conversation in the `data` tab of the collection, at `localhost:2403/dashboard`. 
+Now we will want to replace our **FakeUsers** and **FakeConversations** data for real data. To get started, we can create a conversation in the **data** tab of the collection, at `localhost:2403/dashboard`. 
 
-To do this, we should first create a few users, but using the `data` tab of the `users` collection. You can add different emails and names, and copy/paste the location and technologies from the already existing user.
+To do this, we should first create a few users by using the **data** tab of the **users** collection. You can add different emails and names, and copy/paste the location and technologies from the already existing user.
 
-Once we have some users, we can then do the same for our `conversations` collection. Add your user id as `user1Id` and the other user as `user2Id`. Then fill in the `lastMessageText` with a text string and the `lastMessageDate` with a date value (simply typing `new Date().valueOf()` in the browser console is enough to get this.
+![new user](/images/chapter-7/new-user-1.png)
+![new user](/images/chapter-7/new-user-2.png)
+
+Once we have some users, we can then do the same for our `conversations` collection. Add your user id as `user1Id` and the other user as `user2Id`. It can be useful to have 2 tabs at **localhost:2403/dashboard** so you can copy/paste the user ids. Then fill in the `lastMessageText` with a text string and the `lastMessageDate` with a date value (simply typing `new Date().valueOf()` in the browser console is enough to get this.
+
+![new conversation](/images/chapter-7/new-conversation-1.png)
+
 
 Once we have a conversation in the database, we can work on fetching the data from the `MessagesView`. Replace the instances of `FakeUsers`, `FakeNotifications`, etc. in `Conversations.js`.
 
 ```javascript
+/* application/components/messages/Conversations.js */
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, ListView } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ListView
+} from 'react-native';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import { find } from 'underscore';
-
+import { find, isEqual } from 'underscore';
 import Colors from '../../styles/colors';
 import { globals, messagesStyles } from '../../styles';
 import { rowHasChanged } from '../../utilities';
@@ -269,21 +281,35 @@ class Conversations extends Component{
 
   _renderRow(conversation){
     let { currentUser } = this.props;
-    let otherUserID = find([conversation.user1Id, conversation.user2Id], (id) => id !== currentUser.id);
-    let user = find(this.props.users, ({ id }) => id === otherUserID);
+    let userIDs = [ conversation.user1Id, conversations.user2Id ];
+    let otherUserID = find(userIDs, (id) => !isEqual(id, currentUser.id));
+    let user = find(this.props.users, ({ id }) => isEqual(id, otherUserID));
     return (
       <TouchableOpacity style={globals.flexContainer}>
         <View style={globals.flexRow}>
-          <Image style={globals.avatar} source={{uri: user.avatar}}/>
+          <Image
+            style={globals.avatar}
+            source={{uri: user.avatar}}
+          />
           <View style={globals.flex}>
             <View style={globals.textContainer}>
-              <Text style={styles.h5}>{user.firstName} {user.lastName}</Text>
-              <Text style={styles.h6}>{moment(conversation.lastMessageDate).fromNow()}</Text>
+              <Text style={styles.h5}>
+                {user.firstName} {user.lastName}
+              </Text>
+              <Text style={styles.h6}>
+                {moment(conversation.lastMessageDate).fromNow()}
+              </Text>
             </View>
-            <Text style={[styles.h4, globals.mh1]}>{conversation.lastMessageText.substring(0, 40)}...</Text>
+            <Text style={[styles.h4, globals.mh1]}>
+              {conversation.lastMessageText.substring(0, 40)}...
+            </Text>
           </View>
           <View style={styles.arrowContainer}>
-            <Icon size={30} name="ios-arrow-forward" color={Colors.bodyTextLight}/>
+            <Icon
+              size={30}
+              name="ios-arrow-forward"
+              color={Colors.bodyTextLight}
+            />
           </View>
         </View>
         <View style={styles.divider}/>
@@ -292,14 +318,16 @@ class Conversations extends Component{
   }
   dataSource(){
     return (
-      new ListView.DataSource({ rowHasChanged: rowHasChanged }).cloneWithRows(this.props.conversations)
+      new ListView.DataSource({ rowHasChanged: rowHasChanged })
+        .cloneWithRows(this.props.conversations)
     );
   }
   render() {
+    let titleConfig = { title: 'Messages', tintColor: 'white' };
     return (
       <View style={globals.flexContainer}>
         <NavigationBar
-          title={{ title: 'Messages', tintColor: 'white' }}
+          title={titleConfig}
           tintColor={Colors.brandPrimary}
         />
         <ListView
@@ -318,43 +346,27 @@ export default Conversations;
 
 ```
 
-![screen](Simulator Screen Shot Jul 26, 2016, 12.01.25 AM.png)
+![conversation](/images/chapter-7/conversation-1.png)
 
 Now you should see some real conversation data!
 
-Here you can see that we are first fetching the conversations that are relevant to the user. Then we collect the userID’s that are relevant and fetch the user data for those IDs. This data then gets passed on to the `Conversations` component.
+Here you can see that we are first fetching the conversations that are relevant to the user. Then we collect the userIDs that are relevant and fetch the user data for those IDs. This data then gets passed on to the **Conversations** component.
 
-Also notice that we are using queries to fetch our data. In Deployd, we can add these Mongo queries at the end of our API call, preceded by a `?`. In the first query, we are asking for all conversations where the `user1Id` or the `user2Id` is equal to the current user's `id`. In the second we are fetching all users who have an `id` that is contained in the array of `userId`s.
+Also notice that we are using queries to fetch our data. In Deployd, we can add these Mongo queries at the end of our API call, preceded by a **?**. In the first query, we are asking for all conversations where the **user1Id** or the **user2Id** is equal to the current user's **id**. In the second we are fetching all users who have an id that is contained in the array of userIds.
 
-Let’s create another user and another conversation and see how the UI changes.
-
-![deployd](Screen Shot 2016-07-26 at 12.05.33 AM.png)
-![screen](Simulator Screen Shot Jul 26, 2016, 12.06.17 AM.png)
-
-
-And now is a good time to make a commit.
+Now is a good time to make a commit.
 
 [Commit 13](https://github.com/buildreactnative/assemblies-tutorial/tree/7297fbd74e3decf4ce402ac69d445d4dbe6de0d5) – "Fetch conversation data and render in Conversations component"
 
-## Adding Routing to our Messages View
+### Adding Routing to our Messages View
 
-Now that we at least have real `conversation` objects, we need to add routing to an individual `conversation` component.
+Now that we at least have real conversation data, we need to add routing to an individual conversation component.
 
-Let's modify the `_renderRow` method in the file `application/components/messages/Conversations.js`
+Let's modify the `_renderRow` method in **Conversations.js**.
 
 ```javascript
-import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, ListView } from 'react-native';
-import moment from 'moment';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
-import { find } from 'underscore';
-
-import Colors from '../../styles/colors';
-import { globals, messagesStyles } from '../../styles';
-import { rowHasChanged } from '../../utilities';
-
-const styles = messagesStyles;
+/* application/components/messages/Conversations.js */
+/* ... */
 
 class Conversations extends Component{
   constructor(){
@@ -372,48 +384,45 @@ class Conversations extends Component{
   }
   _renderRow(conversation){
     let { currentUser } = this.props;
-    let otherUserID = find([conversation.user1Id, conversation.user2Id], (id) => id !== currentUser.id);
-    let user = find(this.props.users, ({ id }) => id === otherUserID);
+    let userIDs = [ conversation.user1Id, conversation.user2Id ];
+    let otherUserID = find(userIDs, (id) => !isEqual(id, currentUser.id));
+    let user = find(this.props.users, ({ id }) => isEqual(id, otherUserID));
     return (
-      <TouchableOpacity style={globals.flexContainer} onPress={() => this.visitConversation(user)}>
+      <TouchableOpacity 
+        style={globals.flexContainer}
+        onPress={() => this.visitConversation(user)}
+      >
         <View style={globals.flexRow}>
-          <Image style={globals.avatar} source={{uri: user.avatar}}/>
+          <Image
+            style={globals.avatar}
+            source={{uri: user.avatar}}
+          />
           <View style={globals.flex}>
             <View style={globals.textContainer}>
-              <Text style={styles.h5}>{user.firstName} {user.lastName}</Text>
-              <Text style={styles.h6}>{moment(conversation.lastMessageDate).fromNow()}</Text>
+              <Text style={styles.h5}>
+                {user.firstName} {user.lastName}
+              </Text>
+              <Text style={styles.h6}>
+                {moment(conversation.lastMessageDate).fromNow()}
+              </Text>
             </View>
-            <Text style={[styles.h4, globals.mh1]}>{conversation.lastMessageText.substring(0, 40)}...</Text>
+            <Text style={[styles.h4, globals.mh1]}>
+              {conversation.lastMessageText.substring(0, 40)}...
+            </Text>
           </View>
           <View style={styles.arrowContainer}>
-            <Icon size={30} name="ios-arrow-forward" color={Colors.bodyTextLight}/>
+            <Icon
+              size={30}
+              name="ios-arrow-forward"
+              color={Colors.bodyTextLight}
+            />
           </View>
         </View>
         <View style={styles.divider}/>
       </TouchableOpacity>
     )
   }
-  dataSource(){
-    return (
-      new ListView.DataSource({ rowHasChanged: rowHasChanged }).cloneWithRows(this.props.conversations)
-    );
-  }
-  render() {
-    return (
-      <View style={globals.flexContainer}>
-        <NavigationBar
-          title={{ title: 'Messages', tintColor: 'white' }}
-          tintColor={Colors.brandPrimary}
-        />
-        <ListView
-          enableEmptySectionHeaders={true}
-          dataSource={this.dataSource()}
-          contentInset={{ bottom: 49 }}
-          renderRow={this._renderRow}
-        />
-      </View>
-    );
-  }
+ /* .... */
 };
 
 export default Conversations;
@@ -422,7 +431,7 @@ export default Conversations;
 
 Now when you press on a conversation row, the navigator should go to the `Conversation` screen, which is currently just a placeholder.
 
-![screen](Simulator Screen Shot Jul 26, 2016, 12.11.48 AM.png)
+
 
 You should now get directed to our `Conversation` screen when you press on a conversation. Now we need to flesh out that view. Ideally we want to have all the messages in reverse chronological order, along with an input field on the bottom to send a new message.
 
