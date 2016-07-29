@@ -465,19 +465,24 @@ First let's install two new packages:
 npm install --save react-native-invertible-scroll-view react-native-keyboard-spacer
 ```
 
-
 And then let's render our component:
 
 ```javascript
-application/components/messages/Conversation.js
+/* application/components/messages/Conversation.js */
+
+import React, { Component } from 'react';
+import { 
+  View, 
+  Text, 
+  Image, 
+  TouchableOpacity, 
+  TextInput 
+} from 'react-native';
 
 import moment from 'moment';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import NavigationBar from 'react-native-navbar';
-import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, TextInput } from 'react-native';
-
 import Colors from '../../styles/colors';
 import { Headers } from '../../fixtures';
 import BackButton from '../shared/BackButton';
@@ -531,6 +536,10 @@ class Conversation extends Component{
   }
   render(){
     let { user, currentUser } = this.props;
+    let titleConfig = { 
+      title: `${user.firstName} ${user.lastName}`,
+      tintColor: 'white'
+    };
     return(
       <View style={globals.flexContainer}>
         <InvertibleScrollView inverted={true}>
@@ -538,14 +547,14 @@ class Conversation extends Component{
             <Message
               key={idx}
               message={msg}
-              user={msg.senderId === currentUser.id ? currentUser : user}
+              user={isEqual(msg.senderId, currentUser.id) ? currentUser : user}
             />
           ))}
         </InvertibleScrollView>
         <View style={styles.navContainer}>
           <NavigationBar
             tintColor={Colors.brandPrimary}
-            title={{ title: `${user.firstName} ${user.lastName}`, tintColor: 'white' }}
+            title={titleConfig}
             leftButton={<BackButton handlePress={this.goBack}/>}
           />
         </View>
