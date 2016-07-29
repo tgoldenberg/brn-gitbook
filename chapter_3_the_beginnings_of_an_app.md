@@ -279,12 +279,12 @@ export default Dashboard;
 ```
 
 Notice a few things:
-- We add a `leftButton` property to the `NavigationBar`. This is the back icon that renders in the top left part of our screen. We define our `BackButton` component at the top of the file, using React's stripped-down functional stateless component syntax.
-- When we press the `Go to the Dashboard` button, we pass in a new object to our `Navigator` with the name of our new component (in our case, 'Dashboard'). Our `Navigator` understands this and delivers us to the correct component.
+- We add a `leftButton` property to the navbar. This is the back icon that renders in the top left part of our screen. We define our `BackButton` component at the top of the file, using React's [**functional stateless component**](https://medium.com/@housecor/react-stateless-functional-components-nine-wins-you-might-have-overlooked-997b0d933dbc#.c8er29tt7) syntax.
+- When we press the **Go to the Dashboard** button, we pass in a new object to our `Navigator` with the name of our new component (in our case, 'Dashboard'). Our `Navigator` understands this and delivers us to the correct component.
 
-Now you should be able to go back and forth between the `Landing` and `Dashboard` screens.
+Now you should be able to go back and forth between the **Landing** and **Dashboard** screens.
 
-![screen](Simulator Screen Shot Jul 24, 2016, 9.10.59 PM.png)
+
 
 ### Overview of Components Used
 
