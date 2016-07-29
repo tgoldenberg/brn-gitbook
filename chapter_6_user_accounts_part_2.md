@@ -719,9 +719,9 @@ getUserInfo(sid){
 
 After filling out the form, you should be directed to the `Dashboard` again with the newly created user. If we check on `localhost:2403/dashboard`, we should see our new user in the `data` section of the `users` collection.
 
-![confirm](/images/chapter-6/confirm-1.png)
-![confirm](/images/chapter-6/confirm-2.png)
 ![confirm](/images/chapter-6/confirm-3.png)
+![confirm](/images/chapter-6/confirm-2.png)
+![confirm](/images/chapter-6/confirm-1.png)
 
 Let's commit there and call it a wrap!
 
