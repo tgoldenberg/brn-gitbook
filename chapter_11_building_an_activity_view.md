@@ -43,9 +43,9 @@ class CalendarView extends Component{
     let dateQuery = { end: { $gt: new Date().valueOf() }};
     let query = {
       $or: [
-        extend(dateQuery, { groupId: { $in: groups.map((g) => g.id) }}),
-        extend(dateQuery, { going:  { $elemMatch: { $eq: this.props.currentUser.id }}}),
-        extend(dateQuery, { 'location.city.long_name': this.props.currentUser.location.city.long_name })
+        extend({}, dateQuery, { groupId: { $in: groups.map((g) => g.id) }}),
+        extend({}, dateQuery, { going:  { $elemMatch: { $eq: this.props.currentUser.id }}}),
+        extend({}, dateQuery, { 'location.city.long_name': this.props.currentUser.location.city.long_name })
       ],
       $limit: 20,
     };
@@ -222,12 +222,39 @@ export default Calendar;
 
 ```
 
-Let’s go over a few things. Notice how in order to get proper section headers, we had to modify our `events` data. First we create an array of unique dates, which become our sections, and then for each of these sections, we create a rowID for each event that takes place on that date. We then use the `ListView` component to render them. As we are using sections, we define our event rows and section headers through the `renderRow` and `renderSectionHeaders` properties of the `ListView`.
+Let’s go over a few things. 
+
+- Notice how in order to get proper section headers, we had to modify our `events` data. First we create an array of unique dates, which become our sections, and then for each of these sections, we create a rowID for each event that takes place on that date. We then use the `ListView` component to render them. As we are using sections, we define our event rows and section headers through the `renderRow` and `renderSectionHeaders` properties of the `ListView`.
+- When querying for our calendar events, we first fetch the groups that our user belongs to. Then we query the upcoming events for those groups. 
+- We also refactor some relevant functions that we use in our `ListView`, for example, `getSectionData`, etc. Let's place those in `application/utilities/index.js`
+
+```javascript
+export function rowHasChanged(r1, r2) {
+  return r1 != r2;
+};
+export function sectionHeaderHasChanged(s1, s2){
+  return s1 != s2;
+};
+export function getSectionData(dataBlob, sectionID) {
+  return dataBlob[sectionID]
+};
+export function getRowData(dataBlob, sectionID, rowID){
+  return dataBlob[`${sectionID}:${rowID}`];
+}
+```
+
+![calendar](/images/chapter-12/calendar-1.png)
+![calendar](/images/chapter-12/calendar-2.png)
+
+Let's make a commit there.
+
+[Commit 25](https://github.com/buildreactnative/assemblies-tutorial/tree/9803794854743f00cb203f6e32d8dec6470dc103) - "Render the Calendar View"
 
 
-## 11.2 Fixing the Profile View
 
-Now that we have a functional `CalendarView`, we can focus our attention on some of the other areas of the app. What about our `ProfileView`? We are currently rendering the user information, but don’t have a way for the user to edit that information. This is a good opportunity to re-use some of the interface from the `Register` and `RegisterConfirm` components. We should also start to think about how the user experience will be on a mobile device. We can use the `react-native-keyboard-aware-scroll-view` package to make sure that the focused input is above the device’s keyboard. You can always check this with the `cmd + sft + k` command, which will toggle the native keyboard view on the iOS simulator.
+### Fixing the Profile View
+
+Now that we have a functional `CalendarView`, we can focus our attention on some of the other areas of the app. What about our `ProfileView`? We are currently rendering the user information, but don’t have a way for the user to edit that information. This is a good opportunity to re-use some of the interface from the `Register` and `RegisterConfirmation` components. We should also start to think about how the user experience will be on a mobile device. We can use the `react-native-keyboard-aware-scroll-view` package to make sure that the focused input is above the device’s keyboard. You can always check this with the `cmd + sft + k` command, which will toggle the native keyboard view on the iOS simulator.
 
 Let’s go to parts of our app that didn’t consider this before and add the component `KeyboardAwareScrollView` in place of our regular `ScrollView`. 
 
@@ -250,26 +277,25 @@ return (
 
 We can also add this to `CreateEvent.js`, `CreateGroup.js`, and `CreateEventConfirm.js`.
 
-## 11.3 Adding to the Profile View
+### Adding to the Profile View
 
 Now that we’ve addressed some user experience issues in our app, what about the Profile View? So far, the only action a user can take is `logout`. Let’s add the ability to change your avatar, technologies, and basic information. First let’s change our `ProfileView.js` component to be a navigation component with three routes:
 
 ```javascript
 import React, { Component } from 'react';
-import {
-  Navigator,
-  StyleSheet
-} from 'react-native';
+import { Navigator } from 'react-native';
+
 import UserProfile from './UserProfile';
 import UserSettings from './UserSettings';
 import UserTechnologies from './UserTechnologies';
+import { globals } from '../../styles';
 
-export default class ProfileView extends Component{
+class ProfileView extends Component{
   render(){
     return (
       <Navigator
         initialRoute={{ name: 'UserProfile' }}
-        style={styles.container}
+        style={globals.flex}
         renderScene={(route, navigator) => {
           switch(route.name){
             case 'UserProfile':
@@ -301,118 +327,193 @@ export default class ProfileView extends Component{
       />
     )
   }
-}
+};
 
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  }
-});
-
+export default ProfileView;
 
 ```
 
-Now we also have to define `UserTechnologies` and `UserSettings`, as well as link to them from the initial `UserProfile` route. Let’s create the links first:
+And then we can render the components `UserProfile`, `UserSettings`, and `UserTechnologies`, reusing parts of our registration form.
+
 ```javascript
-…
-<TouchableOpacity
-  style={styles.formField}
-  onPress={() => navigator.push({ name: 'UserTechnologies', currentUser})}>
-  <Text style={styles.formName}>My Technologies</Text>
-  <View>
-    <Icon name='ios-arrow-forward' size={30} color='#ccc' />
-  </View>
-</TouchableOpacity>
-<TouchableOpacity
-  style={styles.formField}
-  onPress={() => navigator.push({ name: 'UserSettings', currentUser })}
-  >
-  <Text style={styles.formName}>Settings</Text>
-  <View>
-    <Icon name='ios-arrow-forward' size={30} color='#ccc' />
-  </View>
-</TouchableOpacity>
-…
+application/components/profile/UserProfile.js
+
+import Icon from 'react-native-vector-icons/Ionicons';
+import ImagePicker from 'react-native-image-picker';
+import NavigationBar from 'react-native-navbar';
+import React, { Component } from 'react';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+
+import Colors from '../../styles/colors';
+import { ImageOptions, Headers } from '../../fixtures';
+import { API, DEV } from '../../config';
+import { globals, profileStyles } from '../../styles';
+
+const styles = profileStyles;
+
+class UserProfile extends Component{
+  constructor(){
+    super();
+    this.visitTechnologies = this.visitTechnologies.bind(this);
+    this.showImagePicker = this.showImagePicker.bind(this);
+    this.visitSettings = this.visitSettings.bind(this);
+  }
+  showImagePicker(){ /* select image from camera roll for avatar */
+    ImagePicker.showImagePicker(ImageOptions, (response) => {
+      if (response.didCancel || response.error) { return; }
+      const avatar = 'data:image/png;base64,' + response.data;
+      fetch(`${API}/users/${this.props.currentUser.id}`, {
+        method: 'PUT',
+        headers: Headers,
+        body: JSON.stringify({ avatar: avatar })
+      })
+      .then(response => response.json())
+      .then(user => this.props.updateUser(user))
+      .catch(err => console.log('ERR:', err))
+      .done();
+    });
+  }
+  visitTechnologies(){
+    this.props.navigator.push({ name: 'UserTechnologies', currentUser: this.props.currentUser });
+  }
+  visitSettings(){
+    this.props.navigator.push({ name: 'UserSettings', currentUser: this.props.currentUser });
+  }
+  render() {
+    let { currentUser } = this.props;
+    return (
+      <View style={[globals.flexContainer, globals.inactive]}>
+        <NavigationBar
+          title={{ title: 'Profile', tintColor: 'white' }}
+          tintColor={Colors.brandPrimary}
+        />
+        <ScrollView style={globals.flex}>
+          <View style={styles.flexRow}>
+            <TouchableOpacity style={[globals.flexCenter, globals.pv1]} onPress={this.showImagePicker}>
+              <Image source={{uri: currentUser.avatar}} style={styles.avatar}/>
+            </TouchableOpacity>
+            <View style={styles.infoContainer}>
+              <Text style={globals.h4}>{currentUser.firstName} {currentUser.lastName}</Text>
+              <Text style={globals.h5}>{currentUser.location.city.long_name}, {currentUser.location.state.short_name}</Text>
+            </View>
+          </View>
+          <TouchableOpacity style={styles.formButton} onPress={this.visitTechnologies}>
+            <Text style={globals.h4}>My Technologies</Text>
+            <Icon name='ios-arrow-forward' size={30} color='#ccc' />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.formButton} onPress={this.visitSettings}>
+            <Text style={globals.h4}>Settings</Text>
+            <Icon name='ios-arrow-forward' size={30} color='#ccc' />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.logoutButton} onPress={this.props.logout}>
+            <Text style={styles.logoutText}>Logout</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+    );
+  }
+};
+
+export default UserProfile;
+
 ```
-
-Then let’s create the `UserSettings` and `UserTechnologies` components, re-using parts of our `Register.js` component.
-
 
 ```javascript
 application/components/profile/UserSettings.js
 
-import _ from 'underscore';
-import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import React, { Component } from 'react';
-import {
-  Text,
-  View,
-  ScrollView,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions
-} from 'react-native';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { Text, View, TextInput, TouchableOpacity, Dimensions } from 'react-native';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { autocompleteStyles } from '../accounts/Register';
+import { find } from 'underscore';
 
 import Colors from '../../styles/colors';
-import Globals from '../../styles/globals';
-import LeftButton from '../accounts/LeftButton';
-import {DEV, API} from '../../config';
+import { Headers } from '../../fixtures';
+import BackButton from '../shared/BackButton';
+import { GooglePlacesCityConfig } from '../../config';
+import { DEV, API } from '../../config';
+import { globals, formStyles, autocompleteStyles } from '../../styles';
 
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+const styles = formStyles;
+const { height: deviceHeight, width: deviceWidth } = Dimensions.get('window');
 
+function setErrorMsg({ location, firstName, lastName, email }){
+  if (typeof location !== 'object' || ! location.city ) {
+    return 'Must provide valid location.';
+  } else if (firstName === ''){
+    return 'Must provide a valid first name.';
+  } else if (lastName === '') {
+    return 'Must provide a valid last name.';
+  } else if (email === ''){
+    return 'Must provide a valid email address.';
+  } else {
+    return '';
+  }
+}
 class UserSettings extends Component{
   constructor(props){
     super(props);
+    this.goBack = this.goBack.bind(this);
     this.saveSettings = this.saveSettings.bind(this);
+    this.selectLocation = this.selectLocation.bind(this);
     this.state = {
-      location: props.currentUser.location,
-      firstName: props.currentUser.firstName,
-      lastName: props.currentUser.lastName,
-      email: props.currentUser.username,
-      errorMsg: '',
+      email     : props.currentUser.username,
+      errorMsg  : '',
+      firstName : props.currentUser.firstName,
+      lastName  : props.currentUser.lastName,
+      location  : props.currentUser.location,
     }
   }
   saveSettings(){
-    let { location, firstName, lastName, email } = this.state;
-    if (typeof location !== 'object' || ! location.city ) {
-      this.setState({ errorMsg: 'Must provide valid location.'}); return;
-    } else if (firstName === ''){
-      this.setState({ errorMsg: 'Must provide a valid first name.'}); return;
-    } else if (lastName === '') {
-      this.setState({ errorMsg: 'Must provide a valid last name.'}); return;
-    } else if (email === ''){
-      this.setState({ errorMsg: 'Must provide a valid email address.'}); return;
+    let errorMsg = setErrorMsg(this.state);
+    if (errorMsg !== '') {
+      this.setState({ errorMsg }); return;
     }
+    let user = {
+      location: this.state.location,
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      email: this.state.email
+    };
     fetch(`${API}/users/${this.props.currentUser.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ location, firstName, lastName, email })
+      headers: Headers,
+      body: JSON.stringify(user)
     })
     .then(response => response.json())
-    .then(data => {
-      this.props.updateUser(data);
-      this.props.navigator.pop();
-    })
+    .then(user => this.updateUser(user))
     .catch(err => console.log('ERR:', err))
     .done();
   }
+  updateUser(user){
+    this.props.updateUser(user);
+    this.goBack();
+  }
+  selectLocation(data, details){
+    if ( ! details ) { return; }
+    let location = {
+      ...details.geometry.location,
+      city: find(details.address_components, (c) => c.types[0] === 'locality'),
+      state: find(details.address_components, (c) => c.types[0] === 'administrative_area_level_1'),
+      county: find(details.address_components, (c) => c.types[0] === 'administrative_area_level_2'),
+      formattedAddress: details.formatted_address
+    };
+    this.setState({ location });
+  }
+  goBack(){
+    this.props.navigator.pop();
+  }
   render(){
-    let { navigator } = this.props;
-    let titleConfig = { title: 'User Settings', tintColor: 'white' };
     return (
-      <View style={styles.container}>
+      <View style={[globals.flexContainer, globals.inactive]}>
         <NavigationBar
-          title={titleConfig}
+          title={{ title: 'User Settings', tintColor: 'white' }}
           tintColor={Colors.brandPrimary}
-          leftButton={<LeftButton handlePress={() => navigator.pop()}/>}
+          leftButton={<BackButton handlePress={this.goBack}/>}
         />
-        <KeyboardAwareScrollView style={styles.formContainer}>
+        <KeyboardAwareScrollView style={[styles.formContainer, globals.mt1]}>
           <Text style={styles.h4}>{"* Where are you looking for assemblies?"}</Text>
           <View ref="location" style={{flex: 1,}}>
             <GooglePlacesAutocomplete
@@ -421,41 +522,24 @@ class UserSettings extends Component{
               minLength={2}
               autoFocus={false}
               fetchDetails={true}
-              onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                if (DEV) {console.log(data);}
-                if (DEV) {console.log(details);}
-                this.setState({
-                  location: _.extend({}, details.geometry.location, {
-                    city: _.find(details.address_components, (c) => c.types[0] == 'locality'),
-                    state: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_1'),
-                    county: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_2'),
-                    formattedAddress: details.formatted_address,
-                  })
-                });
-              }}
+              onPress={this.selectLocation}
               getDefaultValue={() => {return this.state.location.city.long_name;}}
-              query={{
-                key       :  Config.GOOGLE_PLACES_API_KEY,
-                language  : 'en', // language of the results
-                types     : '(cities)', // default: 'geocode'
-              }}
+              query={GooglePlacesCityConfig}
               currentLocation={false}
               currentLocationLabel="Current location"
               nearbyPlacesAPI='GooglePlacesSearch'
               GoogleReverseGeocodingQuery={{}}
               GooglePlacesSearchQuery={{rankby: 'distance',}}
-              filterReverseGeocodingByTypes={['street_address']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+              filterReverseGeocodingByTypes={['street_address']}
               predefinedPlaces={[]}>
             </GooglePlacesAutocomplete>
           </View>
-
           <Text style={styles.h4}>* Email</Text>
-
-          <View ref="email" style={styles.formField}>
+          <View style={styles.formField}>
             <TextInput
-              ref="emailField"
+              ref={(el) => this.email = el }
               returnKeyType="next"
-              onChangeText={(text) => this.setState({email: text})}
+              onChangeText={(email) => this.setState({ email })}
               keyboardType="email-address"
               autoCapitalize="none"
               maxLength={144}
@@ -466,13 +550,13 @@ class UserSettings extends Component{
             />
           </View>
           <Text style={styles.h4}>* First Name</Text>
-          <View style={styles.formField} ref="firstName">
+          <View style={styles.formField}>
             <TextInput
-              ref="firstNameField"
+              ref={(el) => this.firstName = el }
               returnKeyType="next"
               maxLength={20}
               value={this.state.firstName}
-              onChangeText={(text) => this.setState({ firstName: text})}
+              onChangeText={(firstName) => this.setState({ firstName })}
               placeholderTextColor='#bbb'
               style={styles.input}
               placeholder="Your first name"
@@ -483,8 +567,8 @@ class UserSettings extends Component{
             <TextInput
               returnKeyType="next"
               maxLength={20}
-              ref="lastNameField"
-              onChangeText={(text) => this.setState({lastName: text})}
+              ref={(el) => this.lastName = el }
+              onChangeText={(lastName) => this.setState({ lastName })}
               placeholderTextColor='#bbb'
               value={this.state.lastName}
               style={styles.input}
@@ -492,149 +576,45 @@ class UserSettings extends Component{
             />
          </View>
         </KeyboardAwareScrollView>
-        <TouchableOpacity style={[Globals.submitButton, {marginBottom: 50}]} onPress={this.saveSettings}>
-          <Text style={Globals.submitButtonText}>SAVE</Text>
+        <TouchableOpacity style={[styles.submitButton, styles.buttonMargin]} onPress={this.saveSettings}>
+          <Text style={globals.largeButtonText}>SAVE</Text>
         </TouchableOpacity>
       </View>
     )
   }
 }
 
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  backButton: {
-    paddingLeft: 20,
-    backgroundColor: 'transparent',
-    paddingBottom: 10,
-  },
-  technologyList:{
-    textAlign: 'left',
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: Colors.brandPrimary,
-    paddingHorizontal: 20,
-    marginLeft: 8,
-    paddingVertical: 4,
-  },
-  formContainer: {
-    backgroundColor: Colors.inactive,
-    flex: 1,
-    paddingTop: 15,
-  },
-  contentContainerStyle: {
-    flex: 1,
-  },
-  h4: {
-    fontSize: 20,
-    fontWeight: '300',
-    color: 'black',
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  h5: {
-    fontSize: 16,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-    textAlign: 'center',
-  },
-  formField: {
-    backgroundColor: 'white',
-    height: 50,
-    paddingTop: 5,
-    marginBottom: 10,
-  },
-  largeFormField: {
-    backgroundColor: 'white',
-    height: 100,
-  },
-  addPhotoContainer: {
-    backgroundColor: 'white',
-    marginVertical: 15,
-      marginHorizontal: (deviceWidth - 200) / 2,
-    width: 200,
-    borderRadius: 30,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  photoText: {
-    fontSize: 18,
-    paddingHorizontal: 10,
-    color: Colors.brandPrimary
-  },
-  input: {
-    color: '#777',
-    fontSize: 18,
-    fontWeight: '300',
-    height: 40,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  pb: {
-    paddingBottom: 10,
-  },
-  largeInput: {
-    color: '#ccc',
-    fontSize: 18,
-    backgroundColor: 'white',
-    fontWeight: '300',
-    height: 100,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-});
-
 export default UserSettings;
-
 
 ```
 
-And we can do the same with `UserTechnologies.js`: 
-
 ```javascript
-application/components/profile/UserTechnologies.js
+application/components/profile/UserSettings.js
 
-import _ from 'underscore';
-import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import Dropdown, {
-  Select,
-  Option,
-  OptionList
-} from 'react-native-selectme';
+import Dropdown, { Select, Option, OptionList } from 'react-native-selectme';
 import React, { Component } from 'react';
-import {
-  Text,
-  View,
-  ScrollView,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions
-} from 'react-native';
+import { Text, View, ScrollView, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { uniq } from 'underscore';
 
 import Colors from '../../styles/colors';
-import Globals from '../../styles/globals';
-import LeftButton from '../accounts/LeftButton';
+import BackButton from '../shared/BackButton';
 import {DEV, API} from '../../config';
-import { Technologies } from '../../fixtures';
-import { selectStyles, optionTextStyles, overlayStyles, TechnologyList } from '../accounts/RegisterConfirm';
+import { Technologies, Headers } from '../../fixtures';
+import { globals, formStyles, selectStyles, optionTextStyles, overlayStyles } from '../../styles';
+import { TechnologyList } from '../accounts/RegisterConfirmation';
 
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+const styles = formStyles;
+const { height: deviceHeight, width: deviceWidth } = Dimensions.get('window');
 
 class UserTechnologies extends Component{
   constructor(props){
     super(props);
+    this.goBack = this.goBack.bind(this);
     this.selectTechnology = this.selectTechnology.bind(this);
     this.removeTechnology = this.removeTechnology.bind(this);
-    this.getOptions = this.getOptions.bind(this);
     this.saveSettings = this.saveSettings.bind(this);
     this.state = {
       technologies: props.currentUser.technologies,
@@ -642,54 +622,54 @@ class UserTechnologies extends Component{
     }
   }
   selectTechnology(technology){
-    this.setState({ technologies: this.state.technologies.concat(technology)});
-  }
-  getOptions(){
-    return this.refs.optionList;
+    this.setState({
+      technologies: uniq(this.state.technologies.concat(technology))
+    });
   }
   removeTechnology(index){
     let { technologies } = this.state;
-    this.setState({ technologies: [
+    this.setState({
+      technologies: [
       ...technologies.slice(0, index),
       ...technologies.slice(index + 1)
-    ]})
+      ]
+    })
+  }
+  goBack(){
+    this.props.navigator.pop();
   }
   saveSettings(){
-    let { technologies } = this.state;
     fetch(`${API}/users/${this.props.currentUser.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ technologies })
+      headers: Headers,
+      body: JSON.stringify({ technologies: this.state.technologies })
     })
     .then(response => response.json())
-    .then(data => {
-      this.props.updateUser(data);
-      this.props.navigator.pop();
+    .then(user => {
+      this.props.updateUser(user);
+      this.goBack();
     })
-    .catch(err => console.log('ERR:', err))
+    .catch(err => {})
     .done();
   }
   render(){
-    let { navigator } = this.props;
     let { technologies } = this.state;
-    let titleConfig = { title: 'User Technologies', tintColor: 'white' };
     return (
-      <View style={styles.container}>
+      <View style={[globals.flexContainer, globals.inactive]}>
         <NavigationBar
-          title={titleConfig}
+          title={{ title: 'User Technologies', tintColor: 'white' }}
           tintColor={Colors.brandPrimary}
-          leftButton={<LeftButton handlePress={() => navigator.pop()}/>}
+          leftButton={<BackButton handlePress={this.goBack}/>}
         />
-        <KeyboardAwareScrollView style={styles.formContainer}>
-          <View style={{ flex: 1 }}>
+        <KeyboardAwareScrollView style={[styles.formContainer, globals.mt1]} contentInset={{bottom: 49}}>
+          <View style={globals.flex}>
             <Text style={styles.h4}>{"Select technologies"}</Text>
             <Select
               width={deviceWidth}
               height={55}
-              ref="select"
               styleText={optionTextStyles}
               style={selectStyles}
-              optionListRef={this.getOptions}
+              optionListRef={() => this.options}
               defaultValue="Add a technology"
               onSelect={this.selectTechnology}>
               {Technologies.map((tech, idx) => (
@@ -698,116 +678,46 @@ class UserTechnologies extends Component{
                 </Option>
               ))}
             </Select>
-            <OptionList ref="optionList" overlayStyles={overlayStyles}/>
+            <OptionList ref={(el) => this.options = el } overlayStyles={overlayStyles}/>
           </View>
-          <View>
-            { technologies.length ? <TechnologyList technologies={technologies} handlePress={this.removeTechnology}/> : null }
-          </View>
+          <TechnologyList technologies={technologies} handlePress={this.removeTechnology}/>
         </KeyboardAwareScrollView>
-        <TouchableOpacity style={[Globals.submitButton, {marginBottom: 50}]} onPress={this.saveSettings}>
-          <Text style={Globals.submitButtonText}>SAVE</Text>
+        <TouchableOpacity style={[styles.submitButton, styles.buttonMargin]} onPress={this.saveSettings}>
+          <Text style={globals.largeButtonText}>SAVE</Text>
         </TouchableOpacity>
       </View>
     )
   }
 }
 
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  backButton: {
-    paddingLeft: 20,
-    backgroundColor: 'transparent',
-    paddingBottom: 10,
-  },
-  technologyList:{
-    textAlign: 'left',
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: Colors.brandPrimary,
-    paddingHorizontal: 20,
-    marginLeft: 8,
-    paddingVertical: 4,
-  },
-  formContainer: {
-    backgroundColor: Colors.inactive,
-    flex: 1,
-    paddingTop: 15,
-  },
-  contentContainerStyle: {
-    flex: 1,
-  },
-  h4: {
-    fontSize: 20,
-    fontWeight: '300',
-    color: 'black',
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  h5: {
-    fontSize: 16,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-    textAlign: 'center',
-  },
-  formField: {
-    backgroundColor: 'white',
-    height: 50,
-    paddingTop: 5,
-    marginBottom: 10,
-  },
-  largeFormField: {
-    backgroundColor: 'white',
-    height: 100,
-  },
-  addPhotoContainer: {
-    backgroundColor: 'white',
-    marginVertical: 15,
-      marginHorizontal: (deviceWidth - 200) / 2,
-    width: 200,
-    borderRadius: 30,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  photoText: {
-    fontSize: 18,
-    paddingHorizontal: 10,
-    color: Colors.brandPrimary
-  },
-  input: {
-    color: '#777',
-    fontSize: 18,
-    fontWeight: '300',
-    height: 40,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  pb: {
-    paddingBottom: 10,
-  },
-  largeInput: {
-    color: '#ccc',
-    fontSize: 18,
-    backgroundColor: 'white',
-    fontWeight: '300',
-    height: 100,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-});
-
 export default UserTechnologies;
 
 ```
-![technologies](Screen Shot 2016-07-21 at 7.53.38 PM.png)
-![settings](Screen Shot 2016-07-21 at 7.53.29 PM.png)
+
+Let's review:
+- In `ProfileView`, we establish the different routes we will be using and pass on `this.props` to each child component. 
+- In `UserProfile`, we offer the option to update the user avatar through our `ImagePicker` component. We also give the option to route to `UserTechnologies` or `UserSettings`
+- `UserSettings` is basically reusing the same elements of our `Register` component from user accounts. The save button updates our user through a database call and updates the component state of our top-level `Navigator` component. Make sure on `index.ios.js` that the `updateUser` is passed to `Dashboard`:
+ 
+```javascript
+case 'Dashboard':
+  return (
+    <Dashboard
+      updateUser={this.updateUser}
+      navigator={navigator}
+      logout={this.logout}
+      user={this.state.user}
+    />
+);
+```
 
 Notice how we were able to re-use a lot of styles / parts of our previous components. Optimizing this makes development faster and more enjoyable. Always remember the concept of DRY, don't repeat yourself. 
 
+Let's commit here.
 
+[Commit 26](https://github.com/buildreactnative/assemblies-tutorial/tree/c7ba88dca60c3df08e03e178e7fba64ed8eb23d4) - "Render Profile components"
+
+![profile](/images/chapter-12/profile-1.png)
+![profile](/images/chapter-12/profile-2.png)
+![profile](/images/chapter-12/profile-3.png)
 
