@@ -484,7 +484,7 @@ const TechnologyList = ({ technologies, handlePress }) => (
       </TouchableOpacity>
     ))}
   </View>
-)
+);
 
 class RegisterConfirm extends Component{
   constructor(){
