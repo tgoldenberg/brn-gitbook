@@ -469,14 +469,13 @@ And then let's render our component:
 
 ```javascript
 /* application/components/messages/Conversation.js */
-
 import React, { Component } from 'react';
-import { 
-  View, 
-  Text, 
-  Image, 
-  TouchableOpacity, 
-  TextInput 
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  TextInput
 } from 'react-native';
 
 import moment from 'moment';
@@ -486,6 +485,7 @@ import NavigationBar from 'react-native-navbar';
 import Colors from '../../styles/colors';
 import { Headers } from '../../fixtures';
 import BackButton from '../shared/BackButton';
+import { isEqual } from 'underscore';
 import { DEV, API } from '../../config';
 import { globals, messagesStyles } from '../../styles';
 
@@ -493,7 +493,7 @@ const styles = messagesStyles;
 
 const Message = ({ user, message }) => {
   return (
-    <Text>{message}</Text>
+    <Text>{message.text}</Text>
   )
 };
 
@@ -536,7 +536,7 @@ class Conversation extends Component{
   }
   render(){
     let { user, currentUser } = this.props;
-    let titleConfig = { 
+    let titleConfig = {
       title: `${user.firstName} ${user.lastName}`,
       tintColor: 'white'
     };
@@ -564,7 +564,7 @@ class Conversation extends Component{
             value={this.state.message}
             placeholder='Say something...'
             placeholderTextColor={Colors.bodyTextLight}
-            onChangeText={(msg) => this.setState({ message })}
+            onChangeText={(message) => this.setState({ message })}
             style={styles.input}
           />
           <TouchableOpacity
@@ -581,83 +581,52 @@ class Conversation extends Component{
 };
 
 export default Conversation;
-
 ```
+![conversation](/images/chapter-7/simple-conversation-1.png)
+
+
 
 Here's an overview of what's going on:
-- We use the `InvertibleScrollView` component to keep the screen at the bottom of our list of messages. This way when we add a new message, it is easy to scroll to the bottom of the screen.
-- The `KeyboardSpacer` component allows us to keep the text input just about the keyboard when a user is typing. To simulate typing on the Simulator, just type cmd + sft + k to toggle keyboard mode.
-- We fetch our messages in the `componentDidMount` method. Once the results are fetched, they should render in the `<Messages/>` component.
+- We use the **InvertibleScrollView** component to keep the screen at the bottom of our list of messages. This way when we add a new message, it is easy to scroll to the bottom of the screen.
+- The **KeyboardSpacer** component allows us to keep the text input just about the keyboard when a user is typing. To simulate typing on the Simulator, just type `cmd + sft + k` to toggle keyboard mode.
+- We fetch our messages in the `componentDidMount` method. Once the results are fetched, they should render in the **Messages** component.
 
-We still need to create a message, as well as flesh out our `Messages` component. Let's do that.
+We still need to create a message, as well as flesh out our **Messages** component. Let's do that.
 
 ```javascript
-import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, TextInput } from 'react-native';
-import moment from 'moment';
-import InvertibleScrollView from 'react-native-invertible-scroll-view';
-import KeyboardSpacer from 'react-native-keyboard-spacer';
-import NavigationBar from 'react-native-navbar';
-
-import Colors from '../../styles/colors';
-import { Headers, DefaultAvatar } from '../../fixtures';
-import BackButton from '../shared/BackButton';
-import { DEV, API } from '../../config';
-import { globals, messagesStyles } from '../../styles';
-
-const styles = messagesStyles;
-
+/* application/components/messages/Conversation.js */
+/* ... */
 const Message = ({ user, message }) => {
   return (
     <View style={[globals.centeredRow, globals.pt1]}>
       <View>
-        <Image style={globals.avatar} source={{uri: user.avatar? user.avatar : DefaultAvatar }} />
+        <Image 
+          style={globals.avatar} 
+          source={{uri: user.avatar? user.avatar : DefaultAvatar }} 
+        />
       </View>
       <View style={[styles.flexCentered, globals.pv1]}>
         <View style={globals.flexRow}>
-          <Text style={styles.h5}>{`${user.firstName} ${user.lastName}`}</Text>
-          <Text style={styles.h6}>{moment(new Date(message.createdAt)).fromNow()}</Text>
+          <Text style={styles.h5}>
+            {`${user.firstName} ${user.lastName}`}
+          </Text>
+          <Text style={styles.h6}>
+            {moment(new Date(message.createdAt)).fromNow()}
+          </Text>
         </View>
         <View style={globals.flexContainer}>
-          <Text style={styles.messageText}>{message.text}</Text>
+          <Text style={styles.messageText}>
+            {message.text}
+          </Text>
         </View>
       </View>
     </View>
   )
 };
-
+/* ... */
 
 class Conversation extends Component{
-  constructor(){
-    super();
-    this.goBack = this.goBack.bind(this);
-    this.createMessage = this.createMessage.bind(this);
-    this.state = {
-      messages  : [],
-      message   : '',
-    }
-  }
-  componentWillMount(){
-    this._loadMessages();
-  }
-  _loadMessages(){
-    let { user, currentUser } = this.props;
-    console.log('USER IDS', user.id, currentUser.id);
-    let query = {
-      $or: [
-        { senderId    : user.id, recipientId  : currentUser.id },
-        { recipientId : user.id, senderId     : currentUser.id }
-      ],
-      $sort: { createdAt: -1 },
-      $limit: 10
-    };
-    fetch(`${API}/messages?${JSON.stringify(query)}`)
-    .then(response => response.json())
-    .then(messages => this.setState({ messages }))
-    .catch(err => console.log('ERR:', err))
-    .done();
-  }
-
+/* ... */
   createMessage(){
     let { currentUser, user } = this.props;
     fetch(`${API}/messages`, {
@@ -675,64 +644,19 @@ class Conversation extends Component{
     .catch(err => {})
     .done();
   }
-  goBack(){
-    this.props.navigator.pop();
-  }
-  render(){
-    let { user, currentUser } = this.props;
-    return(
-      <View style={globals.flexContainer}>
-        <InvertibleScrollView inverted={true}>
-          {this.state.messages.map((msg, idx) => (
-            <Message
-              key={idx}
-              message={msg}
-              user={msg.senderId === currentUser.id ? currentUser : user}
-            />
-          ))}
-        </InvertibleScrollView>
-        <View style={styles.navContainer}>
-          <NavigationBar
-            tintColor={Colors.brandPrimary}
-            title={{ title: `${user.firstName} ${user.lastName}`, tintColor: 'white' }}
-            leftButton={<BackButton handlePress={this.goBack}/>}
-          />
-        </View>
-        <View style={styles.inputBox}>
-          <TextInput
-            multiline={true}
-            value={this.state.message}
-            placeholder='Say something...'
-            placeholderTextColor={Colors.bodyTextLight}
-            onChangeText={(msg) => this.setState({ message })}
-            style={styles.input}
-          />
-          <TouchableOpacity
-            style={ this.state.message ? styles.buttonActive : styles.buttonInactive }
-            underlayColor='#D97573'
-            onPress={this.createMessage}>
-            <Text style={ this.state.message ? styles.submitButtonText : styles.inactiveButtonText }>Send</Text>
-          </TouchableOpacity>
-        </View>
-        <KeyboardSpacer topSpacing={-50} />
-      </View>
-    )
-  }
-};
-
-export default Conversation;
-
-
+  /* ... */
 ```
 
-![screen](Simulator Screen Shot Jul 26, 2016, 12.29.06 AM.png)
-![screen](Simulator Screen Shot Jul 26, 2016, 12.29.01 AM.png)
+Now you should be able to create messages on the fly and see the screen update!
 
-[Commit 14](https://github.com/buildreactnative/assemblies-tutorial/tree/9fd01c203de9cb0b336d477aaf1cd1b0ed6af516) - "Create Conversation component"
+![new message](/images/chapter-7/new-message-data-1.png)
+![new message](/images/chapter-7/new-message-data-2.png)
+
+[Commit](https://github.com/buildreactnative/assemblies-tutorial/tree/9fd01c203de9cb0b336d477aaf1cd1b0ed6af516) - "Create Conversation component"
 
 ## Callback to Update Conversations (Optional)
 
-One cool thing about Deployd is that we can set callback hooks from within our REST-ful actions. For example, once we send a new message, we should update the relevant `conversation` with the latest message and timestamp. Using the `Events` tab in our Deployd dashboard, this is done easily. Under `POST`, add the following lines.
+One cool thing about Deployd is that we can set callback hooks from within our **REST**-ful actions. For example, once we send a new message, we should update the relevant conversation with the latest message and timestamp. Using the **Events** tab in our Deployd dashboard, this is done easily. Under **POST**, add the following lines.
 ```javascript
 console.log('MESSAGE CREATED', this);
 var text = this.text;
@@ -763,6 +687,8 @@ dpd.conversations.get({
     }
 });
 ```
+
+![deployd](/images/chapter-7/post-hook-1.png)
 
 Notice how we can use this hooks to log statements and to update other collections.
 
