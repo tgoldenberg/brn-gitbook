@@ -39,13 +39,13 @@ So far, so good. Now let’s get a project up and running. it’s good practice 
 
 ```cd ~/ReactNativeProjects```
 
-```react-native init assembliesTutorial```
+```react-native init assemblies```
 
 In this guide we’ll be building a community app for developers similar to Meetup called "Assemblies," but you can name your project whatever you like.
 
 Now navigate to your new project’s directory:
 
-`cd assembliesTutorial`
+`cd assemblies`
 
 ## Basic Structure of a React Native Project
 
