@@ -1,23 +1,24 @@
 # Chapter 13: Understanding ES6 with React Native
 
 
-## 13.1 A function by any other name
+### A function by any other name
 
-One of the more confusing things about working with React and React Native is the many different ways syntax is used, depending on the project/tutorial. Take the following examples and try them in your Node terminal. First make sure you are using the latest version of NodeJS (6 or above) by typing `node –v` in the terminal. If your version is lower, update it before continuing.
+One of the more confusing things about working with React and React Native is the many different ways syntax is used, depending on the project or tutorial. Take the following examples and try them in your Node terminal. First make sure you are using the latest version of NodeJS (6 or above) by typing `node –v` in the terminal. If your version is lower, update it before continuing.
 
 Once you’ve entered the terminal, try typing the following functions:
 
-![es6 functions](Screen Shot 2016-07-14 at 11.13.42 PM.png)
+![node](/images/chpater-13/node-1.png)
 
-All of these are essentially the same function. With the advent of ES6 and compilers like Babel, it is possible to use this new syntax in your React and React Native projects. In fact, the community has embraced the new syntax whole-heartedly, so it is worth getting used to.
 
-#### What is that Fat Arrow?
+All of these are essentially the same function. With the advent of ES6 and compilers like [**Babel**](https://babeljs.io/), it is possible to use this new syntax in your React and React Native projects. In fact, the community has embraced the new syntax whole-heartedly, so it is worth getting used to.
+
+#### What is that Fat Arrow? `=>`
 
 The fat arrow is used to continue the context of `this`. `this` is a confusing concept in JavaScript, and without the fat arrow, it can change unexpectedly within different functions. By using the fat arrow, we ensure that `this` remains the same. 
 
-#### What `let` and `const`, and not `var`?
+#### Why `let` and `const`, and not `var`?
 
-There are reasons why `let` is preferred to `var`, though they are not that important. Basically, it is an enhancement of performance through memory allocation. It is better to use `let` for variables that may change, and `const` for variables that are only assigned once.
+There are [reasons](http://stackoverflow.com/questions/762011/let-keyword-vs-var-keyword) why `let` is preferred to `var`, though they are not that important. It is better to use `let` for variables that may change, and `const` for variables that are only assigned once.
 
 Now that you understand how ES6 functions work, the following React Native component should make more sense: 
 
@@ -29,7 +30,7 @@ const Button = (props) =>  (
 );
 ```
 
-Here we assign a new function called `Button`, which takes `props` as a parameter, and outputs the React Native component accordingly. Another way to write this is like this, which leads us to another concept --- destructuring…
+Here we assign a new function called **Button**, which takes **props** as a parameter, and outputs the React Native component accordingly. Another way to write this is like this, which leads us to another concept --- destructuring…
 
 ```javascript
 const Button = ({ handlePress }) => (
@@ -39,26 +40,35 @@ const Button = ({ handlePress }) => (
 );
 ```
 
-## 13.2 Destructuring Objects and Arrays
+### Destructuring Objects and Arrays
 
 How were we able to access `handlePress` in the above example? Through a feature called `destructuring` in ES6. Type the following example in your Node console.
 
-![destructuring](Screen Shot 2016-07-14 at 11.16.23 PM.png)
+![node](/images/chapter-13/node-2.png)
 
-This is a very important concept in both React and React Native. Destructuring means we directly accessing properties of an object, instead of accessing the properties through the object itself. Let’s say we have a `props` object that is passed to a component.
+This is a very important concept in both React and React Native. Destructuring means we directly accessing properties of an object, instead of accessing the properties through the object itself. Let’s say we have a **props** object that is passed to a component.
 
-```
+```javascript
 let props = { username: ‘Tom’, city: ‘Long Beach’ };
 ```
-To access `username` we would have to type `props.username`. With destructuring, however, we can assign `username` so we don’t have to reference `props` again. 
+To access **username** we would have to type **props.username**. With destructuring, however, we can assign **username** so we don’t have to reference **props** again. 
 
-```let { username } = props;```
+```javascript
+let { username } = props;
+```
 
 This is very important, since we import are dependencies in this way too. Which brings us to our next topic: modules.
 
-## 13.3 Importing and exporting modules
+### Importing and exporting modules
 
-As an experiment create a new directory, called `test`. Inside of test, create 2 files: `main.js` and `utilities.js`. Also create a directory `config` and inside that, the file `index.js`. 
+As an experiment create a new directory, called `test`. Inside of test, create 2 files: `main.js` and `utilities.js`. Also create a directory `config` and inside that, the file `index.js`. Here is the structure so far:
+```
+test
+  - main.js
+  - utilities.js
+  - config
+     - index.js
+```
 
 Here is our `utilities.js`:
 
@@ -94,7 +104,7 @@ function doubleOperation(result){
 
 export default doubleOperation;
 ```
-Notice that we define 4 functions, in 4 different ways! Now, the closest thing to **best practice** would be the syntax for `subtract`, but all 4 work fine. Let's invoke these functions in our `main.js` file.
+Notice that we define 4 functions, in 4 different ways! Now, the closest thing to **best practice** would be the syntax for **subtract**, but all 4 work fine. Let's invoke these functions in our **main.js** file.
 
 
 ```javascript
@@ -116,13 +126,13 @@ console.log('DOUBLE ADDING');
 console.log(double(add(num1,num2)));
 ```
 
-Notice how we use `destructuring` to import our functions. Now to run these examples, just `node` won't be enough. This is because while vanilla Node offers a lot of ES6 features, it doesn't yet support the `import` syntax. Luckily, there's an easy way around this. We can use the `babel-node` CLI tool to run our code. If you don't have the `babel-cli` installed, just enter ```npm install --save-dev babel-cli```. Then you can run the examples with `babel-node filename`. Here's a screenshot of the output.
+Notice how we use **destructuring** to import our functions. Now to run these examples, just **node** won't be enough. This is because while vanilla Node offers a lot of **ES6** features, it doesn't yet support the **import** syntax. Luckily, there's an easy way around this. We can use the **babel-node** CLI tool to run our code. If you don't have the **babel-cli** installed, just enter ```npm install --save-dev babel-cli```. Then you can run the examples with `babel-node FILENAME`. Here's a screenshot of the output.
 
-![babel output](Screen Shot 2016-07-14 at 11.43.30 PM.png)
+![node](/images/chapter-13/node-3.png)
 
-The example was chosen to illustrate a few interesting things about modules and ES6. First of all, it gives us practice seeing how there are many different ways of constructing a function, as we showed earlier. Secondly, it shows some of the different ways of exporting and importing modules. In `main.js`, we use our `destructuring` syntax to import the different math functions from `utilities.js`. In `utilities.js`, we export through the `module.exports = ` syntax, while in `config/index.js` we use the `export default ` syntax. Also notice how we invoke `double`, a function, which has the result of a function as its parameter. These are things you will see a lot in React, especially when dealing with Redux.
+The example was chosen to illustrate a few interesting things about modules and **ES6**. First of all, it gives us practice seeing how there are many different ways of constructing a function, as we showed earlier. Secondly, it shows some of the different ways of exporting and importing modules. In **main.js**, we use our destructuring syntax to import the different math functions from **utilities.js**. In **utilities.js**, we export through the `module.exports = ` syntax, while in **config/index.js** we use the `export default ` syntax. Also notice how we invoke **double**, a function, which has the result of a function as its parameter. These are things you will see a lot in React, especially when dealing with **Redux**.
 
-If we want to explore some more, we can change our `main.js` file a bit.
+If we want to explore some more, we can change our **main.js** file a bit.
 
 ```javascript
 import * as operations from './utilities';
@@ -145,7 +155,7 @@ console.log(double(operations.add(num1, num2)));
 
 The `import * as ` syntax imports all the exported functions as one object that we can refer to. This is also a familiar pattern when looking at Redux. If we check we get the same answers as before.
 
-## 13.4 Spread Operator
+### Spread Operator
 
 Along with destructuring, the spread operator is another useful tool that we can use with both objects and arrays. Take the example of updating an element in a list of TODO items.
 
