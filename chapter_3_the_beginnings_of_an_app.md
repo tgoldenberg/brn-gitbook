@@ -52,10 +52,9 @@ npm install -g rnpm
 ```
 Then link the packages with the command `rnpm link`. You should get a success message.
 
-![rnpm](/images/chapter-3-the-beginnings-of-an-app/rnpm-1.png)
+![rnpm](/images/chapter-3/rnpm-1.png)
 
-
-Once those packages are linked we can build our Landing component -
+Once the packages are linked we can build our Landing component.
 
 ```javascript
 application/components/Landings.js
