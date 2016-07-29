@@ -331,7 +331,7 @@ class Conversations extends Component{
           tintColor={Colors.brandPrimary}
         />
         <ListView
-          enableEmptySectionHeaders={true}
+          enableEmptySections={true}
           dataSource={this.dataSource()}
           contentInset={{ bottom: 49 }}
           renderRow={this._renderRow}
@@ -431,41 +431,40 @@ export default Conversations;
 
 Now when you press on a conversation row, the navigator should go to the `Conversation` screen, which is currently just a placeholder.
 
+![conversation](/images/chapter-7/conversation-2.png)
 
+You should now get directed to our **Conversation** screen when you press on a conversation. Now we need to flesh out that view. Ideally we want to have all the messages in reverse chronological order, along with an input field on the bottom to send a new message.
 
-You should now get directed to our `Conversation` screen when you press on a conversation. Now we need to flesh out that view. Ideally we want to have all the messages in reverse chronological order, along with an input field on the bottom to send a new message.
-
-Let's create a few messages in Deployd to get started. Here is some data to get started (replace the userIds with the appropriate ones from your Deployd database):
-
-```
-senderId: 15f9d0d11a023b8a
-recipientId: b0d4dc1d8fd13a7d
-createdAt: 1467764227276
-text: "How are you?"
-
-senderId: b0d4dc1d8fd13a7d
-recipientId: 15f9d0d11a023b8a
-createdAt: 1467764227276
-text: "Fine, and you?"
-
-senderId: 15f9d0d11a023b8a
-recipientId: c8c0cfa404ee1831
-createdAt: 1467764227276
-text: "So what's going on tonight?"
-
-senderId: c8c0cfa404ee1831
-recipientId: 15f9d0d11a023b8a
-createdAt: 1467764227276
-text: "I don't know. You tell me."
+Let's create a few messages in Deployd to get started. Here is some data to get started (replace the userIds with the appropriate ones from your Deployd database). Once you have the first message saved, it's much easier to make others by copying and pasting some of the values.
 
 ```
-![](Screen Shot 2016-07-05 at 8.20.44 PM.png)
+senderId: fe796b79ad1fb86a
+recipientId: c3bf09be19bea981
+createdAt: 1469831890335
+text: "Good, what's new?"
 
-Now we can query the related messages in the `componentWillMount` phase of our `Conversation` component and then render the messages in reverse chronological order.
+senderId: c3bf09be19bea981
+recipientId: fe796b79ad1fb86a
+createdAt: 1469831890335
+text: "Nothing much, same old"
+
+senderId: fe796b79ad1fb86a
+recipientId: c3bf09be19bea981
+createdAt: 1469831890335
+text: "What are you doing this weekend?"
+```
+
+![new messages](/images/chapter-7/new-messages-1.png)
+
+
+Now we can query the related messages in the `componentWillMount` phase of our **Conversation** component and then render the messages in reverse chronological order.
 
 First let's install two new packages:
-- `react-native-invertible-scroll-view`
-- `react-native-keyboard-spacer`
+
+```
+npm install --save react-native-invertible-scroll-view react-native-keyboard-spacer
+```
+
 
 And then let's render our component:
 
