@@ -616,10 +616,6 @@ Once again, let's break down what's happening:
 
 With the **ImagePicker** component, we are able to set the **avatar** value in our component state to the image source. We then render the uploaded image. Try it out now!
 
-![register](/images/chapter-6/register-4.png)
-![register](/image/chapter-6/register-7.png)
-![register](/image/chapter-6/register-6.png)
-![register](/image/chapter-6/register-5.png)
 
 ## Adding User Technologies
 
