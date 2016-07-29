@@ -563,24 +563,23 @@ When you try logging in, you should see an error message like this. This is beca
 If we open up the dashboard for Deployd in our browser window (at `localhost:2403/dashboard`), we can actually manually insert a user. Open the **users** collection, and select the **data** tab. Now start typing, and you should see the fields fill up. When filling in values that expect arrays or objects, make sure to use double quotes and not single quotes. Here is what our screen looks like. Feel free to use the fields in our **currentUser** fixture for things like **location**, **technologies**, and **avatar**. 
 
 
-![User Data 1](/images/chapter-5-user-accounts-part-1/user-data-1.png "User Data 1")
-![User Data 2](/images/chapter-5-user-accounts-part-1/user-data-2.png "User Data 2")
-![User Data 3](/images/chapter-5-user-accounts-part-1/user-data-3.png "User Data 3")
 
 Now when we login with the correct email and password, we should get a response with the user information, and we can then redirect to the dashboard. Voila! 
 
-![](Screen Shot 2016-06-28 at 9.23.35 AM.png)
+![user](/images/chapter-5/deployd-user-1.png)
+![user](/images/chapter-5/deployd-user-2.png)
+![user](/images/chapter-5/deployd-user-3.png)
 
-Finally, notice that we add `if (DEV) { }` clauses to our console statements. This is because console logs can really slow down app performance in production. By setting `DEV` to false, we eliminate the need to remove individual console statements.
+Finally, notice that we add `if (DEV) { }` clauses to our console statements. This is because console logs can really slow down app performance in production. By setting `DEV` to false, we eliminate the need to remove individual console statements once we're ready to deploy our app.
 
-## Real Profile View
+### Real Profile View
 
-Now that we have real user data, we can start to flesh out parts of our app. Our profile view, for example, should be pretty easy to update. We just have to ensure that the user data that is passed to the `<Dashboard/>` component gets passed to our profile view. Let's see what that looks like.
+Now that we have real user data, we can start to flesh out parts of our app. Our profile view, for example, should be pretty easy to update. We just have to ensure that the user data that is passed to the dashboard component gets passed to our profile view. Let's see what that looks like.
 
 ```JavaScript
-application/components/profile/ProfileView.js
+/* application/components/profile/ProfileView.js */
 ...
-  // import { currentUser } from '../../fixtures';
+// import { currentUser } from '../../fixtures';
 ...
  class ProfileView extends Component{
   render() {
@@ -589,7 +588,7 @@ application/components/profile/ProfileView.js
 ...
 ```
 ```JavaScript
-application/components/Dashboard.js
+/* application/components/Dashboard.js */
   ...
 class Dashboard extends Component{
   constructor(){
@@ -624,7 +623,7 @@ class Dashboard extends Component{
       iconName='ios-person'
       onPress={() => this.setState({ selectedTab: 'Profile' })}
     >
-      <ProfileView currentUser={user} logout={this.logout}/>
+      <ProfileView currentUser={user}/>
     </TabBarItemIOS>
   </TabBarIOS>
   ...
@@ -632,9 +631,9 @@ class Dashboard extends Component{
 
 Now our profile view should have real dynamic data. If we log in as a different user, we'll see entirely different information. Pretty cool!
 
-![](Screen Shot 2016-06-28 at 10.14.17 AM.png)
+![profile](/images/chapter-5/profile-1.png)
 
-Now that we've allowed our users to log in and fleshed out our `<ProfileView/>` with real data, we still need to allow users to create their account, and logout. That will come next in Chapter 6.
+Now that we've allowed our users to log in and fleshed out our profile view with real data, we still need to allow users to create their account, and logout. That will come next in Chapter 6.
 
 `Git commit -am "Create user login"`
 
