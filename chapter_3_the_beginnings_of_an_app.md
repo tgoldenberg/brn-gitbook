@@ -57,13 +57,17 @@ Then link the packages with the command `rnpm link`. You should get a success me
 Once the packages are linked we can build our Landing component.
 
 ```javascript
-application/components/Landings.js
+/* application/components/Landings.js */
 
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity
+ } from 'react-native';
+
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-
 import Colors from '../styles/colors';
 import { globals } from '../styles';
 
@@ -78,14 +82,17 @@ class Landing extends Component{
     });
   }
   render(){
+    let titleConfig = { title: 'Landing', tintColor: 'white' };
     return (
       <View style={globals.flexContainer}>
         <NavigationBar
-          title={{title: 'Landing', tintColor: 'white'}}
+          title={titleConfig}
           tintColor={Colors.brandPrimary}
         />
         <View style={globals.flexCenter}>
-          <Text style={globals.h2}>This is the Landing Page</Text>
+          <Text style={globals.h2}>
+            This is the Landing Page
+          </Text>
           <TouchableOpacity onPress={this.visitDashboard}>
             <Text>Go to the Dashboard</Text>
           </TouchableOpacity>
@@ -138,11 +145,12 @@ You should see something similar to this in the Simulator:
 
 ### Adding Routing
 
-We can't go to the `Dashboard` component just yet. When we press the `Go to the Dashboard` button, we get an error `Cannot read property 'push' of undefined`.
+We can't go to the **Dashboard** component just yet. When we press the **Go to the Dashboard** button, we get an error `Cannot read property 'push' of undefined`.
 
-This means that we haven't defined our `Navigator` yet. Let's add that in `index.ios.js` and then reload.
+This means that we haven't defined our **Navigator** yet. Let's add that in `index.ios.js` and then reload.
 
 ```javascript
+/* index.ios.js */
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -177,7 +185,7 @@ AppRegistry.registerComponent('assemblies', () => assemblies);
 
 Alright, what's going on here?
 
-- We render our `Navigator`, which currently has 3 properties - `style`, `initialRoute`, and `renderScene`.
+- We render our **Navigator**, which currently has 3 properties - `style`, `initialRoute`, and `renderScene`.
 - `initialRoute` is exactly what is sounds like - the first component we want to render when our app starts. We define this route with an object with the name of our first route.
 - `renderScene` is a function which expects a component to be returned. We render the appropriate component depending on the name of the route. To achieve this, we use JavaScript's `switch/case` syntax.
 
@@ -186,7 +194,7 @@ With all that, we should now see the same component. However, we get a different
 ### Pushing and Popping Routes
 
 ```javascript
-index.ios.js
+/* index.ios.js */
 
 import React, { Component } from 'react';
 import {
@@ -225,14 +233,20 @@ AppRegistry.registerComponent('assemblies', () => assemblies);
 
 ```
 
-Next let's define our `Dashboard` component in `application/components/Dashboard.js`.
+Next let's define our `Dashboard` component.
 
 ```javascript
+/* application/components/Dashboard.js */
+
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity
+} from 'react-native';
+
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-
 import Colors from '../styles/colors';
 import { globals } from '../styles';
 
@@ -257,17 +271,22 @@ class Dashboard extends Component{
     this.props.navigator.pop();
   }
   render(){
+    let titleConfig = {title: 'Dashboard', tintColor: 'white'};
     return (
       <View style={globals.flexContainer}>
         <NavigationBar
-          title={{title: 'Dashboard', tintColor: 'white'}}
+          title={titleConfig}
           tintColor={Colors.brandPrimary}
           leftButton={<BackButton handlePress={this.goBack}/>}
         />
         <View style={globals.flexCenter}>
-          <Text style={globals.h2}>This is the Dashbaord</Text>
+          <Text style={globals.h2}>
+            This is the Dashbaord
+          </Text>
           <TouchableOpacity onPress={this.visitLanding}>
-            <Text>Go to the Landing Page</Text>
+            <Text>
+              Go to the Landing Page
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -276,15 +295,16 @@ class Dashboard extends Component{
 }
 
 export default Dashboard;
+
 ```
 
 Notice a few things:
 - We add a `leftButton` property to the navbar. This is the back icon that renders in the top left part of our screen. We define our `BackButton` component at the top of the file, using React's [**functional stateless component**](https://medium.com/@housecor/react-stateless-functional-components-nine-wins-you-might-have-overlooked-997b0d933dbc#.c8er29tt7) syntax.
 - When we press the **Go to the Dashboard** button, we pass in a new object to our `Navigator` with the name of our new component (in our case, 'Dashboard'). Our `Navigator` understands this and delivers us to the correct component.
 
-Now you should be able to go back and forth between the **Landing** and **Dashboard** screens.
+Now you should be able to go back and forth between the **Landing** and **Dashboard** screens. If you have any errors, try reloading in XCode with the `cmd + r` command. It may be that the fonts from our `react-native-vector-icons` package haven't yet loaded.
 
-
+![navigator](/images/chapter-3/navigator-2.png)
 
 ### Overview of Components Used
 
@@ -298,7 +318,7 @@ As we mock up our view, you can see this is just fairly familiar JSX syntax, pre
 
 ### JavaScript Styles
 
-If you examing the `globals` style object in `application/styles/index.js`, you'll see that we are declaring our styles with Javascript in `CamelCase`, referencing keys of a `styles` object we declare and define below. Generally, these styles work pretty closely to CSS, and use flexbox to define containers and layouts. If you're not too familiar with how flexbox works (perhaps you've spent too much time making things backwards compatible for Internet Explorer), we highlight recommend you check out the excellent guide over at [CSS Tricks](https://css-tricks.com/snippets/css/a-guide-to-flexbox/).
+If you examing the `globals` style object in `application/styles/index.js`, you'll see that we are declaring our styles with Javascript in camel case, referencing keys of a `styles` object we declare and define below. Generally, these styles work pretty closely to CSS, and use flexbox to define containers and layouts. If you're not too familiar with how flexbox works (perhaps you've spent too much time making things backwards compatible for Internet Explorer), we highlight recommend you check out the excellent guide over at [CSS Tricks](https://css-tricks.com/snippets/css/a-guide-to-flexbox/).
 
 *Note: One of the first 'gotchas' to avoid when working with flexbox is making sure you set `flex: 1` on your top-level components so they actually fill the view, otherwise you'll be very confused and frustrated when your app looks completely blank*
 
@@ -308,24 +328,24 @@ Don't worry, we'll cover flexbox and styling in React Native in far more detail 
 
 Take a minute and play with the views, switching back and forth between them. Right out of the gate you can see how much smoother things are than any hybrid app you've ever tried.
 
-As you can see, the nice thing about `Navigator` is that we can customize how our screen looks at any given time. We can create a navbar with `react-native-navbar` and customize it with icons, or we can set up navigation in a different way. It's worth looking at the different options before deciding what's right for your app.
+As you can see, the nice thing about **Navigator** is that we can customize how our screen looks at any given time. We can create a navbar with `react-native-navbar` and customize it with icons, or we can set up navigation in a different way. It's worth looking at the different options before deciding what's right for your app.
 
-Okay, now it's time for another commit! Congrats on having delved into navigation with React Native. The `Navigator` API has many more options, some of which we will use in the tutorial. Please check out the [docs](https://facebook.github.io/react-native/docs/navigator.html) for specific API information.
+Okay, now it's time for another commit! Congrats on having delved into navigation with React Native. The **Navigator** API has many more options, some of which we will use in the tutorial. Please check out the [docs](https://facebook.github.io/react-native/docs/navigator.html) for specific API information.
 
-Note: If you are interested in using `NavigationExperimental`, please refer to the appendix. There we show how to structure an app with `NavigationExperimental`, including how to store state with `redux`. Honestly, the transition from `Navigator` to `NavigationExperimental` will feel very easy.
+Note: If you are interested in using **NavigationExperimental**, we plan to add a chapter in the appendix that deals with this, along with adding Redux state management to your applications. Honestly, the transition from **Navigator** to **NavigationExperimental** should feel very easy.
 
 ***
-![GitHub logo](/images/github-logo.png "GitHub logo")
+![GitHub logo](/images/github-logo.png)
 [Commit 2](https://github.com/buildreactnative/assemblies-tutorial/tree/630635abda872078ea89937952f91f7cb95e7617) - "Create basic navigation with Navigator"
 ***
 
-## 3.3 Fleshing out the App
+### Fleshing out the App
 
-One important thing to understand about an open source project like React Native is the motivations of its sponsors. Facebook uses React Native currently in two apps - the Ads Manager app for iOS and Android, and partially in the Groups app. If we look at these apps, we can see where React Native's strengths are, and we should be looking to leverage them. This is why we decided to use TabBar navigation in Assemblies. Facebook uses this type of navigation in both apps and more apps are following suit. In this chapter, we will implement a simple TabBar navigation.
+One important thing to understand about an open source project like React Native is the motivations of its sponsors. Facebook uses React Native currently in two apps - the Ads Manager app for iOS and Android, and partially in the Groups app. If we look at these apps, we can see where React Native's strengths are, and we should be looking to leverage them. This is why we decided to use tab bar navigation in Assemblies. Facebook uses this type of navigation in both apps and more apps are following suit. In this chapter, we will implement a simple TabBar navigation.
 
-The interesting thing about TabBar navigation is that to accomplish it, you often need each tab to have its own `Navigator`. So we end up with `Navigator`s inside of `Navigator`s... It actually creates a nice effect and makes our app easy to get around.
+The interesting thing about tab bar navigation is that to accomplish it, you often need each tab to have its own **Navigator**. So we end up with **Navigators** inside of **Navigators**... It actually creates a nice effect and makes our app easy to get around.
 
-I've gone ahead and wired up a few tabs. In all, there will be five tabs, but for now, I'll start with a Profile view, a Dashboard view, and a Messages view.
+I've gone ahead and wired up a few tabs. In all, there will be five tabs, but for now, I'll start with a profile view, a dashboard view, and a messages view.
 
 ### Using Fake Data to Prototype
 
@@ -339,16 +359,22 @@ This is something we are strong believers in. Fake it and then make it. The wire
 
 *Will you be using an architecture like Flux or Redux to manage state between components?*
 
-We won't be using either in this tutorial. We personally love Redux but even its creator has said that you shouldn't use it until you've felt the pain without it. This app will be a good candidate for an architecture using Redux. However, we are also able to create a good product without it. So while the production version of Assemblies may incorporate Redux, the tutorial itself won't touch on the topic. We address how to structure a React Native app with `redux` in the Appendix section of the tutorial.
+We won't be using either in this tutorial. We personally love Redux but even its creator has said that you shouldn't use it until you've felt the pain without it. This app could be a good candidate for Redux state management. However, we are also able to create a good product without it. So while the production version of Assemblies may incorporate Redux, the tutorial itself won't touch on the topic. We address how to structure a React Native app with `redux` in the Appendix section of the tutorial.
 
 ### Rounding out our Landing Page
 
-Now we're going to fill in our `Landing` page. Later, this will link to a `login/signup`, but for now we'll have it go directly to the `Dashboard`. Let's place an image as the screen background using the `Dimensions` module. Then let's use the `TouchableOpacity` component as a button that leads to our `Dashboard`. You can download the image assets from the [open-source repository](https://github.com/buildreactnative/assemblies/tree/master/application/assets/images), or use the URL we provide below. Create a folder under `application` called `assets`, and an `images` folder in that. That is where we'll store our images for the tutorial.
+Now we're going to fill in our landing page. Later, this will link to user registration and sign in, but for now we'll have it go directly to the dashboard. Let's place an image as the screen background using the `Dimensions` module. Then we'll use the `TouchableOpacity` component as a button that leads to the dashboard. You can download the image assets from the [open-source repository](https://github.com/buildreactnative/assemblies/tree/master/application/assets/images), or use the URL we provide below. Create a folder under `application` called `assets`, and an `images` folder in that. That is where we'll store our images for the tutorial.
 
 ```javascript
+/* application/components/Landing.js */
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import React, { Component } from 'react';
-import { Text, TouchableOpacity, Image, View } from 'react-native';
+import {
+  Text,
+  TouchableOpacity,
+  Image,
+  View
+} from 'react-native';
 
 import Colors from '../styles/colors';
 import { landingStyles } from '../styles';
@@ -370,16 +396,31 @@ class Landing extends Component{
     return (
       <View style={styles.container}>
         <View style={styles.container}>
-          <Image style={styles.backgroundImage} source={{ uri: BackgroundImage }}/>
+          <Image
+            style={styles.backgroundImage}
+            source={{ uri: BackgroundImage }}
+          />
         </View>
         <View style={globals.flexCenter}>
-          <Image style={styles.logo} source={{ uri: Logo }}/>
-          <Text style={[globals.lightText, globals.h2, globals.mb2]}>assemblies</Text>
-          <Text style={[globals.lightText, globals.h4]}>Where Developers Connect</Text>
+          <Image
+            style={styles.logo}
+            source={{ uri: Logo }}
+          />
+          <Text style={[globals.lightText, globals.h2, globals.mb2]}>
+            assemblies
+          </Text>
+          <Text style={[globals.lightText, globals.h4]}>
+            Where Developers Connect
+          </Text>
         </View>
-        <TouchableOpacity style={globals.button} onPress={this.visitDashboard}>
+        <TouchableOpacity
+          style={globals.button}
+          onPress={this.visitDashboard}
+        >
           <Icon name='person' size={36} color='white' />
-          <Text style={globals.buttonText}>Go to Dashboard</Text>
+          <Text style={globals.buttonText}>
+            Go to Dashboard
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -388,19 +429,31 @@ class Landing extends Component{
 
 export default Landing;
 
-```
-![screen](Simulator Screen Shot Jul 24, 2016, 9.46.18 PM.png)
 
-If you were to download the images and places them under `application/assets/images`, here's how your `Image` elements would look.
+```
+
+![landing](/images/chapter-3/landing-1.png)
+
+If you were to download the images and places them under `application/assets/images`, here's how your `Image` elements might look.
 
 ```javascript
 <View style={styles.container}>
-  <Image style={styles.backgroundImage} source={require('../assets/images/welcome.png')}/>
+  <Image 
+    style={styles.backgroundImage} 
+    source={require('../assets/images/welcome.png')}
+  />
 </View>
 <View style={globals.flexCenter}>
-  <Image style={styles.logo} source={require('../assets/images/logo.png')}/>
-  <Text style={[globals.lightText, globals.h2, globals.mb2]}>assemblies</Text>
-  <Text style={[globals.lightText, globals.h4]}>Where Developers Connect</Text>
+  <Image 
+    style={styles.logo} 
+    source={require('../assets/images/logo.png')}
+  />
+  <Text style={[globals.lightText, globals.h2, globals.mb2]}>
+    assemblies
+  </Text>
+  <Text style={[globals.lightText, globals.h4]}>
+    Where Developers Connect
+  </Text>
 </View>
 ...
 ```
@@ -410,6 +463,6 @@ As for the styles, some stuff should be pretty self-explanatory for those famili
 Time for another commit to close out this chapter on setting up navigation:
 
 ***
-![GitHub logo](/images/github-logo.png "GitHub logo")
+![GitHub logo](/images/github-logo.png)
 [Commit 3](https://github.com/buildreactnative/assemblies-tutorial/tree/ea505fc5f296a38f723ae05fedec3d46b5c0a584) - "Flesh out Landing screen"
 ***
