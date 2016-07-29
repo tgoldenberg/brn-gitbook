@@ -31,7 +31,7 @@ This should be pretty familiar if you’ve used CLI's like Rails or Ember:
 
 This will install all of the React Native and React packages you need, in addition to installing all of the command line helpers you’ll use for building, running, and building your apps. You only need to do this once per system.
 
-The `-g` flag tells `npm` to install the CLI in our system's global scope, that way we'll be able to access any `react-native-cli` commands from any folder.
+The `-g` flag tells **npm** to install the CLI in our system's global scope, that way we'll be able to access the CLI commands from any folder.
 
 ### Create a React Native Project
 
@@ -51,7 +51,7 @@ Now navigate to your new project’s directory:
 
 Before we test out our new project, let’s explain a little bit about how React Native projects are structured. This will be enormously helpful to understand later, especially when we start working on  both the iOS and Android versions of a project simultaneously.
 
-To open your project, you should use a text editor such as Atom, Sublime, Vim, Emacs, etc. We'll be using `Atom` for the tutorial, and we'll also provide some tips later for speeding up your performance with custom packages. In any case, open up your project with your favorite text editor.
+To open your project, you should use a text editor such as Atom, Sublime, Vim, Emacs, etc. We'll be using [Atom](https://atom.io/) for the tutorial, and we'll also provide some tips later for speeding up your performance with custom packages. In any case, open up your project with your favorite text editor.
 
 You should see something like this:
 ```
@@ -84,13 +84,13 @@ package.json
 }
 ```
 
-Right now we only have two package dependencies, `react-native` and `react`, at version 0.30.0 and 15.2.1, respectively. It’s important to note this version number at the outset. React Native is incredible, but the codebase is changing constantly. Whenever you’re debugging issues, especially with third-party libraries, conflicts created by differing ```react-native``` version dependencies are often the cause. Try and update at regular intervals, testing in a new branch, so you don’t get too far behind, but play with release candidates at your own risk.
+Right now we only have two package dependencies, "react-native" and "react", at versions 0.30.0 and 15.2.1, respectively. It’s important to note this version number at the outset. React Native is incredible, but the codebase is changing constantly. Whenever you’re debugging issues, especially with third-party libraries, conflicts created by differing React Native version dependencies are often the cause. Try and update at regular intervals, testing in a new branch, so you don’t get too far behind, but play with release candidates at your own risk.
 
-```node_modules```  - contains all of the `npm` packages, React Native core or otherwise, our project will use.
+```node_modules```  - contains all of the npm packages, React Native core or otherwise, our project will use.
 
 ```index.android.js``` and ```index.ios.js``` - think of these like your `index.html` file in a web project - it’s the starting point for your application, one is for Android, and the other is for iOS.
 
-The files `.buckconfig` and `.flowconfig` are unimportant for us, unless you're using `Flow`. The `.gitignore` file will be used later, to make sure sensitive information doesn't get published to source control.
+`.buckconfig` and `.flowconfig` - We can ignore these. The `.gitignore` file will be used later, to make sure sensitive information doesn't get published to source control.
 
 ```android``` and ```ios``` - these folders contain all of the native code the Android and iOS platforms require to run and bundle apps. We’ll introduce different aspects of each directory as we build our project
 
@@ -121,15 +121,15 @@ Some other options in the debugging menu are `Enable Live Reload` and `Enable Ho
 
 ## Adding Packages
 
-One of the best things about building apps in React Native is you get access to `npm`, currently the largest open source library on the planet. We’ll use a lot of different `npm` packages throughout this guide for a variety of purposes.
+One of the best things about building apps in React Native is you get access to npm, currently the largest open source library on the planet. We’ll use a lot of different npm packages throughout this guide for a variety of purposes.
 
 Installing a new package works just like it does in any other Node project. Make sure you’re in your project’s root folder and run:
 
 ```npm install moment --save```
 
-Here we’re installing the marvelous [Moment.js](http://momentjs.com/) package which we’ll be using to format dates easily in our project. Adding the `--save` flag is essential, as `npm install` only installs the package locally - ```--save``` will add the package as a dependency in `packages.json` so it will get bundled with our app.
+Here we’re installing the marvelous [Moment.js](http://momentjs.com/) package which we’ll be using to format dates easily in our project. Adding the `--save` flag is essential, as `npm install` only installs the package locally - ```--save``` will add the package as a dependency in `package.json` so it will get bundled with our app.
 
-Opening up `packages.json`, we can see that `moment` has been added:
+Opening up `package.json`, we can see that `moment` has been added:
 
 ```
 {
@@ -147,7 +147,7 @@ Opening up `packages.json`, we can see that `moment` has been added:
 }
 ```
 
-If you prefer not to use the CLI, you can also edit `packages.json` directly to accomplish the same thing. Sometimes this makes it easier if you're adding many packages at once. If you do things this way, make sure to run `npm install` from you project's root directory once you've saved `packages.json` to actually download the packages.
+If you prefer not to use the CLI, you can also edit `packages.json` directly to accomplish the same thing. Sometimes this makes it easier if you're adding many packages at once. If you do things this way, make sure to run `npm install` from you project's root directory once you've saved `package.json` to actually download the packages.
 
 ## Setting Up a Git Repo
 
