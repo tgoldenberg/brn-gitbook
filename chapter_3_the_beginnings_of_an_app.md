@@ -1,16 +1,18 @@
+# Chapter 3: The Beginnings of an App
+
 Mobile apps are comprised of many different parts - navigation, UI components, animations, integrating an external API, etc. We'll be looking first at navigation, which is how we tie different parts of the app together.
 
 
-## 3.1 Navigator Drama - Which Should I Use?
+### Navigator Drama - Which Should I Use?
 
-Since React Native is a budding technology, it is not always as opinionated as other frameworks. For example, we're given three different options for setting up navigation - `NavigatorIOS`,  `Navigator`, and `NavigationExperimental`. Since `NavigationExperimental` is as it is described, experimental, and `NavigatorIOS` is no longer maintained by Facebook, we'll be using `Navigator` for this tutorial. We will, however, look more at `NavigationExperimental` with `Redux` in the later chapters of the guide.
+Since React Native is a budding technology, it is not always as opinionated as other frameworks. For example, we're given three different options for setting up navigation - **NavigatorIOS**,  **Navigator**, and **NavigationExperimental**. Since NavigationExperimental is as it is described, experimental, and NavigatorIOS is no longer maintained by Facebook, we'll be using [**Navigator**](https://facebook.github.io/react-native/docs/navigator.html) for this tutorial. We will, however, look more at NavigationExperimental with [**Redux**](https://github.com/reactjs/redux) in the later chapters of the guide.
 
 
 ### Why Navigator?
-`Navigator`, unlike `NavigatorIOS`, is highly customizable. It has options for different sliding and fading transitions, and is completely neutral in regards to UI. The only downside is that navigation animations run on the JavaScript thread, and this can cause performance lags. We'll show how to tweak the navigation code in order to keep our app running smoothly.
+**Navigator**, unlike **NavigatorIOS**, is highly customizable. It has options for different sliding and fading transitions, and is completely neutral in regards to UI. The only downside is that navigation animations run on the JavaScript thread, and this can cause performance lags. We'll show how to tweak the navigation code in order to keep our app running smoothly.
 
 
-## 3.2 A Simple Example
+### A Simple Example
 
 Now we're ready to start writing some components! First, let's set up our file directory structure. Create a folder at the root level called `application`, and within that, a folder called `components` and a folder called `styles`. Within `styles` create the two files  `index.js` and `colors.js`, and within `components` create the files `Dashboard.js` and `Landing.js`. Your folder tree should look something like this.
 
@@ -31,13 +33,13 @@ Copy/paste the contents at [this gist](https://gist.github.com/tgoldenberg/5e2f7
 
 Now copy/paste the contents at [this gist](https://gist.github.com/tgoldenberg/b024fd60ad6fab148bdcd2b039eac5c9) and past them in `application/styles/colors.js`.
 
-Before we build our first component, a warning that we will be using ES6 syntax. If you're unfamiliar with using features such as `import`, `{}` destructuring, the `...` spread operator, and the `=>` fat arrow function syntax, we recommending first completing the ES6 chapter in the appendix. Here are some other resources to get you up to speed: 
+Before we build our first component, a warning that we will be using [**ES6**](http://es6-features.org/) syntax. If you're unfamiliar with using features such as `import`, destructuring, the spread operator, and the `=>` fat arrow function syntax, we recommending first completing the ES6 chapter in the appendix. Here are some other resources to get you up to speed: 
 
 - [Tutorial by Mantra](https://tutor.mantrajs.com/say-hello-to-ES2015/introduction)
 - [learnharmony.org](http://learnharmony.org/)
 - [Video by Sencha](https://www.youtube.com/watch?v=Z7yS28I5ci4)
 
-Since `Navigator` is not opinionated in terms of UI, we will need to `npm install` the following packages
+Since **Navigator** is not opinionated in terms of UI, we will need to `npm install` the following packages
   - `react-native-vector-icons`
   - `react-native-navbar`
 
