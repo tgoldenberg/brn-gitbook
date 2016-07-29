@@ -38,8 +38,7 @@ technologies Array
 avatar      String
 ```
 
-![User Fields](/images/chapter-5-user-accounts-part-1/user-fields.png "User Fields")
-
+![deployd](/images/chapter-5/deployd-3.png)
 
 Now in our **Landing** component, let’s add two buttons in place of the previous **Go to dashboard** button - **Login** and **Signup**. We'll also add the methods `visitLogin` and `visitRegister`.
 ```JavaScript
@@ -350,7 +349,10 @@ class Login extends Component{
             </Text>
           </View>
         </ScrollView>
-        <TouchableOpacity style={styles.submitButton} onPress={this.loginUser}>
+        <TouchableOpacity 
+          style={styles.submitButton} 
+          onPress={this.loginUser}
+        >
           <Text style={globals.largeButtonText}>Login</Text>
         </TouchableOpacity>
       </View>
