@@ -173,7 +173,9 @@ case 'Conversation':
 ...
 ```
 
+And that's it! We completed the app! Make a commit here and play around with the different features.
 
+[Commit 26](https://github.com/buildreactnative/assemblies-tutorial/tree/7c8f56213c64e2490b6de7bf3deed0863197f7ee) - "Add Profile view in other tabs"
 
 ### Refactoring and Preparation for Deployment
 
