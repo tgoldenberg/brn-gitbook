@@ -12,7 +12,7 @@
 * [Chapter 9: Creating Events](chapter_9_creating_events.md)
 * [Chapter 10: Swipe Left, Swipe Right](chapter_10_swipe_left,_swipe_right.md)
 * [Chapter 11: Building an Activity View](chapter_10_building_a_calendar_view.md)
-* [Chapter 12: Building an Activity View](chapter_11_building_an_activity_view.md)
+* [Chapter 12: Creating a Calendar View](chapter_11_building_an_activity_view.md)
 * [Chapter 13: Final Touches](chapter_12_final_touches.md)
 * [Chapter 14: Understanding ES6 with React Native](chapter_13_understanding_es6_with_react_native.md)
 * [Chapter 15: Deploying to the App Store](chapter_14_deploying_to_the_app_store.md)
