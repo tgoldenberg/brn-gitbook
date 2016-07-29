@@ -218,52 +218,145 @@ Let's review:
 Now that we've set up our routing, let's render the fetched notifications and next event in `Activity.js`
 
 ```javascript
+import moment from 'moment';
+import Icon from 'react-native-vector-icons/Ionicons';
+import NavigationBar from 'react-native-navbar';
+import React, { Component } from 'react';
+import {
+  ScrollView,
+  View,
+  Text,
+  InteractionManager,
+  TouchableOpacity,
+  MapView,
+} from 'react-native';
 
+import Colors from '../../styles/colors';
+import { globals, activityStyles } from '../../styles';
 
-```
+const styles = activityStyles;
 
-We also have to add the `updateTab` method in our `Dashboard.js` file.
-```javascript
-...
-export default class Dashboard extends Component{
-  constructor(props){
-    super(props);
-    this.logout = this.logout.bind(this);
-    this.updateTab = this.updateTab.bind(this);
-    this.state = {
-      selectedTab: 'Activity',
-    };
+const ActivityMap = ({ event, ready }) => {
+  if (! ready || ! event) { /* render empty map if not ready or no event */
+    return <View style={globals.map} />
   }
-  updateTab(type){
-    switch(type){
-      case 'Message':
-        this.setState({ selectedTab: 'Messages'});
-        break;
-      case 'Event':
-        this.setState({ selectedTab: 'Groups'});
-        break;
+  const mapRegion = {
+    latitude: event.location.lat,
+    longitude: event.location.lng,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  };
+  return (
+    <MapView
+      style={globals.map}
+      region={mapRegion}
+      annotations={[{latitude: mapRegion.latitude, longitude: mapRegion.longitude}]}
+    />
+  )
+};
+
+const Notification = ({ notification, handlePress }) => (
+  <TouchableOpacity style={[globals.flexRow, globals.ph1]} onPress={() => handlePress(notification)}>
+    <View style={globals.flex}>
+      <View style={globals.flexRow}>
+        <View style={styles.circle}/>
+        <View style={[globals.textContainer, globals.pv1]}>
+          <Text style={styles.h4}>New {notification.type}</Text>
+        </View>
+        <Text style={styles.h5}>{moment(new Date(new Date(notification.createdAt))).fromNow()}</Text>
+      </View>
+      <View style={globals.flex}>
+        <Text style={styles.messageText}>{notification.message}</Text>
+      </View>
+    </View>
+    <View>
+      <Icon name='ios-arrow-forward' color='#777' size={25} />
+    </View>
+  </TouchableOpacity>
+)
+
+class Activity extends Component{
+  constructor(){
+    super();
+    this.handleNotificationPress = this.handleNotificationPress.bind(this);
+    this.visitEvent = this.visitEvent.bind(this);
+    this.state = {
+      ready: false
     }
   }
-  ...
-  
-render() {
-  let { selectedTab } = this.state;
-  let { currentUser } = this.props;
-  return (
-    <TabBarIOS style={styles.outerContainer}>
-      <TabBarItemIOS
-        title='Activity'
-        selected={ selectedTab == 'Activity' }
-        iconName='ios-pulse'
-        onPress={() => this.setState({ selectedTab: 'Activity' })}
-      >
-        <ActivityView {...this.props} updateTab={this.updateTab}/>
-      </TabBarItemIOS>
-...
+  componentDidMount(){
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({ ready: true })
+    });
+  }
+  visitEvent(){
+    let event = this.props.nextEvents[0];
+    this.props.navigator.push({
+      name: 'Event',
+      event,
+    })
+  }
+  handleNotificationPress(notification){
+    if (notification.type === 'Message'){
+      this.props.navigator.push({
+        name: 'Conversation',
+        ...notification.data
+      })
+    } else if (notification.type === 'Event'){
+      this.props.navigator.push({
+        name: 'Event',
+        ...notification.data
+      })
+    }
+  }
+  render() {
+    let upcomingEvent = this.props.nextEvents.length ? this.props.nextEvents[0] : null;
+    return (
+      <View style={globals.flexContainer}>
+        <NavigationBar
+          title={{ title: 'Activity', tintColor: 'white' }}
+          tintColor={Colors.brandPrimary}
+        />
+        <ScrollView>
+          <TouchableOpacity onPress={this.visitEvent}>
+            <View style={[globals.flexRow, globals.mb1]}>
+              <Text style={styles.h4}>Next Assembly: </Text>
+              <Text style={globals.primaryText}>{ upcomingEvent && upcomingEvent.name }</Text>
+            </View>
+            <Text style={[styles.dateText, globals.mb1]}>{upcomingEvent && moment(new Date(upcomingEvent.start)).format('dddd MMM Do, h:mm a')}</Text>
+          </TouchableOpacity>
+          <ActivityMap event={upcomingEvent} ready={this.state.ready} />
+          <View>
+            <Text style={[styles.h4, globals.mv1]}>Notifications</Text>
+            <View style={globals.divider}/>
+            <View style={globals.flex}>
+              {this.props.notifications.map((n, idx) => (
+                <View key={idx} style={globals.flex}>
+                  <Notification notification={n} handlePress={this.handleNotificationPress}/>
+                </View>
+              ))}
+              <View style={styles.emptySpace} />
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
+};
+
+export default Activity;
+
+
 ```
 
-Now when our user clicks on a new message notifications, they'll be directed to the `Mesages` tab, and when they receive a new event notification, they'll be directed to the `Groups` tab. Also, when they click on the next event, we will navigate to the `Event` screen.
+Let's go over this:
+- We use a new module here, the `InteractionManager` library. Remember when we talked about tweaking the animation for `Navigator`? Well, this allows us to do it. We set a field `ready` to `false` in our initial state, and then set to `true` once the navigation animation is finished. This ensures that the JavaScript thread doesn't get block, which can cause animation frames to drop (which looks choppy). Thus, we get a super smooth transition, and then our map renders right after.
+- Remember how we saved a `data` field in our notifications? That was so that we could route directly to `Event` and `Conversation` from our activity screen. Since we have all the data we need, our user is able to go directly to the conversation or event and either write a message or join the event.
 
-![activity](Screen Shot 2016-07-19 at 8.58.22 AM.png)
-![activity event](Screen Shot 2016-07-19 at 9.25.24 AM.png)
+Let's make a commit here. Our app is shaping into something actually quite nice!
+
+![notifications](/images/chapter-11/notifications-1.png)
+![notifications](/images/chapter-11/notifications-2.png)
+
+[Commit 24](https://github.com/buildreactnative/assemblies-tutorial/tree/01a9fc1b4788b4c4c11e7f9c645363f4d12cd075) - "Render the Activity View"
 
