@@ -27,7 +27,7 @@ application
     - index.js
 ```
 
-In `application/styles/index.js` we will copy/paste all of our styles and in `application/styles/colors.js`, all of our colors. While we will have a chapter later on how to style and design your app in React Native, it will make the code samples much simpler if we can simply import our styles from a single file. This also makes our design code more modular. 
+While we will have a chapter later on how to style and design your app in React Native, it will make the code samples much simpler if we can simply import our styles from a single file. This also makes our design code more modular. 
 
 Copy/paste the contents at [this gist](https://gist.github.com/tgoldenberg/5e2f7be3d3f4f97302e2d7545063b3c9) and paste them in `application/styles/index.js`.
 
@@ -101,13 +101,13 @@ export default Landing;
 
 Let's go over what's going on in this component.
 
-- We import the necessary components from `react` and `react-native` for building our component.
-- We import our `globals` styles object, as well as the `NavigationBar` and `Icon` components from our recently installed `npm` packages.
+- We import the necessary components from React and React Native for building our component.
+- We import our global styles object, as well as the `NavigationBar` and `Icon` components from our recently installed npm packages.
 - We bind our class methods in the `constructor` function. We need to bind them so that the value of `this` that corresponds to the class instance itself persists.
 - We define our `visitLanding` method, which routes the `Navigator` to the `Landing` component.
 - We render our content with the `render` method.
 
-To view our content now, we can simply `import` the component in `index.ios.js` and render it.
+To view our content now, we can simply import the component in `index.ios.js` and render it.
 
 ```javascript
 index.ios.js
@@ -120,7 +120,7 @@ import {
 
 import Landing from './application/components/Landing';
 
-class assembliesTutorial extends Component {
+class assemblies extends Component {
   render() {
     return (
       <Landing />
@@ -128,16 +128,17 @@ class assembliesTutorial extends Component {
   }
 }
 
-AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
+AppRegistry.registerComponent('assemblies', () => assemblies);
 
 ```
 
 You should see something similar to this in the Simulator:
-![screen](Simulator Screen Shot Jul 24, 2016, 8.58.30 PM.png)
+
+![navigator](/images/chapter-3/navigator-1.png)
 
 ### Adding Routing
 
-Now, we can't go to the `Dashboard` component just yet. When we press the `Go to the Dashboard` button, we then get an error `Cannot read property 'push' of undefined`.
+We can't go to the `Dashboard` component just yet. When we press the `Go to the Dashboard` button, we get an error `Cannot read property 'push' of undefined`.
 
 This means that we haven't defined our `Navigator` yet. Let's add that in `index.ios.js` and then reload.
 
@@ -151,7 +152,7 @@ import {
 import Landing from './application/components/Landing';
 import { globals } from './application/styles';
 
-class assembliesTutorial extends Component {
+class assemblies extends Component {
   render() {
     return (
       <Navigator
@@ -170,7 +171,7 @@ class assembliesTutorial extends Component {
   }
 }
 
-AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
+AppRegistry.registerComponent('assemblies', () => assemblies);
 
 ```
 
