@@ -39,18 +39,21 @@ Before we build our first component, a warning that we will be using [**ES6**](h
 - [learnharmony.org](http://learnharmony.org/)
 - [Video by Sencha](https://www.youtube.com/watch?v=Z7yS28I5ci4)
 
-Since **Navigator** is not opinionated in terms of UI, we will need to `npm install` the following packages
-  - `react-native-vector-icons`
-  - `react-native-navbar`
+Since **Navigator** is not opinionated in terms of UI, we will need to `npm install` the following packages:
+  - [**react-native-navbar**](https://github.com/react-native-community/react-native-navbar) by @react-native-community
+  - [**react-native-vector-icons**](https://github.com/oblador/react-native-vector-icons) by @oblador
 
-We'll also need to link the icon package to XCode with `rnpm`. First install `rnpm` globally
+```npm install --save react-native-vector-icons react-native-navbar```
+
+We'll also need to link the icon package to XCode with [**rnpm**](https://github.com/rnpm/rnpm), a package manager built specifically for React Native. First install `rnpm` globally
 
 ```
 npm install -g rnpm
 ```
-Then link the packages with `rnpm link`. You should get a success message.
+Then link the packages with the command `rnpm link`. You should get a success message.
 
-![](Screen Shot 2016-07-24 at 8.33.37 PM.png)
+![rnpm](/images/chapter-3-the-beginnings-of-an-app/rnpm-1.png)
+
 
 Once those packages are linked we can build our Landing component -
 
