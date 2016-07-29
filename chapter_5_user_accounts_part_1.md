@@ -38,7 +38,6 @@ technologies Array
 avatar      String
 ```
 
-![deployd](/images/chapter-5/deployd-3.png)
 
 Now in our **Landing** component, let’s add two buttons in place of the previous **Go to dashboard** button - **Login** and **Signup**. We'll also add the methods `visitLogin` and `visitRegister`.
 ```JavaScript
