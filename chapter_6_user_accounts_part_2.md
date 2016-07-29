@@ -467,7 +467,10 @@ import { Technologies, ImageOptions, DefaultAvatar } from '../../fixtures';
 import { formStyles, globals, selectStyles, optionTextStyles, overlayStyles } from '../../styles';
 
 const styles = formStyles;
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+const { 
+  width: deviceWidth, 
+  height: deviceHeight 
+} = Dimensions.get('window');
 
 /* selected technologies by user */
 const TechnologyList = ({ technologies, handlePress }) => (
@@ -486,6 +489,7 @@ const TechnologyList = ({ technologies, handlePress }) => (
   </View>
 );
 
+/* main component */
 class RegisterConfirm extends Component{
   constructor(){
     super();
