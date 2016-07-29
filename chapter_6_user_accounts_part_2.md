@@ -42,7 +42,7 @@ class Dashboard extends Component{
   }
   render(){
     return (
-  ...
+  /*...*/
   
         <TabBarItemIOS
           title='Profile'
@@ -75,7 +75,8 @@ class assemblies extends Component {
     }
   }
   logout(){
-    this.nav.push({ name: 'Landing' })
+    this.nav.push({ name: 'Landing' });
+    this.updateUser(null);
   }
   render() {
     return (
@@ -112,11 +113,11 @@ Let’s commit at this point.
 
 ## Registration Form - Part 1
 
-Now we’re left with the most complex part of user accounts – registration. This doesn’t *have* to be complicated; we could just ask for our users' email and a password. After all, that’s enough information to create a user with Deployd. However, we want more information about our users. We want to know what city they live in, so we can suggest nearby meetups. We want to know what technologies they are interested in, for similar reasons. We want their first and last name, since many “assemblies” require a person’s real name to be admitted to the venue location. Finally, we want an avatar for our users so that our users are able to know each other a little better.
+Now we’re left with the most complex part of user accounts – registration. This doesn’t *have* to be complicated; we could just ask for our users' email and a password. After all, that’s enough information to create a user with Deployd. However, we want more information about our users. We want to know what city they live in, so we can suggest nearby meetups. We want to know what technologies they are interested in, for similar reasons. We want their first and last name, since many events require a person’s real name to be admitted to the venue location. Finally, we want an avatar for our users so that our users are able to know each other a little better.
 
 We could, of course, just make a single view with all of these inputs available. However, that wouldn’t be a very good user experience. Long forms are off-putting to potential users, and we want our registration process to be relatively smooth. That’s why we take a step-wise approach for user registration.
 
-In step 1, the user will enter their email, first and last name, and password – all absolutely necessary information. In step 2, we will ask the user for their interests, location, and a photo to use as their avatar. All of these steps, except for the user’s location, are optional. If the user doesn’t select an avatar, we can use a default image. If the user doesn’t specify their interests, we can ask for them later.
+In **step 1**, the user will enter their email, first and last name, and password – all absolutely necessary information. In **step 2**, we will ask the user for their interests, location, and a photo to use as their avatar. All of these steps, except for the user’s location, are optional. If the user doesn’t select an avatar, we can use a default image. If the user doesn’t specify their interests, we can ask for them later.
 
 Let’s flesh out step 1 of our user registration process. Include these in your `package.json` and then run `npm install`:
 
@@ -125,18 +126,20 @@ Let’s flesh out step 1 of our user registration process. Include these in your
 "react-native-google-places-autocomplete": "https://github.com/tgoldenberg/react-native-google-places-autocomplete/tarball/master"
 ```
 
-We're using a fork `react-native-google-places-autocomplete` since we've found some errors in different versions of React Native. This version should work fine, though.
+You'll see that we sometimes ask to install dependencies by copying the dependency in the **package.json** file. This is because some packages may not support the latest versions of React Native.
 
 ### Google Places Autocomplete
 
-We'll be using Google's Places API to get exact latitude and longitude information. To get an API key, which we will need, go to the website for [Google's Places services](https://developers.google.com/places/). From there, you will want to select the `Google Places API Web Service`, which is an `HTML` button. From there you can follow the steps to get your API key (You will have to create a project, and then access your credentials to get the API key).
+We'll be using Google's Places API to get exact latitude and longitude information. To get an API key, which we will need, go to the website for [Google's Places services](https://developers.google.com/places/). From there, you will want to select **Google Places API Web Service**, which is the **HTML** button. From there you can follow the steps to get your API key (You will have to create a project, and then access your credentials to get the API key).
 
-Once we have the API key, where do we store it? Well, we want to make sure that we don't store it in our `git` repository, especially if our code will be hosted on a service like Github.
+Once we have the API key, where do we store it? Well, we want to make sure that we don't store it in our git repository, especially if our code will be hosted on a service like Github.
 
-We'll be using the [`react-native-config`](https://github.com/luggg/react-native-config) package to manage these environment variables.
+We'll be using the [**react-native-config**](https://github.com/luggg/react-native-config) package to manage these environment variables.
 
-`npm install --save react-native-config`
-`rnpm link`
+```
+npm install --save react-native-config
+rnpm link
+```
 
 Then create a `.env` file with your API key variable:
 ```
@@ -147,19 +150,20 @@ now add this filename to your `.gitignore` file
 ```
 .env
 ```
-If you check `git` with `git status`, you'll see that your file doesn't appear, which means it has effectively been ignored. Now we can access the variable in our `Register.js` file.
+If you check git with **git status**, you'll see that your file doesn't appear, which means it has effectively been ignored. Now we can access the variable in our **Register.js** file.
 ```javascript
+/* application/components/accounts/Register.js */
 ...
 import Config from 'react-native-config'
 const key = Config.GOOGLE_PLACES_API_KEY,
 ...
 ```
-You might have to restart all of the `node` processes to get this to work properly.
+Note: You might have to restart all of the **node** processes to get this to work properly.
 
 Now that we've set up our Google Places credentials, we can use them with the `react-native-google-places-autocomplete` package to help our users communicate their hometown.
 
 ```javascript
-application/components/accounts/Register.js
+/* application/components/accounts/Register.js */
 
 import React, { Component } from 'react';
 import Config from 'react-native-config';
