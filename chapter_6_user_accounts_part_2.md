@@ -2,24 +2,28 @@ At the end of the last chapter, we had created a user through **Deployd**, logge
 
 ## Logging Out
 
-Since registering is much trickier, let’s first implement logging out. Our API has an endpoint for logout - `/users/logout`. When the user initiates logout, we want to call this endpoint and then redirect the user to the Landing page.
+Since registering is much trickier, let’s first implement logging out. Our API has an endpoint for logout - **/users/logout**. When the user initiates logout, we want to call this endpoint and then redirect the user to the Landing page.
 
-Let’s edit our ProfileView and Dashboard to reflect these changes. We will reference a `prop` of `logout` in the ProfileView and define the method in the parent `Dashboard`.
+Let’s edit our **ProfileView** and **Dashboard** to reflect these changes. We will reference `this.props.logout` in the **ProfileView** and define the method in the parent **Dashboard**.
 
 ```javascript
-application/components/profile/ProfileView.js
+/* application/components/profile/ProfileView.js */
 …
-<TouchableOpacity style={styles.logoutButton} onPress={this.props.logout}>
-  <Text style={styles.logoutText}>Logout</Text>
+<TouchableOpacity 
+  style={styles.logoutButton} 
+  onPress={this.props.logout}
+>
+  <Text style={styles.logoutText}>
+    Logout
+  </Text>
 </TouchableOpacity>
 …
-
 ```
-
 ```javascript
-application/components/Dashboard.js
+/* application/components/Dashboard.js */
 ...
 import { Headers } from '../fixtures';
+import { API } from '../config';
 
 class Dashboard extends Component{
   constructor(){
@@ -29,7 +33,7 @@ class Dashboard extends Component{
       selectedTab: 'Activity'
     };
   }
-  logout(){ /* end the current session and redirect to the Landing page */
+  logout(){ 
     fetch(`${API}/users/logout`, { method: 'POST', headers: Headers })
     .then(response => response.json())
     .then(data => this.props.logout())
@@ -37,25 +41,9 @@ class Dashboard extends Component{
     .done();
   }
   render(){
-    let { user } = this.props;
     return (
-      <TabBarIOS>
-        <TabBarItemIOS
-          title='Activity'
-          selected={this.state.selectedTab === 'Activity'}
-          iconName='ios-pulse'
-          onPress={() => this.setState({ selectedTab: 'Activity' })}
-        >
-          <ActivityView />
-        </TabBarItemIOS>
-        <TabBarItemIOS
-          title='Messages'
-          selected={this.state.selectedTab === 'Messages'}
-          iconName='ios-chatboxes'
-          onPress={() => this.setState({ selectedTab: 'Messages' })}
-        >
-          <MessagesView />
-        </TabBarItemIOS>
+  ...
+  
         <TabBarItemIOS
           title='Profile'
           selected={this.state.selectedTab === 'Profile'}
@@ -72,14 +60,12 @@ class Dashboard extends Component{
 export default Dashboard;
 
 ```
-Finally, we need to receive the `logout` callback in our main `Navigator` component, and direct the navigation back to `Landing`. Notice that we add 
-
-`ref={(el) => this.nav = el }` to our `Navigator`.
+Finally, we need to receive the **logout** callback in our main **Navigator** component, and direct the navigation back to **Landing**. 
 
 ```javascript
-index.ios.js
+/* index.ios.js */
 ...
-class assembliesTutorial extends Component {
+class assemblies extends Component {
   constructor(){
     super();
     this.logout = this.logout.bind(this);
@@ -110,18 +96,7 @@ class assembliesTutorial extends Component {
                   logout={this.logout}
                 />
             );
-            case 'Register':
-              return (
-                <Register navigator={navigator}/>
-            );
-            case 'Login':
-              return (
-                <Login
-                  navigator={navigator}
-                  user={this.state.user}
-                  updateUser={this.updateUser}
-                />
-            );
+           /* ... */
           }
         }}
       />
