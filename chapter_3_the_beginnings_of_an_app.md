@@ -198,7 +198,7 @@ import Landing from './application/components/Landing';
 import Dashboard from './application/components/Dashboard';
 import { globals } from './application/styles';
 
-class assembliesTutorial extends Component {
+class assemblies extends Component {
   render() {
     return (
       <Navigator
@@ -221,7 +221,7 @@ class assembliesTutorial extends Component {
   }
 }
 
-AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
+AppRegistry.registerComponent('assemblies', () => assemblies);
 
 ```
 
