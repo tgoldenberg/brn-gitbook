@@ -166,7 +166,7 @@ let todos = [
 { id: 2, title: 'Learn ES6' }
 ];
 ```
-Let's say we want to update the title of the item at the 1st index to `Clean the bathroom`. One way we can do this is through using the spead operator. 
+Let's say we want to update the title of the item at the 1st index to **Clean the bathroom**. One way we can do this is through using the spead operator. 
 ```javascript
 function updateItem(items, index, title){
   let newItem = {
@@ -193,9 +193,10 @@ For an array, it is similar to this:
 return items.slice(0, index).concat(newItem).concat(items.slice(index + 1);
 ```
 
-In both cases, `...` just looks more elegant and simpler. Now, another use of the spread operator in React Native is for passing `props` to components. Instead of passing each individual prop, we can just pass ` {...this.props}`. In other words, the two components are the same:
+In both cases, `...` just looks more elegant and simpler. Now, another use of the spread operator in React Native is for passing **props** to components. Instead of passing each individual prop, we can just pass ` {...this.props}`. In other words, the two components are the same:
 
 ````javascript
+/* version 1 */
 class Card extends Component{
   render(){
     return (
@@ -205,7 +206,7 @@ class Card extends Component{
     );
   }
 }
-
+/* version 2 */
 class Card extends Component{
   render(){
     return (
@@ -220,21 +221,4 @@ class Card extends Component{
 
 Here are some more lines to practice the spread operator in your Node console with `babel-node`. Good luck and happy coding!
 
-![](Screen Shot 2016-07-15 at 12.39.59 AM.png)
-
-```javascript
-let items = ["a", "b", "c", "d", "e"]
-undefined
-let index = 2;
-undefined
-let newItems = [ ...items.slice(0, index), "z" ]
-undefined
-newItems
-["a", "b", "z"]
-let obj = { username: "Tom", city: "Long Beach" }
-undefined
-let newObj = {...obj, age: 34 }
-undefined
-newObj
-{ username: "Tom", city: "Long Beach", age: 34 }
-```
+![node](/images/chapter-13/node-4.png)
