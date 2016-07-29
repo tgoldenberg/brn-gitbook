@@ -1,6 +1,6 @@
-# Establishing a Database Schema
+### Establishing a Database Schema
 
-Let's go over what we want to do in our app and what kind of data we'll need. Already we have a `users` collection, with the following relevant fields:
+Let's go over what we want to do in our app and what kind of data we'll need. Already we have a **users** collection, with the following relevant fields:
 ```
 id: String
 username: String
@@ -25,9 +25,9 @@ location: Object {
 ```
 This way of notation simply expresses that location is an `Object` with a field `city` which is also an object with the fields `long_name` and `short_name`. It's important to keep track of the structure of our data as we create it, since the wrong data type can cause errors in our program.
 
-## Defining Collections
+### Defining Collections
 
-Now what other collections will we need? We certainly need a `messages` collection, since we offer user-to-user messaging as a feature of our app. We also need a `groups` collection, since an assembly is a type of group that has members and hosts events. We need an `events` collection to highlight new events for our users. Here's a schema we can use for each one. We'll want a `conversations` collection to easily render conversation data, and a `notifications` collection for informing users of new messages and events.
+Now what other collections will we need? We certainly need a **messages** collection, since we offer user-to-user messaging as a feature of our app. We also need a **groups** collection, since an assembly is a type of group that has members and hosts events. We need an **events** collection to highlight new events for our users. Here's a schema we can use for each one. We'll want a **conversations** collection to easily render conversation data, and a **notifications** collection for informing users of new messages and events.
 
 ```
 **messages**
@@ -50,14 +50,9 @@ lastMessageDate: Integer
 
 id: String,
 createdAt: Integer
-members: Array of Objects {
-  userId: String,
-  confirmed: Boolean,
-  role: String,
-  joinedAt: Integer
-}
+members: Array
 name: String
-technologies: Array of Strings
+technologies: Array
 description: String
 color: String
 image: String
@@ -69,46 +64,45 @@ groupId: String
 createdAt: Integer
 start: Integer
 end: Integer
-location: Object {
-  lat: Float
-  lng: Float
-  city: Object
-  state: Object
-  formattedAddress: String
-}
-going: Array of Strings
+location: Object
+going: Array
 capacity: Integer
 
 **notifications**
 id: String
 type: String
 message: String
-participants: Array of Strings
+participants: Array
 createdAt: Integer
+data: Object
 
 ```
 
-Now let's create these collections from our Deployd interface at `localhost:2403`. This should be a straight-forward process of creating a collection and then editing its fields in the `properties` tab.
+![deployd](/images/chapter-7/messages-1.png)
+![deployd](/images/chapter-7/messages-2.png)
 
-![deployd](Screen Shot 2016-07-25 at 11.21.20 PM.png)
-![deployd](Screen Shot 2016-07-25 at 11.21.27 PM.png)
 
-## Deployd in Production
+Now let's create these collections from our Deployd interface at **localhost:2403/dashboard**. This should be a straight-forward process of creating a collection and then editing its fields in the **properties** tab.
+
+
+
+
+### Deployd in Production
 
 While all this is well and good for local development, what about when we want our app to go live? At that point we will need to deploy Deployd to an actual server. For full instructions on this, please read the API deployment chapter in the appendix.
 
-## Creating Messages
+### Creating Messages
 
-Now that we have our data models in place, we can start to replace our fixture data with real data. We also have to consider what we want our `MessagesView` to contain.
+Now that we have our data models in place, we can start to replace our fixture data with real data. We also have to consider what we want our message view to contain.
 
-Currently `MessagesView.js` displays a list of conversations with the last message sent displayed. Intuitively, if we press on one of these conversations, we should be directed to a conversation view, where we can scroll through all the messages and create new messages. We also may want to be able to direct to a Profile View for when any of the user’s avatars is pressed.
+Currently **MessagesView.js** displays a list of conversations with the last message sent displayed. Intuitively, if we press on one of these conversations, we should be directed to a conversation view, where we can scroll through all the messages and create new messages. 
 
-Therefore, we have to replace the static component of `MessagesView` and replace it with a new `Navigator` with the two routes `Conversations` and `Conversation`. 
+Therefore, we have to replace the static component of **MessagesView** and replace it with a new **Navigator** with the two routes **Conversations** and **Conversation**. 
 
-Let’s move the contents of `MessagesView.js` to another file, `Conversations.js`, and fill in `MessagesView.js` with a new `Navigator` component. We'll also create a dumb `Conversation.js` file for now.
+Let’s move the contents of **MessagesView.js** to another file, **Conversations.js**, and fill in **MessagesView.js** with a new **Navigator** component. We'll also create a simple **Conversation.js** file for now.
 
 ```javascript
-application/components/messages/Conversation.js
+/* application/components/messages/Conversation.js */
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
@@ -128,15 +122,21 @@ class Conversation extends Component{
   }
   render(){
     let { user, currentUser } = this.props;
+    let titleConfig = { 
+      title: `${user.firstName} ${user.lastName}`, 
+      tintColor: 'white' 
+    };
     return (
       <View style={globals.flexContainer}>
         <NavigationBar
           tintColor={Colors.brandPrimary}
-          title={{ title: `${user.firstName} ${user.lastName}`, tintColor: 'white' }}
+          title={titleConfig}
           leftButton={<BackButton handlePress={this.goBack}/>}
         />
         <View style={globals.flexCenter}>
-          <Text style={globals.h2}>Conversation</Text>
+          <Text style={globals.h2}>
+            Conversation
+          </Text>
         </View>
       </View>
     )
@@ -147,7 +147,7 @@ export default Conversation;
 ```
 
 ```javascript
-application/components/messages/MessagesView.js
+/* application/components/messages/MessagesView.js */
 
 import React, { Component } from 'react';
 import { Navigator } from 'react-native';
