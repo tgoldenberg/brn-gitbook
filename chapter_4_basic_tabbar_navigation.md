@@ -347,8 +347,8 @@ Now we can fill in our `renderRow` function with some style.
 Although we haven't added any dynamic data to this view, it's still looking pretty good! Here's what we did with our `renderRow` function:
 
 - We use the **currentUser** fixture to find the other user in the conversation, then find that user in our **FakeUsers** array. We use the **find** function from **underscore**, a JavaScript utility package. For more information on **underscore** functions, please check out their [documentation](http://underscorejs.org/).
-- We wrap our row in a **TouchableOpacity** component, and separate the row into parts: the avatar image, the conversation info, and an icon to route to the conversation
-- We use the **moment** package to format our conversations. We probably ought to sort them by the **lastMessageDate**, but we can do that later
+- We wrap our row in a **TouchableOpacity** component, and separate the row into parts: the avatar image, the conversation info, and an icon to route to the conversation.
+- We use the **moment** package to format our conversations. Later we can sort them by the **lastMessageDate**.
 
 Since we're going to be using the **ListView** component quite a bit, we can refactor the `rowHasChanged` function to a utilities file. Create the folder **application/utilities** and place these contents there in an `index.js` file:
 
@@ -362,6 +362,7 @@ export function rowHasChanged(r1, r2){
 Now we can simplify our `ListView.DataSource` code somewhat:
 
 ```javascript
+/* application/components/messages/MessagesView.js */
 ...
 import { rowHasChanged } from '../../utilities';
 ...
@@ -381,6 +382,7 @@ dataSource(){
 So far we have a tab bar with two views filled in - **ProfileView** and **MessagesView**. Now let's fill in the other view, our **ActivityView**. We'll add a heading with our next upcoming event and a map of it's location (hard-coded for now, of course). We'll make this screen more interesting later:
 
 ```javascript
+/* application/components/activity/ActivityView.js */
 import React, { Component } from 'react';
 import {
   ScrollView,
