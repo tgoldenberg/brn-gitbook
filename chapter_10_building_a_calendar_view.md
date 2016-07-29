@@ -1,5 +1,5 @@
-# Chapter 10: Building an Activity View
-## 10.1 Building on the shoulders of giants
+# Chapter 11: Building a Notification System
+### Building on the shoulders of giants
 
 All the work we have done so far has led us to this point. We now have some pretty rich data to use for the rest of our app. Here is what we have so far:
 
@@ -18,6 +18,7 @@ We haven’t yet considered how we will implement notifications. We will actuall
 message: String
 createdAt: Number
 type: String
+data: Object
 participants: Array
 ``` 
 
@@ -37,7 +38,10 @@ dpd.users.get({ id: recipientId })
         type: 'Message',
         participants: [{userId: recipientId, seen: false}],
         message: 'New message from ' + user.firstName,
-        createdAt: new Date().valueOf()
+        createdAt: new Date().valueOf(),
+        data: {
+          user: user
+        }
     })
 })
 ...
@@ -65,7 +69,11 @@ dpd.groups.get({id: groupId})
                 seen: false,
                 userId: m.userId
             }
-        })
+        }),
+        data: {
+          group: group,
+          event: evt
+        }
     })
 });
 
