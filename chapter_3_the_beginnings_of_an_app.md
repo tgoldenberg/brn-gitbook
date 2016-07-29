@@ -14,7 +14,7 @@ Since React Native is a budding technology, it is not always as opinionated as o
 
 ### A Simple Example
 
-Now we're ready to start writing some components! First, let's set up our file directory structure. Create a folder at the root level called `application`, and within that, a folder called `components` and a folder called `styles`. Within `styles` create the two files  `index.js` and `colors.js`, and within `components` create the files `Dashboard.js` and `Landing.js`. Your folder tree should look something like this.
+Now we're ready to start writing some components! First, let's set up our file directory structure. Create a folder at the root level called **application**, and within that, a folder called **components** and a folder called **styles**. Within **styles** create the two files  `index.js` and `colors.js`, and within **components** create the files `Dashboard.js` and `Landing.js`. Your folder tree should look something like this.
 
 ```
 android
@@ -33,7 +33,7 @@ Copy/paste the contents at [this gist](https://gist.github.com/tgoldenberg/5e2f7
 
 Now copy/paste the contents at [this gist](https://gist.github.com/tgoldenberg/b024fd60ad6fab148bdcd2b039eac5c9) and past them in `application/styles/colors.js`.
 
-Before we build our first component, a warning that we will be using [**ES6**](http://es6-features.org/) syntax. If you're unfamiliar with using features such as `import`, destructuring, the spread operator, and the `=>` fat arrow function syntax, we recommending first completing the ES6 chapter in the appendix. Here are some other resources to get you up to speed: 
+Before we build our first component, a warning that we will be using [**ES6**](http://es6-features.org/) syntax. If you're unfamiliar with using features such as `import`, destructuring, the spread operator, and the fat arrow function syntax, we recommend first completing the ES6 chapter in the appendix. Here are some other resources to get you up to speed: 
 
 - [Tutorial by Mantra](https://tutor.mantrajs.com/say-hello-to-ES2015/introduction)
 - [learnharmony.org](http://learnharmony.org/)
@@ -43,7 +43,9 @@ Since **Navigator** is not opinionated in terms of UI, we will need to `npm inst
   - [**react-native-navbar**](https://github.com/react-native-community/react-native-navbar) by @react-native-community
   - [**react-native-vector-icons**](https://github.com/oblador/react-native-vector-icons) by @oblador
 
-```npm install --save react-native-vector-icons react-native-navbar```
+```
+npm install --save react-native-vector-icons react-native-navbar
+```
 
 We'll also need to link the icon package to XCode with [**rnpm**](https://github.com/rnpm/rnpm), a package manager built specifically for React Native. First install `rnpm` globally
 
@@ -185,11 +187,11 @@ AppRegistry.registerComponent('assemblies', () => assemblies);
 
 Alright, what's going on here?
 
-- We render our **Navigator**, which currently has 3 properties - `style`, `initialRoute`, and `renderScene`.
+- We render our **Navigator**, which currently has 3 properties - **style**, **initialRoute**, and **renderScene**.
 - `initialRoute` is exactly what is sounds like - the first component we want to render when our app starts. We define this route with an object with the name of our first route.
-- `renderScene` is a function which expects a component to be returned. We render the appropriate component depending on the name of the route. To achieve this, we use JavaScript's `switch/case` syntax.
+- `renderScene` is a function which expects a component to be returned. We render the appropriate component depending on the name of the route. To achieve this, we use JavaScript's [**switch/case**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/switch) syntax.
 
-With all that, we should now see the same component. However, we get a different result when we try to press the same button. This time, a blank screen appears. This is because we haven't defined our `Dashboard.js` component, nor included a route for it in the `Navigator`. Let's modify our `Navigator` first.
+With all that, we should now see the same component. However, we get a different result when we try to press the same button. This time, a blank screen appears. This is because we haven't defined our `Dashboard.js` component, nor included a route for it in the **Navigator**. Let's modify our **Navigator** first.
 
 ### Pushing and Popping Routes
 
@@ -300,7 +302,7 @@ export default Dashboard;
 
 Notice a few things:
 - We add a `leftButton` property to the navbar. This is the back icon that renders in the top left part of our screen. We define our `BackButton` component at the top of the file, using React's [**functional stateless component**](https://medium.com/@housecor/react-stateless-functional-components-nine-wins-you-might-have-overlooked-997b0d933dbc#.c8er29tt7) syntax.
-- When we press the **Go to the Dashboard** button, we pass in a new object to our `Navigator` with the name of our new component (in our case, 'Dashboard'). Our `Navigator` understands this and delivers us to the correct component.
+- When we press the **Go to the Dashboard** button, we pass in a new object to our **Navigator** with the name of our new component (in our case, 'Dashboard'). Our **Navigator** understands this and delivers us to the correct component.
 
 Now you should be able to go back and forth between the **Landing** and **Dashboard** screens. If you have any errors, try reloading in XCode with the `cmd + r` command. It may be that the fonts from our `react-native-vector-icons` package haven't yet loaded.
 
@@ -318,7 +320,7 @@ As we mock up our view, you can see this is just fairly familiar JSX syntax, pre
 
 ### JavaScript Styles
 
-If you examing the `globals` style object in `application/styles/index.js`, you'll see that we are declaring our styles with Javascript in camel case, referencing keys of a `styles` object we declare and define below. Generally, these styles work pretty closely to CSS, and use flexbox to define containers and layouts. If you're not too familiar with how flexbox works (perhaps you've spent too much time making things backwards compatible for Internet Explorer), we highlight recommend you check out the excellent guide over at [CSS Tricks](https://css-tricks.com/snippets/css/a-guide-to-flexbox/).
+If you examing the `globals` style object in `application/styles/index.js`, you'll see that we are declaring our styles with Javascript in camel case, referencing keys of a styles object we declare and define below. Generally, these styles work pretty closely to CSS, and use flexbox to define containers and layouts. If you're not too familiar with how flexbox works (perhaps you've spent too much time making things backwards compatible for Internet Explorer), we highlight recommend you check out the excellent guide over at [CSS Tricks](https://css-tricks.com/snippets/css/a-guide-to-flexbox/).
 
 *Note: One of the first 'gotchas' to avoid when working with flexbox is making sure you set `flex: 1` on your top-level components so they actually fill the view, otherwise you'll be very confused and frustrated when your app looks completely blank*
 
@@ -363,7 +365,7 @@ We won't be using either in this tutorial. We personally love Redux but even its
 
 ### Rounding out our Landing Page
 
-Now we're going to fill in our landing page. Later, this will link to user registration and sign in, but for now we'll have it go directly to the dashboard. Let's place an image as the screen background using the `Dimensions` module. Then we'll use the `TouchableOpacity` component as a button that leads to the dashboard. You can download the image assets from the [open-source repository](https://github.com/buildreactnative/assemblies/tree/master/application/assets/images), or use the URL we provide below. Create a folder under `application` called `assets`, and an `images` folder in that. That is where we'll store our images for the tutorial.
+Now we're going to fill in our landing page. Later, this will link to user registration and sign in, but for now we'll have it go directly to the dashboard. Let's place an image as the screen background using the `Dimensions` module. Then we'll use the `TouchableOpacity` component as a button that leads to the dashboard. You can download the image assets from the [open-source repository](https://github.com/buildreactnative/assemblies/tree/master/application/assets/images), or use the URL we provide below. Create a folder under **application** called **assets**, and an **images** folder in that. That is where we'll store our images for the tutorial.
 
 ```javascript
 /* application/components/Landing.js */
@@ -434,14 +436,14 @@ export default Landing;
 
 ![landing](/images/chapter-3/landing-1.png)
 
-If you were to download the images and places them under `application/assets/images`, here's how your `Image` elements might look.
+If you were to download the images and places them under `application/assets/images`, here's how your **Image** elements might look.
 
 ```javascript
-<View style={styles.container}>
-  <Image 
-    style={styles.backgroundImage} 
-    source={require('../assets/images/welcome.png')}
-  />
+
+<Image 
+  style={styles.backgroundImage} 
+  source={require('../assets/images/welcome.png')}
+/>
 </View>
 <View style={globals.flexCenter}>
   <Image 
