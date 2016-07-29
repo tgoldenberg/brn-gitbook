@@ -7,7 +7,7 @@ One of the more confusing things about working with React and React Native is th
 
 Once you’ve entered the terminal, try typing the following functions:
 
-![node](/images/chpater-13/node-1.png)
+![node](/images/chapter-13/node-1.png)
 
 
 All of these are essentially the same function. With the advent of ES6 and compilers like [**Babel**](https://babeljs.io/), it is possible to use this new syntax in your React and React Native projects. In fact, the community has embraced the new syntax whole-heartedly, so it is worth getting used to.
@@ -166,6 +166,7 @@ let todos = [
 { id: 2, title: 'Learn ES6' }
 ];
 ```
+
 Let's say we want to update the title of the item at the 1st index to **Clean the bathroom**. One way we can do this is through using the spead operator. 
 ```javascript
 function updateItem(items, index, title){
@@ -195,7 +196,7 @@ return items.slice(0, index).concat(newItem).concat(items.slice(index + 1);
 
 In both cases, `...` just looks more elegant and simpler. Now, another use of the spread operator in React Native is for passing **props** to components. Instead of passing each individual prop, we can just pass ` {...this.props}`. In other words, the two components are the same:
 
-````javascript
+```javascript
 /* version 1 */
 class Card extends Component{
   render(){
