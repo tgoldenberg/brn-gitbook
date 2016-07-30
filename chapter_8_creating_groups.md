@@ -1,18 +1,25 @@
 # Chapter 8: Creating Groups
 
-In the last chapter, we built out a messaging feature. We were able to fetch messages related to a group of users and create new messages. Now we’ll focus on adding some new features to our tab-bar navigation – `Groups` and `Calendar`.
+In the last chapter, we built out a messaging feature. We were able to fetch messages related to a group of users and create new messages. Now we’ll focus on adding some new features to our tab-bar navigation – **Groups** and **Calendar**.
 
 Before we get started, let's make the development process easier and add persistent user login. This way, every time we refresh the app, we won't have to login. 
 
 ### Persistent User Login
 
-To do this, when a user logs in, we need to store their session id in local storage. We use React Native's `AsyncStorage` module for this. `AsyncStorage` works as a simple dictionary of keys and values, with a `getItem` and `setItem` method. Let's edit `Login.js` and `RegisterConfirmation.js` to save this session id.
+To do this, when a user logs in, we need to store their session id in local storage. We use React Native's **AsyncStorage** module for this. **AsyncStorage** works as a simple dictionary of keys and values, with a **getItem** and **setItem** method. Let's edit **Login.js** and **RegisterConfirmation.js** to save this session id.
 
 ```javascript
-application/components/accounts/Login.js
-...
-import { Text, View, ScrollView, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
-...
+/* application/components/accounts/Login.js */
+/* ... */
+import { 
+  Text, 
+  View, 
+  ScrollView, 
+  TextInput, 
+  TouchableOpacity, 
+  AsyncStorage 
+} from 'react-native';
+/* ... */
 fetchUserInfo(sid){
   AsyncStorage.setItem('sid', sid);
   fetch(`${API}/users/me`, { headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`}) })
@@ -21,17 +28,27 @@ fetchUserInfo(sid){
   .catch(err => this.connectionError())
   .done();
 }
-...
+/* ... */
 ```
 
 ```javascript
-application/components/RegisterConfirmation.js
-...
-import { Image, ScrollView, Text, TouchableOpacity, View, Dimensions, AsyncStorage } from 'react-native';
-...
-getUserInfo(sid){ /* use session id to retreive user information and store session id in local storage */
+/* application/components/RegisterConfirmation.js */
+/* ... */
+import { 
+  Image, 
+  ScrollView, 
+  Text, 
+  TouchableOpacity, 
+  View, 
+  Dimensions, 
+  AsyncStorage 
+} from 'react-native';
+/* ... */
+getUserInfo(sid){ 
   AsyncStorage.setItem('sid', sid);
-  fetch(`${API}/users/me`, { headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`}) })
+  fetch(`${API}/users/me`, { 
+    headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`}) 
+  })
   .then(response => response.json())
   .then(user => {
     this.props.updateUser(user);
@@ -42,7 +59,7 @@ getUserInfo(sid){ /* use session id to retreive user information and store sessi
   .catch((err) => {})
   .done();
 }
-...
+/* ... */
 ```
 
 Now in our main `index.ios.js` we can modify our component to first check if a session id is saved. If it is, we can fetch the user information and direct the user to the dashboard. If not, we load the landing screen as per usual.
