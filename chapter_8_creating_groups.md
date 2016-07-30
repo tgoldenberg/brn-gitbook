@@ -62,10 +62,10 @@ getUserInfo(sid){
 /* ... */
 ```
 
-Now in our main `index.ios.js` we can modify our component to first check if a session id is saved. If it is, we can fetch the user information and direct the user to the dashboard. If not, we load the landing screen as per usual.
+Now in our main **index.ios.js** we can modify our component to first check if a session id is saved. If it is, we can fetch the user information and direct the user to the dashboard. If not, we load the landing screen as per usual.
 
 ```javascript
-index.ios.js
+/* index.ios.js */
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -91,7 +91,7 @@ const Loading = () => (
   </View>
 );
 
-class assembliesTutorial extends Component {
+class assemblies extends Component {
   constructor(){
     super();
     this.logout = this.logout.bind(this);
@@ -122,9 +122,15 @@ class assembliesTutorial extends Component {
     this.setState({ ready: true });
   }
   fetchUser(sid){
-    fetch(`${API}/users/me`, { headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`})})
+    fetch(`${API}/users/me`, { 
+      headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`})
+    })
     .then(response => response.json())
-    .then(user => this.setState({ user, ready: true, initialRoute: 'Dashboard' }))
+    .then(user => this.setState({ 
+      ready: true, 
+      initialRoute: 'Dashboard',
+      user
+    }))
     .catch(err => this.ready(err))
     .done();
   }
@@ -181,7 +187,7 @@ class assembliesTutorial extends Component {
   }
 }
 
-AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
+AppRegistry.registerComponent('assemblies', () => assemblies);
 
 ```
 
