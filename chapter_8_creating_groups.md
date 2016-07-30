@@ -191,12 +191,17 @@ AppRegistry.registerComponent('assemblies', () => assemblies);
 
 ```
 
-A few things:
-- We are using the `async` and `await` functionality to retreive the local storage information. `await` is used to ensure that the value is properly retreived before running subsequent code.
-- We use React Native's `ActivityIndicator` component to show a spinner while the session id is being fetched. We can move this to a separate file for reuse, like `application/components/shared/Loading.js`.
-- We also make our `initialRoute` dynamic, meaning that it is dependant on `this.state.initialRoute`. If our async function returns false, the landing page will render as usual. If it is successful, the value of `this.state.initialRoute` will be set to 'Dashboard`, and the app will automatically log our user in.
+Now if you log in and refresh the screen, you should still be logged in!
 
-[Commit 16](https://github.com/buildreactnative/assemblies-tutorial/tree/161c53bf7f30d9098a231805a47411827c436a4d) - "Add persistent user login"
+![login](/images/chapter-8/login-1.png)
+
+
+A few things:
+- We are using the **async** and **await** functionality to retrieve the local storage information. **await** is used to ensure that the value is properly retrieved before running subsequent code.
+- We use React Native's **ActivityIndicator** component to show a spinner while the session id is being fetched. We can move this to a separate file for reuse, like **application/components/shared/Loading.js**.
+- We also make our **initialRoute** dynamic, meaning that it is dependant on **this.state.initialRoute**. If our async function returns false, the landing page will render as usual. If it is successful, the value of **this.state.initialRoute** will be set to **Dashboard**, and the app will automatically log our user in.
+
+[Commit](https://github.com/buildreactnative/assemblies-tutorial/tree/161c53bf7f30d9098a231805a47411827c436a4d) - "Add persistent user login"
 
 ### Adding a Groups and Calendar Tab
 
