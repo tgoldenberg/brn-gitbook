@@ -824,6 +824,8 @@ class CreateGroupConfirmation extends Component{
 export default CreateGroupConfirmation;
 ```
 
+![group](/images/chapter-8/create-group-view-1.png)
+
 Now we link to our new routes when a user presses the **Add Group** button in **Groups.js**.
 
 Now we need to flesh out the form a bit. First let's install another **npm** package - **react-native-keyboard-aware-scroll-view**. This package will ensure that our input fields don't get hidden by the keyboard. We simply use it in the same way as we have used the **ScrollView** component.
@@ -959,18 +961,19 @@ export default CreateGroup;
 
 Let's go over this:
 - Many parts of this form will look very similar. That's because they are the same components we used in our user registration process. This is the easy part. The next part we will have to be a bit more creative.
-- Our `handleSubmit` method takes the saved component state and passes it to the next route - `CreateGroupConfirmation`. We pass in the field `groupName` because the field `name` is already taken by the `Navigator` component.
+- Our `handleSubmit` method takes the saved component state and passes it to the next route - **CreateGroupConfirmation**. We pass in the field `groupName` because the field `name` is already taken by the `Navigator` component.
 
 In the second part, we want our users to select a background image, a color, and a list of related technologies. Let's make a commit at this point.
 
-[Commit 18](https://github.com/buildreactnative/assemblies-tutorial/tree/90d955ba98c87ecc330727a70ad143f2c91eb7ab) - "Render first part of group creation form"
+[Commit](https://github.com/buildreactnative/assemblies-tutorial/tree/90d955ba98c87ecc330727a70ad143f2c91eb7ab) - "Render first part of group creation form"
 
 
 ### Confirmation Form for Creating Groups
 
-Here is the interface of our `CreateGroupConfirm` component. Notice many of the similarities between it and our `RegisterConfirm` form from before. In both we are using `react-native-image-picker` to set user images, and we are using the `Dropdown` component to select technologies. The only novelty is selecting the colors, which implements the `flex-wrap` functionality of flexbox.
+Here is the interface of our `CreateGroupConfirmation` component. Notice many of the similarities between it and our `RegisterConfirmation` form from before. In both we are using `react-native-image-picker` to set user images, and we are using the `Dropdown` component to select technologies. The only novelty is selecting the colors, which implements the `flex-wrap` functionality of flexbox.
 
 ```javascript
+/* application/components/groups/CreateGroupConfirmation.js */
 import Icon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-picker';
 import NavigationBar from 'react-native-navbar';
@@ -1225,21 +1228,21 @@ case 'Group':
 
 Now if we fill out the form with a new group, we should see it in our groups screen.
 
-![create group example](/images/chapter-8/create-group-example-1.png)
-![create group example](/images/chapter-8/create-group-example-2.png)
 ![create group example](/images/chapter-8/create-group-example-3.png)
+![create group example](/images/chapter-8/create-group-example-2.png)
+![create group example](/images/chapter-8/create-group-example-1.png)
 
 Let's make a commit here.
 
-[Commit 19]() - "Successfully create group"
+[Commit]() - "Successfully create group"
 
 
-## Viewing a Group
+### Viewing a Group
 
 Now that we're able to create groups, we want to flesh out our `Group` view. Ideally, we want to show the group's background image, information on how many users it has, and a list of events. Let's edit `application/components/groups/Group.js`.
 
 ```javascript
-application/components/Group.js
+/* application/components/Group.js */
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
@@ -1411,7 +1414,7 @@ Let's review the new code:
 
 Let's remember to make a commit at this point.
 
-[Commit 19](https://github.com/buildreactnative/assemblies-tutorial/tree/95fedabf381a3f3cfffe180ab51c6b7d2cbd45b5) - "Render individual groups in Group component"
+[Commit](https://github.com/buildreactnative/assemblies-tutorial/tree/95fedabf381a3f3cfffe180ab51c6b7d2cbd45b5) - "Render individual groups in Group component"
 
  
 ## Wrapping Up
