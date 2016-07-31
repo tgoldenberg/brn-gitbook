@@ -342,7 +342,7 @@ description: “Meetup for Ruby enthusiasts”
 
 Now we’re ready to fetch these groups and render them in our `GroupsView` page! Make to make one of them has an empty array `[]` as the value for **members**. This way, they will show up in our suggested groups.
 
-First, we have to turn `GroupsView` into another `Navigator` component. We will set `Groups` as our initial route, and render the a blank screen in `Groups.js`.
+First, we have to turn **GroupsView** into another **Navigator** component. We will set **Groups** as our initial route, and render the a blank screen in **Groups.js**.
 
 ```javascript
 import React, { Component } from 'react';
@@ -350,7 +350,7 @@ import { Navigator } from 'react-native';
 import { find, isEqual } from 'underscore';
 
 import Groups from './Groups';
-import Headers from '../../fixtures/headers';
+import Headers from '../../fixtures';
 import { API, DEV } from '../../config';
 import { globals } from '../../styles';
 
@@ -418,7 +418,7 @@ class GroupsView extends Component{
 export default GroupsView;
 ```
 ```javascript
-application/components/groups/Groups.js
+/* application/components/groups/Groups.js */
 
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
@@ -439,16 +439,16 @@ class Groups extends Component{
 
 export default Groups;
 ```
+![groups](/images/chapter-8/groups-view-2.png)
 
-![screen](Simulator Screen Shot Jul 26, 2016, 10.00.16 AM.png)
 
 Let's go over the above code:
-- As before, we're setting `GroupsView` to be a `Navigator` component, this time with only one route so far, `Groups`. The `Groups` component expect `props` of an array of groups and suggested groups. We fetch these in the `componentDidMount` method of `GroupsView`, using MongoDB queries. 
-- The `$elemMatch` query in Mongo looks for nested values in an object. Here, our `members` fields of the `groups` collection is an object with a nested field of `userId`. We search for groups that have a `members` object with the `userId` of our current user.
+- As before, we're setting **GroupsView** to be a **Navigator** component, this time with only one route so far, **Groups**. The **Groups** component expect **props** of an array of groups and suggested groups. We fetch these in the `componentDidMount` method of **GroupsView**, using MongoDB queries. 
+- The `$elemMatch` query in Mongo looks for nested values in an object. Here, our **members** fields of the **groups** collection is an object with a nested field of **userId**. We search for groups that have a **members** object with the **userId** of our current user.
 - We use the `$nin` Mongo query to find groups that are in the same city as our user, but that do **not** have the same id as any of the groups that the user belongs to. This way we can show groups that the user might be interested in.
-- In `Groups.js`, we use the groups that we fetched and render a simple `<Text/>` component with each group's name. We will flesh this out more next.
+- In **Groups.js**, we use the groups that we fetched and render a simple **Text** component with each group's name. We will flesh this out more next.
 
-## 8.3 Rendering Groups
+### Rendering Groups
 
 Now that we've successfully fetched our data, we need to render it properly. We should also make sure that while the value `ready` is set to `false`, we should load our loading spinner (which we moved to `application/components/shared/Loading.js`). Here is the updated `Groups.js`:
 
