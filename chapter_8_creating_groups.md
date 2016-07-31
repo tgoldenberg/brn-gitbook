@@ -205,14 +205,14 @@ A few things:
 
 ### Adding a Groups and Calendar Tab
 
-Now we want to add a tab for showing groups and for showing a calendar view. Let’s edit `Dashboard.js` and add the two files `application/calendar/CalendarView.js` and `application/groups/GroupsView.js`. 
+Now we want to add a tab for showing groups and for showing a calendar view. Let’s edit `Dashboard.js` and add the two files **application/calendar/CalendarView.js** and **application/groups/GroupsView.js**. 
 
 ```javascript
-application/components/Dashboard.js
-…
+/* application/components/Dashboard.js */
+/* … */
 import CalendarView from './calendar/CalendarView';
 import GroupsView from './groups/GroupsView';
-…
+/* … */
 <TabBarItemIOS
   title='Groups'
   selected={ this.state.selectedTab == 'Groups' }
@@ -232,7 +232,7 @@ import GroupsView from './groups/GroupsView';
 …
 ```
 ```javascript
-application/components/calendar/CalendarView.js
+/* application/components/calendar/CalendarView.js */
 
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
@@ -249,8 +249,9 @@ class CalendarView extends Component{
 };
 
 export default CalendarView;
-
-application/components/groups/GroupsView.js
+```
+```javascript
+/* application/components/groups/GroupsView.js */
 
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
@@ -259,7 +260,7 @@ import { globals } from '../../styles';
 class GroupsView extends Component{
   render(){
     return (
-      <View style={globals.flexCenter}>
+      <View style={globals.flexContainer}>
         <Text style={globals.h2}>GROUPS VIEW</Text>
       </View>
     )
@@ -267,15 +268,14 @@ class GroupsView extends Component{
 };
 
 export default GroupsView;
-
 ```
 ![screen](Simulator Screen Shot Jul 26, 2016, 9.49.04 AM.png)
 
-## 8.2 Rendering Groups
+### Rendering Groups
 
-We want to start off by rendering some groups. But we haven’t created any. How can we get around this? We can create some data, of course! Let’s create some groups in our Deployd dashboard `localhost:2403/dashboard`, and then render them in our groups view.
+We want to start off by rendering some groups. But we haven’t created any. How can we get around this? We can create some data, of course! Let’s create some groups in our Deployd dashboard **localhost:2403/dashboard**, and then render them in our groups view.
 
-In the Deployd dashboard, add the following groups, replacing the `userId` with your personal user `id`.
+In the Deployd dashboard, add the following groups, replacing the **userId** with your personal user **id**.
 ```
 name: “React Native NYC”,
 description: “A meetup for people interested in learning React Native, the mobile development library created by Facebook.”,
