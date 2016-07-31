@@ -450,18 +450,23 @@ Let's go over the above code:
 
 ### Rendering Groups
 
-Now that we've successfully fetched our data, we need to render it properly. We should also make sure that while the value `ready` is set to `false`, we should load our loading spinner (which we moved to `application/components/shared/Loading.js`). Here is the updated `Groups.js`:
+Now that we've successfully fetched our data, we need to render it properly. We should also make sure that while the value `ready` is set to `false`, we should load our loading spinner (which we moved to **application/components/shared/Loading.js**). Here is the updated **Groups.js**:
 
 ```javascript
+import React, { Component } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView
+} from 'react-native';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import NavigationBar from 'react-native-navbar';
-import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
-
 import Colors from '../../styles/colors';
 import Loading from '../shared/Loading';
 import { globals, groupsStyles } from '../../styles';
-
 const styles = groupsStyles;
 
 export function formatGroups(groups){
@@ -510,16 +515,27 @@ const EmptySuggestedGroupBoxes = () => (
 
 export const GroupBoxes = ({ groups, visitGroup, visitCreateGroup }) => {
   console.log('GROUPS', groups);
-  if (! groups.length ) { return <EmptyGroupBoxes handlePress={visitCreateGroup}/> }
+  if (! groups.length ) {
+    return <EmptyGroupBoxes handlePress={visitCreateGroup}/>
+  }
   return (
     <View style={styles.boxContainer}>
       {groups.map((group, idx) => {
         if (!group) { return <EmptyGroupBox key={idx}/>}
         return (
-          <TouchableOpacity key={idx} style={globals.flexRow} onPress={() => visitGroup(group)}>
-            <Image source={{uri: group.image}} style={styles.groupImage}>
+          <TouchableOpacity 
+            key={idx} 
+            style={globals.flexRow} 
+            onPress={() => visitGroup(group)}
+          >
+            <Image 
+              source={{uri: group.image}} 
+              style={styles.groupImage}
+            >
               <View style={[styles.groupBackground, {backgroundColor: group.color,}]} >
-                <Text style={styles.groupText}>{group.name}</Text>
+                <Text style={styles.groupText}>
+                  {group.name}
+                </Text>
               </View>
             </Image>
           </TouchableOpacity>
@@ -536,10 +552,19 @@ const SuggestedGroupBoxes = ({ groups, visitGroup }) => {
       {groups.map((group, idx) => {
         if (!group) { return <EmptyGroupBox key={idx}/>}
         return (
-          <TouchableOpacity key={idx} style={globals.flexRow} onPress={() => visitGroup(group)}>
-            <Image source={{uri: group.image}} style={styles.groupImage}>
+          <TouchableOpacity 
+            key={idx} 
+            style={globals.flexRow} 
+            onPress={() => visitGroup(group)}
+          >
+            <Image 
+              source={{uri: group.image}} 
+              style={styles.groupImage}
+            >
               <View style={[styles.groupBackground, {backgroundColor: group.color,}]} >
-                <Text style={styles.groupText}>{group.name}</Text>
+                <Text style={styles.groupText}>
+                  {group.name}
+                </Text>
               </View>
             </Image>
           </TouchableOpacity>
@@ -601,21 +626,23 @@ class Groups extends Component{
 };
 
 export default Groups;
+
 ```
-![groups page](/images/chapter-8/groups-page-initial.png)
+
+![groups](/images/chapter-8/groups-view-3.png)
 
 Let's review what we just did:
-- We add a `formatGroups` function to ensure that there is an even number of both groups and suggested groups. This is to maintain an even layout with Flexbox's `flexWrap` quality.
-- If a group is `null`, we render an empty box, that's all. We refactor this empty box into the component `<EmptyGroupBox/>`.
-- If there are no groups at all, we just need to render empty boxes, except we want one of the boxes to have a call to action, or CTA. That is where our `<AddGroupBox/>` comes in. It has a `handlePress` method, that when press, should redirect to a form to create a new group.
-- We render our suggested groups in much the same way, except if there are no suggested groups, we can just show two empty boxes. That is what our `<EmptySuggestedGroupBoxes/>` component does.
-- Each of the `<GroupBoxes/>` elements has a callback when pressed that routes the user to the screen of that particular group. 
-- You'll also notice that we add a `<AddButton/>` component as our `rightButton` property of the navigation bar. This is another way that a user can initiate the group creation process.
-- We still have to wire up the new routes of 'Group' and 'CreateGroup', but we're well on our way!
+- We add a **formatGroups** function to ensure that there is an even number of both groups and suggested groups. This is to maintain an even layout with Flexbox's **flexWrap** quality.
+- If a group is null, we render an empty box, that's all. We refactor this empty box into the component **EmptyGroupBox**.
+- If there are no groups at all, we just need to render empty boxes, except we want one of the boxes to have a call to action, or CTA. That is where our **AddGroupBox**` comes in. It has a `handlePress` method, that when press, should redirect to a form to create a new group.
+- We render our suggested groups in the same way, with the exception that if there are no suggested groups, we can just show two empty boxes. That is what our **EmptySuggestedGroupBoxes** component does.
+- Each of the **GroupBoxes** elements has a callback when pressed that routes the user to the screen of that particular group. 
+- You'll also notice that we add a **AddButton** component as our **rightButton** property of the navigation bar. This is another way that a user can initiate the group creation process.
+- We still have to wire up the new routes of **Group** and **CreateGroup**, but we're well on our way!
 
 Let's make a commit here.
 
-[Commit 17]() - "Render groups in main Groups screen"
+[Commit]() - "Render groups in main Groups screen"
 
 
 ### Loading State
@@ -623,15 +650,16 @@ Let's make a commit here.
 Just as we did for our groups screen, it's a good standard to show a spinner or other animation when making any data fetch. Let's implement this in our `Conversations` component as well.
 
 ```javascript
-application/components/messages/Conversations.js
-...
+/* application/components/messages/Conversations.js */
+/* ... */
 import Loading from '../shared/Loading';
-...
+/* ... */
 class Conversations extends Component{
-  ....
+  /* .... */
   dataSource(){
     return (
-      new ListView.DataSource({ rowHasChanged: rowHasChanged }).cloneWithRows(this.props.conversations)
+      new ListView.DataSource({ rowHasChanged: rowHasChanged })
+      .cloneWithRows(this.props.conversations)
     );
   }
   render() {
@@ -658,10 +686,9 @@ export default Conversations;
 
 Now if we refresh and visit the messages tab, we should see a spinner before the data is loaded. A better experience, don't you think?
 
+### Creating Groups
 
-## 8.4 Creating Groups
-
-Out of the four operations of `create`, `read`, `update`, and `delete`, we have accomplished the `read` part of our `groups` collection. Now what about creating groups? 
+Out of the four operations of **create**, **read**, **update**, and **delete**, we have accomplished the **read** part of our **groups** collection. Now what about creating groups? 
 
 Well, we can certainly reuse elements from our user login and registration forms to make it easier. What information are we looking for? 
 
@@ -674,14 +701,14 @@ color: String
 image: String
 ```
 
-The last two fields are really optional, but we can include them in our form too. Let's design another two-part form to create a feed, somewhat similar to our user registration process. We will need routes in our parent-level `GroupsView` component for both `CreateFeed` and `CreateFeedConfirm`. Let's add those in.
+The last two fields are really optional, but we can include them in our form too. Let's design another two-part form to create a feed, somewhat similar to our user registration process. We will need routes in our parent-level **GroupsView** component for both **CreateFeed** and **CreateFeedConfirmation**. Let's add those in.
 
 ```javascript
-application/components/groups/GroupsView.js
-...
+/* application/components/groups/GroupsView.js */
+/* ... */
 import CreateGroup from './CreateGroup';
 import CreateGroupConfirmation from './CreateGroupConfirmation';
-...
+/* ... */
 switch(route.name){
   case 'Groups':
     return (
@@ -713,10 +740,10 @@ switch(route.name){
 ...
 ```
 
-Now of course we have to define `CreateGroup.js` and `CreateGroupConfirmation.js`.
+Now of course we have to define **CreateGroup.js** and **CreateGroupConfirmation.js**.
 
 ```javascript
-application/components/groups/CreateGroup.js
+/* application/components/groups/CreateGroup.js */
 
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
@@ -727,15 +754,26 @@ import BackButton from '../shared/BackButton';
 import { globals } from '../../styles';
 
 class CreateGroup extends Component{
+  constructor(){
+    super();
+    this.goBack = this.goBack.bind(this);
+  }
+  goBack(){
+    this.props.navigator.pop();
+  }
   render(){
+    let titleConfig = { title: 'Create Group', tintColor: 'white' };
     return (
       <View style={globals.flexContainer}>
         <NavigationBar
-          title={{ title: 'Create Group', tintColor: Colors.brandPrimary }}
+          title={titleConfig}
+          tintColor={Colors.brandPrimary}
           leftButton={<BackButton handlePress={this.goBack}/>}
         />
-        <View style={globals.flex}>
-          <Text style={globals.h2}>CreateGroup</Text>
+        <View style={globals.flexCenter}>
+          <Text style={globals.h2}>
+            CreateGroup
+          </Text>
         </View>
       </View>
     );
@@ -743,10 +781,11 @@ class CreateGroup extends Component{
 };
 
 export default CreateGroup;
+
 ```
 
 ```javascript
-application/components/groups/CreateGroupConfirmation.js
+/* application/components/groups/CreateGroupConfirmation.js */
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import NavigationBar from 'react-native-navbar';
@@ -756,15 +795,26 @@ import BackButton from '../shared/BackButton';
 import { globals } from '../../styles';
 
 class CreateGroupConfirmation extends Component{
+  constructor(){
+    super();
+    this.goBack = this.goBack.bind(this);
+  }
+  goBack(){
+    this.props.navigator.pop();
+  }
   render(){
+    let titleConfig = { title: 'Create Group', tintColor: 'white' };
     return (
       <View style={globals.flexContainer}>
         <NavigationBar
-          title={{ title: 'Create Group', tintColor: Colors.brandPrimary }}
+          title={titleConfig}
+          tintColor={Colors.brandPrimary}
           leftButton={<BackButton handlePress={this.goBack}/>}
         />
-        <View style={globals.flex}>
-          <Text style={globals.h2}>CreateGroupConfirmation</Text>
+        <View style={globals.flexCenter}>
+          <Text style={globals.h2}>
+            CreateGroupConfirmation
+          </Text>
         </View>
       </View>
     );
@@ -772,18 +822,14 @@ class CreateGroupConfirmation extends Component{
 };
 
 export default CreateGroupConfirmation;
-
 ```
 
-Now we link to our new routes when a user presses the `Add Group` button in `Groups.js`.
+Now we link to our new routes when a user presses the **Add Group** button in **Groups.js**.
 
-![create group](/images/chapter-8/create-group-initial.png)
-
-
-Now we need to flesh out the form a bit. First let's install another `npm` package - `react-native-keyboard-aware-scroll-view`. This package will ensure that our input fields don't get hidden by the keyboard. We simply use it in the same way as we have used the `ScrollView` component.
+Now we need to flesh out the form a bit. First let's install another **npm** package - **react-native-keyboard-aware-scroll-view**. This package will ensure that our input fields don't get hidden by the keyboard. We simply use it in the same way as we have used the **ScrollView** component.
 
 ```javascript
-application/components/groups/CreateGroup.js
+/* application/components/groups/CreateGroup.js */
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
