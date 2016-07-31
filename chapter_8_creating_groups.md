@@ -205,7 +205,7 @@ A few things:
 
 ### Adding a Groups and Calendar Tab
 
-Now we want to add a tab for showing groups and for showing a calendar view. Let’s edit `Dashboard.js` and add the two files **application/calendar/CalendarView.js** and **application/groups/GroupsView.js**. 
+Now we want to add a tab for showing groups and for showing a calendar view. Let’s edit **Dashboard.js** and add the two files **application/calendar/CalendarView.js** and **application/groups/GroupsView.js**. 
 
 ```javascript
 /* application/components/Dashboard.js */
@@ -229,7 +229,7 @@ import GroupsView from './groups/GroupsView';
 >
   <CalendarView currentUser={user}/>
 </TabBarItemIOS>
-…
+/* … */
 ```
 ```javascript
 /* application/components/calendar/CalendarView.js */
@@ -260,7 +260,7 @@ import { globals } from '../../styles';
 class GroupsView extends Component{
   render(){
     return (
-      <View style={globals.flexContainer}>
+      <View style={globals.flexCenter}>
         <Text style={globals.h2}>GROUPS VIEW</Text>
       </View>
     )
@@ -269,26 +269,30 @@ class GroupsView extends Component{
 
 export default GroupsView;
 ```
-![screen](Simulator Screen Shot Jul 26, 2016, 9.49.04 AM.png)
+
+![groups](/images/chapter-8/groups-view-1.png)
+
 
 ### Rendering Groups
 
 We want to start off by rendering some groups. But we haven’t created any. How can we get around this? We can create some data, of course! Let’s create some groups in our Deployd dashboard **localhost:2403/dashboard**, and then render them in our groups view.
 
-In the Deployd dashboard, add the following groups, replacing the **userId** with your personal user **id**.
+In the Deployd dashboard, add the following groups, replacing the **USER_ID** with your personal user **id**.
 ```
 name: “React Native NYC”,
 description: “A meetup for people interested in learning React Native, the mobile development library created by Facebook.”,
-users: [
+createdAt: 1469976754482,
+members: [
     {
-        "userId": "15f9d0d11a023b8a",
+        "userId": "USER_ID",
         "confirmed": true,
         "role": "owner",
         "joinedOn": 1468113633150
     }
-]
-image: “”,
-technologies: [“React Native” ],
+],
+color: "blue",
+image: “https://s3-us-west-2.amazonaws.com/assembliesapp/welcome%402x.png”,
+technologies: [“React Native”, "JavaScript" ],
 location: {
 	"lat": 41.308274,
 	"lng": -72.9278835,
@@ -333,9 +337,10 @@ description: “Meetup for Python enthusiasts”
 title: “Ruby NYC”
 description: “Meetup for Ruby enthusiasts”
 ```
-![groups fixtures](Screen Shot 2016-07-09 at 9.31.13 PM.png)
 
-Now we’re ready to fetch these groups and render them in our `GroupsView` page!
+![groups](/images/chapter-8/deployd-groups-1.png)
+
+Now we’re ready to fetch these groups and render them in our `GroupsView` page! Make to make one of them has an empty array `[]` as the value for **members**. This way, they will show up in our suggested groups.
 
 First, we have to turn `GroupsView` into another `Navigator` component. We will set `Groups` as our initial route, and render the a blank screen in `Groups.js`.
 
@@ -1353,10 +1358,10 @@ export default Group;
 ![new group example](/images/chapter-8/new-group-example-1.png)
 
 Let's review the new code:
-- In our `componentDidMount` lifecycle method, we fetch the users related to the group. We use the mongodb `$in` operator for this, fetching all the users that have an id in the groups members array. We also utilize the `$limit` option, to keep the users being fetched to 10 in number.
-- We pass our fetched users to a `<GroupMembers/>` component which renders each one at the bottom of the screen. Currently, these are pressable but lead to a blank screen. Later, we will have them direct to a user profile screen.
-- We also have an `events` section that isn't being used currently. We will need implement functionality to create and render events before fleshing this out further.
-- Also notice that if the user isn't a member, the "join" button will appear, but it throws an error when pressed. This is because we haven't defined an `addUserToGroup` method in our top-level `GroupsView` component.
+- In our `componentDidMount` lifecycle method, we fetch the users related to the group. We use the mongodb **$in** operator for this, fetching all the users that have an id in the groups members array. We also utilize the `$limit` option, to keep the users being fetched to 10 in number.
+- We pass our fetched users to a **GroupMembers** component which renders each one at the bottom of the screen. Currently, these are pressable but lead to a blank screen. Later, we will have them direct to a user profile screen.
+- We also have an events section that isn't being used currently. We will need implement functionality to create and render events before fleshing this out further.
+- Also notice that if the user isn't a member, the **join** button will appear, but it throws an error when pressed. This is because we haven't defined an `addUserToGroup` method in our top-level `GroupsView` component.
 
 Let's remember to make a commit at this point.
 
