@@ -1228,7 +1228,7 @@ case 'Group':
 
 Now if we fill out the form with a new group, we should see it in our groups screen.
 
-![create group example](/images/chapter-8/create-group-example-3.png)
+
 ![create group example](/images/chapter-8/create-group-example-2.png)
 ![create group example](/images/chapter-8/create-group-example-1.png)
 
@@ -1404,7 +1404,7 @@ export default Group;
 
 
 ```
-![new group example](/images/chapter-8/new-group-example-1.png)
+![group](/images/chapter-8/new-group-view-3.png)
 
 Let's review the new code:
 - In our `componentDidMount` lifecycle method, we fetch the users related to the group. We use the mongodb **$in** operator for this, fetching all the users that have an id in the groups members array. We also utilize the `$limit` option, to keep the users being fetched to 10 in number.
