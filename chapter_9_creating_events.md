@@ -8,7 +8,7 @@ Let's add this functionality in **GroupsView.js**.
 
 ```javascript
 /* application/components/groups/GroupsView.js */
-/* … */
+/* ... */
 class GroupsView extends Component{
   constructor(){
     super();
@@ -20,7 +20,7 @@ class GroupsView extends Component{
       suggestedGroups   : [],
     }
   }
-  ...
+  /* ... */
   addUserToGroup(group, currentUser){
     let { groups, suggestedGroups } = this.state;
     let member = {
@@ -48,7 +48,7 @@ class GroupsView extends Component{
     .catch(err => {})
     .done();
   }
-  …
+  /* ... */
   case 'Group':
     return (
       <Group
@@ -58,14 +58,14 @@ class GroupsView extends Component{
         addUserToGroup={this.addUserToGroup}
       />
     )
-
+/* ... */
 ```
 ![join group](/images/chapter-9/join-group-2.png)
 
 ![join group](/images/chapter-9/join-group-1.png)
 
 
-Now when you click to join a group, our button should change its content to a success message, and the group should be added to our joined groups in the top level `Groups` component. Notice that we don’t just change the component state but also update our database through a **PUT** call to our Deployd server.
+Now when you click to join a group, our button should change its content to a success message, and the group should be added to our joined groups in the top level **Groups** component. Notice that we don’t just change the component state but also update our database through a **PUT** call to our Deployd server.
 
 What about removing oneself from a group? For that, we can have an **ActionSheetIOS** component that gives us a list of actions, one of which can be to leave the group. Let's add an ellipses icon as the right button of our navigation bar, and have it open up the **ActionSheetIOS** component.
 
@@ -79,7 +79,7 @@ const OptionsButton = ({ openActionSheet }) => {
     </TouchableOpacity>
   )
 }
-…
+/* ... */
 class Group extends Component{
   constructor(){
     super();
@@ -133,10 +133,11 @@ class Group extends Component{
 /* ... */
 ```
 
-We also have to define the method of `unsubscribeFromGroup` in our main `GroupsView.js` component.
+We also have to define the method of `unsubscribeFromGroup` in our main **GroupsView.js** component.
 
 ```javascript
-...
+/* application/components/groups/GroupsView.js */
+/* ... */
 class GroupsView extends Component{
   constructor(){
     super();
@@ -149,7 +150,7 @@ class GroupsView extends Component{
       suggestedGroups   : [],
     }
   }
-  ...
+  /* ... */
   unsubscribeFromGroup(group, currentUser){
     let { groups, suggestedGroups } = this.state;
     group.members = group.members.filter(({ userId }) => ! isEqual(userId, currentUser.id));
@@ -158,7 +159,7 @@ class GroupsView extends Component{
     this.setState({ groups, suggestedGroups });
     this.updateGroup(group);
   }
-  ...
+  /* ... */
   case 'Group':
     return (
       <Group
@@ -170,7 +171,7 @@ class GroupsView extends Component{
         unsubscribeFromGroup={this.unsubscribeFromGroup}
       />
   );
-...
+/* ... */
 ```
 
 Let's review:
@@ -179,7 +180,7 @@ Let's review:
 
 ![group unsubscribe](/images/chapter-9/group-unsubscribe-1.png)
 ![group unsubscribe](/images/chapter-9/group-unsubscribe-2.png)
-![group unsubscribe](/images/chapter-9/group-unsubscribe.png)
+![group unsubscribe](/images/chapter-9/group-unsubscribe-3.png)
 
 Let's make a commit here. 
 
@@ -247,7 +248,7 @@ export default CreateEvent;
 ```
 ![create event](/images/chapter-9/create-event-1.png)
 
-## Selecting Date and Numerical Information
+### Selecting Date and Numerical Information
 
 Now if the user selects **Create Event**, they should be directed to this page. Now we need to fill in the form to create an event. Remember that our events have the following schema: 
 
@@ -404,9 +405,9 @@ export default CreateEvent;
 
 Let's review the code:
 - Our use of Google Places autocomplete should be pretty familiar by now. Notice, however, that we only pass in 2 options to the `query` property, which allows us to search actual addresses, rather than just cities.
-- This is the first time we are using the `<Slider/>` component. This is a nice way to get values that are along some sort of numerical range. The API for `Slider` is very simple and straightforward.
+- This is the first time we are using the **Slider** component. This is a nice way to get values that are along some sort of numerical range. The API for **Slider** is very simple and straightforward.
 
-After the user fills out this part of the form and presses "Next", they reach a blank screen. That's because we haven't yet defined the second part of event creation -- 'CreateEventConfirmation.'
+After the user fills out this part of the form and presses "Next", they reach a blank screen. That's because we haven't yet defined the second part of event creation -- **CreateEventConfirmation**.
 
 ![create event](/images/chapter-9/create-event-2.png)
 
@@ -474,6 +475,7 @@ We should direct to a simple page now after the first part of the form. Now it's
 Now let's move on to fleshing out the second part of our form. First we'll have to **npm install** the package `react-native-picker`. Once that is done we can fill in our content.
 
 ```javascript
+/* application/components/groups/CreateEventConfirmation.js */
 import React, { Component, PropTypes } from 'react';
 import {
   ScrollView,
@@ -741,8 +743,6 @@ class CreateEventConfirmation extends Component{
 }
 
 export default CreateEventConfirmation;
-
-
 ```
 
 This has a lot to go over. Let's go step by step.
