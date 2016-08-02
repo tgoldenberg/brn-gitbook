@@ -440,7 +440,34 @@ rnpm link
 ```
 
 You may need to shut down the Node processes and restart the app to avoid any errors from the new packages.
+```javascript
+/* application/components/shared/TechnologyList.js */
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { globals, formStyles } from '../../styles';
+const styles = formStyles;
+const TechnologyList = ({ technologies, handlePress }) => {
+  return (
+    <View style={styles.textContainer}>
+      {technologies.map((technology, idx) => {
+        return (
+          <TouchableOpacity
+            key={idx}
+            onPress={() => handlePress(idx)}
+            style={styles.technology}
+          >
+            <Text style={[styles.h6, globals.primaryText]}>
+              {technology}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+};
 
+export default TechnologyList;
+```
 ```javascript
 /* application/components/accounts/RegisterConfirm.js */
 
@@ -465,6 +492,7 @@ import BackButton from '../shared/BackButton';
 import { DEV, API } from '../../config';
 import { Technologies, ImageOptions, DefaultAvatar } from '../../fixtures';
 import { formStyles, globals, selectStyles, optionTextStyles, overlayStyles } from '../../styles';
+import TechnologyList from '../shared/TechnologyList';
 
 const styles = formStyles;
 const { 
@@ -472,28 +500,6 @@ const {
   height: deviceHeight 
 } = Dimensions.get('window');
 
-/* selected technologies by user */
-const TechnologyList = ({ technologies, handlePress }) => {
-  return (
-    <View style={styles.textContainer}>
-      {technologies.map((technology, idx) => {
-        return (
-          <TouchableOpacity
-            key={idx}
-            onPress={() => handlePress(idx)}
-            style={styles.technology}
-          >
-            <Text style={[styles.h6, globals.primaryText]}>
-              {technology}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
-    </View>
-  );
-};
-
-/* main component */
 class RegisterConfirm extends Component{
   constructor(){
     super();
