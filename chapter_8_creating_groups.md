@@ -1258,12 +1258,14 @@ function showJoinButton(users, currentUser){
 }
 
 class EventList extends Component{
-  return (
-    render(){
+  render{
+    return (
       <View>
-        {this.props.events.map((event, idx) => (
-          <Text>{event.name}</Text>
-        ))}
+        {this.props.events.map((event, idx) => {
+          return (
+            <Text>{event.name}</Text>
+          );
+        })}
       </View>
     );
   }
