@@ -1289,7 +1289,7 @@ class JoinButton extends Component{
       </View>
     )
   }
-}
+};
 
 export const GroupMembers = ({ users, members, handlePress }) => {
   return (
@@ -1309,7 +1309,7 @@ export const GroupMembers = ({ users, members, handlePress }) => {
       })}
     </View>
   );
-}
+};
 
 class Group extends Component{
   constructor(){
