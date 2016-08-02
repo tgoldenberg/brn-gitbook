@@ -1,10 +1,10 @@
 # Chapter 10: Swipe Left, Swipe Right
 
 
-Now when a user completes the new event form and submits, they should be directed back to the `Group` page. From here, we will want to fetch the events related to that group on `componentDidMount` and then render them in the `events` section. Let's modify `Group.js`.
+Now when a user completes the new event form and submits, they should be directed back to the **Group** page. From here, we will want to fetch the events related to that group on `componentDidMount` and then render them in the `events` section. Let's modify **Group.js**.
 
 ```javascript
-application/components/groups/Group.js
+/* application/components/groups/Group.js */
 
 class EventList extends Component{
   render(){
@@ -18,7 +18,7 @@ class EventList extends Component{
   }
 };
 
-...
+/* ... */
 
 class Group extends Component{
   constructor(){
