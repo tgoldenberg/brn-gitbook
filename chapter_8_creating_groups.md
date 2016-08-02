@@ -1115,16 +1115,17 @@ class CreateGroupConfirmation extends Component{
 export default CreateGroupConfirmation;
 
 ```
-![create group confirmation](/images/chapter-8/create-group-confirmation.png)
+
+![meteor](/images/chapter-8/meteor-2.png)
 
 Let's review:
-- Just as in our registration component, we use the `react-native-selectme` package to select relevant technologies.
-- Although we render the image differently, our use of the `react-native-image-picker` package is exactly the same as in user registration.
+- Just as in our registration component, we use the **react-native-selectme** package to select relevant technologies.
+- Although we render the image differently, our use of the **react-native-image-picker** package is exactly the same as in user registration.
 
 Now all we have to do is pass all of our data to the `handleSubmit` function and create a new group. We should also watch for errors and alert the user of any. Let’s fill in that function. We'll also create a function `setErrors` to check for errors.
 
 ```javascript
-application/components/groups/CreateGroupConfirmation.js
+/* application/components/groups/CreateGroupConfirmation.js */
 
 function setErrorMsg({ location, name }){
   if (! location ){
@@ -1191,14 +1192,14 @@ class CreateGroupConfirm extends Component{
 Notice that we invoke a function `updateGroups` after the successful submission. This is because we want to update the `groups` array that we have in our parent `GroupsView` component. We then use `navigator` to navigate back to the groups screen. Let’s make sure we create the function `updateGroups` and that we add a new route `Group` with a corresponding component.
 
 ```javascript
-application/components/groups/GroupsView.js
-…
+/* application/components/groups/GroupsView.js */
+/* ... */
 import Group from './Group';
-…
+/* ... */
 constructor(){
   super();
   this.addGroup = this.addGroup.bind(this);
-…
+/* ... */
 addGroup(group){
   this.setState({
     groups: [
@@ -1206,7 +1207,7 @@ addGroup(group){
     ]
   })
 }
-…
+/* ... */
 case 'CreateGroupConfirmation':
   return (
     <CreateGroupConfirmation 
@@ -1228,9 +1229,11 @@ case 'Group':
 
 Now if we fill out the form with a new group, we should see it in our groups screen.
 
+![meteor](/images/chapter-8/meteor-5.png)
 
-![create group example](/images/chapter-8/create-group-example-2.png)
-![create group example](/images/chapter-8/create-group-example-1.png)
+![meteor](/images/chapter-8/meteor-4.png)
+
+
 
 Let's make a commit here.
 
@@ -1401,10 +1404,9 @@ class Group extends Component{
 };
 
 export default Group;
-
-
 ```
-![group](/images/chapter-8/new-group-view-3.png)
+
+![meteor](/images/chapter-8/meteor-finished-1.png)
 
 Let's review the new code:
 - In our `componentDidMount` lifecycle method, we fetch the users related to the group. We use the mongodb **$in** operator for this, fetching all the users that have an id in the groups members array. We also utilize the `$limit` option, to keep the users being fetched to 10 in number.
