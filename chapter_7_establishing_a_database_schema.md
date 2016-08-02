@@ -543,13 +543,15 @@ class Conversation extends Component{
     return(
       <View style={globals.flexContainer}>
         <InvertibleScrollView inverted={true}>
-          {this.state.messages.map((msg, idx) => (
-            <Message
-              key={idx}
-              message={msg}
-              user={isEqual(msg.senderId, currentUser.id) ? currentUser : user}
-            />
-          ))}
+          {this.state.messages.map((msg, idx) => {
+            return (
+              <Message
+                key={idx}
+                message={msg}
+                user={isEqual(msg.senderId, currentUser.id) ? currentUser : user}
+              />
+            );
+          })}
         </InvertibleScrollView>
         <View style={styles.navContainer}>
           <NavigationBar
