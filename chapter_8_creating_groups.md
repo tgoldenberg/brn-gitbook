@@ -1279,12 +1279,12 @@ class JoinButton extends Component{
       <View style={[styles.joinButtonContainer, globals.mv1]}>
         <TouchableOpacity onPress={() => addUserToGroup(group, currentUser)} style={styles.joinButton}>
           <Text style={styles.joinButtonText}>{ hasJoined ? 'Joined' : 'Join'}</Text>
-            <Icon
-              name={hasJoined ? "ios-checkmark" : "ios-add"}
-              size={30}
-              color='white'
-              style={styles.joinIcon}
-            />
+          <Icon
+            name={hasJoined ? "ios-checkmark" : "ios-add"}
+            size={30}
+            color='white'
+            style={styles.joinIcon}
+          />
         </TouchableOpacity>
       </View>
     )
