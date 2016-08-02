@@ -1412,7 +1412,7 @@ Let's review the new code:
 - In our `componentDidMount` lifecycle method, we fetch the users related to the group. We use the mongodb **$in** operator for this, fetching all the users that have an id in the groups members array. We also utilize the `$limit` option, to keep the users being fetched to 10 in number.
 - We pass our fetched users to a **GroupMembers** component which renders each one at the bottom of the screen. Currently, these are pressable but lead to a blank screen. Later, we will have them direct to a user profile screen.
 - We also have an events section that isn't being used currently. We will need implement functionality to create and render events before fleshing this out further.
-- Also notice that if the user isn't a member, the **join** button will appear, but it throws an error when pressed. This is because we haven't defined an `addUserToGroup` method in our top-level `GroupsView` component.
+- Also notice that if the user isn't a member, the **join** button will appear, but it throws an error when pressed. This is because we haven't defined an `addUserToGroup` method in our top-level **GroupsView** component.
 
 Let's remember to make a commit at this point.
 
