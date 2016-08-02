@@ -1,10 +1,11 @@
 # Chapter 12: Creating a Calendar View
 
-Now that we've successfully added notifications and sculpted our `ActivityView`, there's pretty much one view left to really build out, which is our `CalendarView`. We want to show a list of upcoming events, both those that our user is attending and those that they are not, in chronological order. We also want to have "sticky" headers for each day that we show  events. Let's see what we can do.
+Now that we've successfully added notifications and sculpted our **ActivityView**, there's pretty much one view left to really build out, which is our **CalendarView**. We want to show a list of upcoming events, both those that our user is attending and those that they are not, in chronological order. We also want to have "sticky" headers for each day that we show  events. Let's see what we can do.
 
 First let's set up the routing for our Calendar view.
 
 ```javascript
+/* application/components/calendar/CalendarView.js */
 import React, { Component } from 'react';
 import { Navigator } from 'react-native';
 
@@ -94,17 +95,28 @@ export default CalendarView;
 
 ```
 
-Then let's flesh out `Calendar.js`.
+Then let's flesh out **Calendar.js**.
 
 
 ```javascript
+/* application/components/calendar/Calendar.js */
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import React, { Component } from 'react';
-import { View, Text, ListView, TouchableOpacity } from 'react-native';
-import { uniq, flatten, find } from 'underscore';
-import { getSectionData, getRowData, sectionHeaderHasChanged, rowHasChanged } from '../../utilities';
+import {
+  View,
+  Text,
+  ListView,
+  TouchableOpacity
+} from 'react-native';
+import { uniq, flatten, find, contains } from 'underscore';
+import {
+  getSectionData,
+  getRowData,
+  sectionHeaderHasChanged,
+  rowHasChanged
+} from '../../utilities';
 import Loading from '../shared/Loading';
 import { globals, calendarStyles } from '../../styles';
 
@@ -164,19 +176,33 @@ class EventList extends Component{
     })
   }
   renderRow(event, sectionID, rowID){
-    let isGoing = find(event.going, (id) => id === this.props.currentUser.id) != 'undefined';
+    let isGoing = contains(event.going, this.props.currentUser.id);
     return (
-      <TouchableOpacity style={styles.row} onPress={() => this.visitEvent(event)}>
+      <TouchableOpacity
+        style={styles.row}
+        onPress={() => this.visitEvent(event)}
+      >
         <View style={globals.flex}>
           <View style={styles.textContainer}>
-            <Text style={styles.h4}>{event.name}</Text>
-            <Text style={styles.h5}> {event.going.length} going</Text>
+            <Text style={styles.h4}>
+              {event.name}
+            </Text>
+            <Text style={styles.h5}>
+               {event.going.length} going
+             </Text>
             { isGoing && <Text style={[globals.primaryText, styles.h5]}><Icon name="ios-checkmark" color={Colors.brandSuccess}/> Yes</Text> }
           </View>
         </View>
         <View style={styles.textContainer}>
-          <Text style={[styles.dateText, globals.mh1]}>{moment(event.start).format('h:mm a')}</Text>
-          <Icon style={styles.arrow} name="ios-arrow-forward" size={25} color={Colors.bodyTextLight}/>
+          <Text style={[styles.dateText, globals.mh1]}>
+            {moment(event.start).format('h:mm a')}
+          </Text>
+          <Icon
+            style={styles.arrow}
+            name="ios-arrow-forward"
+            size={25}
+            color={Colors.bodyTextLight}
+          />
         </View>
       </TouchableOpacity>
     )
@@ -184,7 +210,9 @@ class EventList extends Component{
   renderSectionHeader(sectionData, sectionID){
     return (
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionHeaderText}>{moment(sectionData).format('dddd MMM Do')}</Text>
+        <Text style={styles.sectionHeaderText}>
+          {moment(sectionData).format('dddd MMM Do')}
+        </Text>
       </View>
     )
   }
@@ -220,15 +248,17 @@ class Calendar extends Component{
 
 export default Calendar;
 
+
 ```
 
 Let’s go over a few things. 
 
-- Notice how in order to get proper section headers, we had to modify our `events` data. First we create an array of unique dates, which become our sections, and then for each of these sections, we create a rowID for each event that takes place on that date. We then use the `ListView` component to render them. As we are using sections, we define our event rows and section headers through the `renderRow` and `renderSectionHeaders` properties of the `ListView`.
+- Notice how in order to get proper section headers, we had to modify our **events** data. First we create an array of unique dates, which become our sections, and then for each of these sections, we create a rowID for each event that takes place on that date. We then use the **ListView** component to render them. As we are using sections, we define our event rows and section headers through the `renderRow` and `renderSectionHeaders` properties of the **ListView**.
 - When querying for our calendar events, we first fetch the groups that our user belongs to. Then we query the upcoming events for those groups. 
-- We also refactor some relevant functions that we use in our `ListView`, for example, `getSectionData`, etc. Let's place those in `application/utilities/index.js`
+- We also refactor some relevant functions that we use in our **ListView**, for example, `getSectionData`, etc. Let's place those in **application/utilities/index.js**.
 
 ```javascript
+/* application/utilities/index.js */
 export function rowHasChanged(r1, r2) {
   return r1 != r2;
 };
@@ -254,16 +284,16 @@ Let's make a commit there.
 
 ### Fixing the Profile View
 
-Now that we have a functional `CalendarView`, we can focus our attention on some of the other areas of the app. What about our `ProfileView`? We are currently rendering the user information, but don’t have a way for the user to edit that information. This is a good opportunity to re-use some of the interface from the `Register` and `RegisterConfirmation` components. We should also start to think about how the user experience will be on a mobile device. We can use the `react-native-keyboard-aware-scroll-view` package to make sure that the focused input is above the device’s keyboard. You can always check this with the `cmd + sft + k` command, which will toggle the native keyboard view on the iOS simulator.
+Now that we have a functional **CalendarView**, we can focus our attention on some of the other areas of the app. What about our **ProfileView**? We are currently rendering the user information, but don’t have a way for the user to edit that information. This is a good opportunity to re-use some of the interface from the **Register** and **RegisterConfirmation** components. We should also start to think about how the user experience will be on a mobile device. We can use the **react-native-keyboard-aware-scroll-view** package to make sure that the focused input is above the device’s keyboard. You can always check this with the `cmd + sft + k` command, which will toggle the native keyboard view on the iOS simulator.
 
-Let’s go to parts of our app that didn’t consider this before and add the component `KeyboardAwareScrollView` in place of our regular `ScrollView`. 
+Let’s go to parts of our app that didn’t consider this before and add the component **KeyboardAwareScrollView** in place of our regular **ScrollView**. 
 
-Then our `Register.js` file will look like this:
+Then our **Register.js** file will look like this:
 
 ```javascript
-…
+/* ... */
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-…
+/* ... */
 return (
   <View style={styles.container}>
     <NavigationBar
@@ -275,13 +305,14 @@ return (
       <TouchableOpacity onPress={()=> navigator.push({ name: 'Login' })}>
 ```
 
-We can also add this to `CreateEvent.js`, `CreateGroup.js`, and `CreateEventConfirm.js`.
+We can also add this to **CreateEvent.js**, **CreateGroup.js**, and **CreateEventConfirm.js**.
 
 ### Adding to the Profile View
 
-Now that we’ve addressed some user experience issues in our app, what about the Profile View? So far, the only action a user can take is `logout`. Let’s add the ability to change your avatar, technologies, and basic information. First let’s change our `ProfileView.js` component to be a navigation component with three routes:
+Now that we’ve addressed some user experience issues in our app, what about the Profile View? So far, the only action a user can take is `logout`. Let’s add the ability to change your avatar, technologies, and basic information. First let’s change our **ProfileView.js** component to be a navigation component with three routes:
 
 ```javascript
+/* application/components/profile/ProfileView.js */
 import React, { Component } from 'react';
 import { Navigator } from 'react-native';
 
@@ -336,13 +367,18 @@ export default ProfileView;
 And then we can render the components `UserProfile`, `UserSettings`, and `UserTechnologies`, reusing parts of our registration form.
 
 ```javascript
-application/components/profile/UserProfile.js
-
+/* application/components/profile/UserProfile.js */
 import Icon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-picker';
 import NavigationBar from 'react-native-navbar';
 import React, { Component } from 'react';
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { 
+  Image, 
+  ScrollView, 
+  Text, 
+  TouchableOpacity, 
+  View 
+} from 'react-native';
 
 import Colors from '../../styles/colors';
 import { ImageOptions, Headers } from '../../fixtures';
@@ -374,39 +410,71 @@ class UserProfile extends Component{
     });
   }
   visitTechnologies(){
-    this.props.navigator.push({ name: 'UserTechnologies', currentUser: this.props.currentUser });
+    this.props.navigator.push({ 
+      name: 'UserTechnologies', 
+      currentUser: this.props.currentUser 
+    });
   }
   visitSettings(){
-    this.props.navigator.push({ name: 'UserSettings', currentUser: this.props.currentUser });
+    this.props.navigator.push({ 
+      name: 'UserSettings', 
+      currentUser: this.props.currentUser 
+    });
   }
   render() {
     let { currentUser } = this.props;
+    let titleConfig = { title: 'Profile', tintColor: 'white' };
     return (
       <View style={[globals.flexContainer, globals.inactive]}>
         <NavigationBar
-          title={{ title: 'Profile', tintColor: 'white' }}
+          title={titleConfig}
           tintColor={Colors.brandPrimary}
         />
         <ScrollView style={globals.flex}>
           <View style={styles.flexRow}>
-            <TouchableOpacity style={[globals.flexCenter, globals.pv1]} onPress={this.showImagePicker}>
-              <Image source={{uri: currentUser.avatar}} style={styles.avatar}/>
+            <TouchableOpacity 
+              style={[globals.flexCenter, globals.pv1]} 
+              onPress={this.showImagePicker}
+            >
+              <Image 
+                source={{uri: currentUser.avatar}} 
+                style={styles.avatar}
+              />
             </TouchableOpacity>
             <View style={styles.infoContainer}>
-              <Text style={globals.h4}>{currentUser.firstName} {currentUser.lastName}</Text>
-              <Text style={globals.h5}>{currentUser.location.city.long_name}, {currentUser.location.state.short_name}</Text>
+              <Text style={globals.h4}>
+                {currentUser.firstName} {currentUser.lastName}
+              </Text>
+              <Text style={globals.h5}>
+                {currentUser.location.city.long_name}, {currentUser.location.state.short_name}
+              </Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.formButton} onPress={this.visitTechnologies}>
-            <Text style={globals.h4}>My Technologies</Text>
+          <TouchableOpacity 
+            style={styles.formButton} 
+            onPress={this.visitTechnologies}
+          >
+            <Text style={globals.h4}>
+              My Technologies
+            </Text>
             <Icon name='ios-arrow-forward' size={30} color='#ccc' />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.formButton} onPress={this.visitSettings}>
-            <Text style={globals.h4}>Settings</Text>
+          <TouchableOpacity 
+            style={styles.formButton} 
+            onPress={this.visitSettings}
+          >
+            <Text style={globals.h4}>
+              Settings
+            </Text>
             <Icon name='ios-arrow-forward' size={30} color='#ccc' />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.logoutButton} onPress={this.props.logout}>
-            <Text style={styles.logoutText}>Logout</Text>
+          <TouchableOpacity 
+            style={styles.logoutButton} 
+            onPress={this.props.logout}
+          >
+            <Text style={styles.logoutText}>
+              Logout
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -415,16 +483,20 @@ class UserProfile extends Component{
 };
 
 export default UserProfile;
-
 ```
 
 ```javascript
-application/components/profile/UserSettings.js
-
+/* application/components/profile/UserSettings.js */
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import React, { Component } from 'react';
-import { Text, View, TextInput, TouchableOpacity, Dimensions } from 'react-native';
+import { 
+  Text, 
+  View, 
+  TextInput, 
+  TouchableOpacity, 
+  Dimensions 
+} from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { find } from 'underscore';
@@ -576,8 +648,13 @@ class UserSettings extends Component{
             />
          </View>
         </KeyboardAwareScrollView>
-        <TouchableOpacity style={[styles.submitButton, styles.buttonMargin]} onPress={this.saveSettings}>
-          <Text style={globals.largeButtonText}>SAVE</Text>
+        <TouchableOpacity 
+          style={[styles.submitButton, styles.buttonMargin]} 
+          onPress={this.saveSettings}
+        >
+          <Text style={globals.largeButtonText}>
+            SAVE
+          </Text>
         </TouchableOpacity>
       </View>
     )
@@ -586,16 +663,24 @@ class UserSettings extends Component{
 
 export default UserSettings;
 
+
 ```
 
 ```javascript
-application/components/profile/UserSettings.js
+/* application/components/profile/UserSettings.js */
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import Dropdown, { Select, Option, OptionList } from 'react-native-selectme';
 import React, { Component } from 'react';
-import { Text, View, ScrollView, TextInput, TouchableOpacity, Dimensions } from 'react-native';
+import { 
+  Text, 
+  View, 
+  ScrollView, 
+  TextInput, 
+  TouchableOpacity, 
+  Dimensions 
+} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { uniq } from 'underscore';
 
@@ -603,7 +688,13 @@ import Colors from '../../styles/colors';
 import BackButton from '../shared/BackButton';
 import {DEV, API} from '../../config';
 import { Technologies, Headers } from '../../fixtures';
-import { globals, formStyles, selectStyles, optionTextStyles, overlayStyles } from '../../styles';
+import { 
+  globals, 
+  formStyles, 
+  selectStyles, 
+  optionTextStyles, 
+  overlayStyles 
+} from '../../styles';
 import { TechnologyList } from '../accounts/RegisterConfirmation';
 
 const styles = formStyles;
@@ -661,9 +752,14 @@ class UserTechnologies extends Component{
           tintColor={Colors.brandPrimary}
           leftButton={<BackButton handlePress={this.goBack}/>}
         />
-        <KeyboardAwareScrollView style={[styles.formContainer, globals.mt1]} contentInset={{bottom: 49}}>
+        <KeyboardAwareScrollView 
+          style={[styles.formContainer, globals.mt1]} 
+          contentInset={{bottom: 49}}
+        >
           <View style={globals.flex}>
-            <Text style={styles.h4}>{"Select technologies"}</Text>
+            <Text style={styles.h4}>
+              {"Select technologies"}
+            </Text>
             <Select
               width={deviceWidth}
               height={55}
@@ -678,12 +774,23 @@ class UserTechnologies extends Component{
                 </Option>
               ))}
             </Select>
-            <OptionList ref={(el) => this.options = el } overlayStyles={overlayStyles}/>
+            <OptionList 
+              ref={(el) => this.options = el } 
+              overlayStyles={overlayStyles}
+            />
           </View>
-          <TechnologyList technologies={technologies} handlePress={this.removeTechnology}/>
+          <TechnologyList 
+            technologies={technologies} 
+            handlePress={this.removeTechnology}
+          />
         </KeyboardAwareScrollView>
-        <TouchableOpacity style={[styles.submitButton, styles.buttonMargin]} onPress={this.saveSettings}>
-          <Text style={globals.largeButtonText}>SAVE</Text>
+        <TouchableOpacity 
+          style={[styles.submitButton, styles.buttonMargin]} 
+          onPress={this.saveSettings}
+        >
+          <Text style={globals.largeButtonText}>
+            SAVE
+          </Text>
         </TouchableOpacity>
       </View>
     )
@@ -695,11 +802,13 @@ export default UserTechnologies;
 ```
 
 Let's review:
-- In `ProfileView`, we establish the different routes we will be using and pass on `this.props` to each child component. 
-- In `UserProfile`, we offer the option to update the user avatar through our `ImagePicker` component. We also give the option to route to `UserTechnologies` or `UserSettings`
-- `UserSettings` is basically reusing the same elements of our `Register` component from user accounts. The save button updates our user through a database call and updates the component state of our top-level `Navigator` component. Make sure on `index.ios.js` that the `updateUser` is passed to `Dashboard`:
+- In **ProfileView**, we establish the different routes we will be using and pass on `this.props` to each child component. 
+- In **UserProfile**, we offer the option to update the user avatar through our **ImagePicker** component. We also give the option to route to **UserTechnologies** or **UserSettings**
+- **UserSettings** is basically reusing the same elements of our **Register** component from user accounts. The save button updates our user through a database call and updates the component state of our top-level **Navigator** component. Make sure on **index.ios.js** that the `updateUser` is passed to **Dashboard**:
  
 ```javascript
+/* index.ios.js */
+/* ... */
 case 'Dashboard':
   return (
     <Dashboard
@@ -709,13 +818,19 @@ case 'Dashboard':
       user={this.state.user}
     />
 );
+/* ... */
 ```
-
+```javascript
+/* application/components/Dashboard.js */
+/* ... */
+  <ProfileView currentUser={user} logout={this.logout} updateUser={this.props.updateUser}/>
+/* ... */
+```
 Notice how we were able to re-use a lot of styles / parts of our previous components. Optimizing this makes development faster and more enjoyable. Always remember the concept of DRY, don't repeat yourself. 
 
 Let's commit here.
 
-[Commit 26](https://github.com/buildreactnative/assemblies-tutorial/tree/c7ba88dca60c3df08e03e178e7fba64ed8eb23d4) - "Render Profile components"
+[Commit](https://github.com/buildreactnative/assemblies-tutorial/tree/c7ba88dca60c3df08e03e178e7fba64ed8eb23d4) - "Render Profile components"
 
 ![profile](/images/chapter-12/profile-1.png)
 ![profile](/images/chapter-12/profile-2.png)
