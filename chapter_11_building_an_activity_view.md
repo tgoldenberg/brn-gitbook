@@ -683,6 +683,7 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { uniq } from 'underscore';
+import TechnologyList from '../shared/TechnologyList';
 
 import Colors from '../../styles/colors';
 import BackButton from '../shared/BackButton';
@@ -695,7 +696,6 @@ import {
   optionTextStyles, 
   overlayStyles 
 } from '../../styles';
-import { TechnologyList } from '../accounts/RegisterConfirmation';
 
 const styles = formStyles;
 const { height: deviceHeight, width: deviceWidth } = Dimensions.get('window');
