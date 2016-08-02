@@ -473,21 +473,25 @@ const {
 } = Dimensions.get('window');
 
 /* selected technologies by user */
-const TechnologyList = ({ technologies, handlePress }) => (
-  <View style={styles.textContainer}>
-    {technologies.map((technology, idx) => (
-      <TouchableOpacity
-        key={idx}
-        onPress={() => handlePress(idx)}
-        style={styles.technology}
-      >
-        <Text style={[styles.h6, globals.primaryText]}>
-          {technology}
-        </Text>
-      </TouchableOpacity>
-    ))}
-  </View>
-);
+const TechnologyList = ({ technologies, handlePress }) => {
+  return (
+    <View style={styles.textContainer}>
+      {technologies.map((technology, idx) => {
+        return (
+          <TouchableOpacity
+            key={idx}
+            onPress={() => handlePress(idx)}
+            style={styles.technology}
+          >
+            <Text style={[styles.h6, globals.primaryText]}>
+              {technology}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+};
 
 /* main component */
 class RegisterConfirm extends Component{
