@@ -544,11 +544,12 @@ class Conversation extends Component{
       <View style={globals.flexContainer}>
         <InvertibleScrollView inverted={true}>
           {this.state.messages.map((msg, idx) => {
+            let user = isEqual(msg.senderId, currentUser.id) ? currentUser : user;
             return (
               <Message
                 key={idx}
                 message={msg}
-                user={isEqual(msg.senderId, currentUser.id) ? currentUser : user}
+                user={user}
               />
             );
           })}
