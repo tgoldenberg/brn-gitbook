@@ -990,19 +990,10 @@ import { API, DEV } from '../../config';
 import { Technologies, ImageOptions, DefaultAvatar, Headers } from '../../fixtures';
 import { SolidColors, BackgroundImage } from '../../fixtures';
 import { globals, formStyles, selectStyles, optionTextStyles, overlayStyles } from '../../styles';
+import TechnologyList from '../shared/TechnologyList';
+
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-
 const styles = formStyles;
-
-const TechnologyList = ({ technologies, handlePress }) => (
-  <View style={styles.textContainer}>
-    {technologies.map((technology, idx) => (
-      <TouchableOpacity key={idx} onPress={() => handlePress(idx)} style={styles.technology}>
-        <Text style={[styles.h6, globals.primaryText]}>{technology}</Text>
-      </TouchableOpacity>
-    ))}
-  </View>
-)
 
 class CreateGroupConfirmation extends Component{
   constructor(){
