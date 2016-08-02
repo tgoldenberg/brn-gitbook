@@ -280,7 +280,7 @@ export default GroupsView;
 We want to start off by rendering some groups. But we haven’t created any. How can we get around this? We can create some data, of course! Let’s create some groups in our Deployd dashboard **localhost:2403/dashboard**, and then render them in our groups view.
 
 In the Deployd dashboard, add the following groups, replacing the **USER_ID** with your personal user **id**.
-```
+```json
 name: “React Native NYC”,
 description: “A meetup for people interested in learning React Native, the mobile development library created by Facebook.”,
 createdAt: 1469976754482,
