@@ -22,7 +22,9 @@ import {
 /* ... */
 fetchUserInfo(sid){
   AsyncStorage.setItem('sid', sid);
-  fetch(`${API}/users/me`, { headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`}) })
+  fetch(`${API}/users/me`, { 
+    headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`}) 
+  })
   .then(response => response.json())
   .then(user => this.updateUserInfo(user))
   .catch(err => this.connectionError())
