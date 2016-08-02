@@ -154,7 +154,7 @@ Now, we still have to implement this in our other routes. Simply import `Profile
 ```javascript
 import Conversation from '../messages/Conversation';
 import Profile from '../profile/Profile';
-...
+/* ... */
 case 'Profile':
   return (
     <Profile
@@ -171,12 +171,12 @@ case 'Conversation':
       navigator={navigator}
     />
 );
-...
+/* ... */
 ```
 
 And that's it! We completed the app! Make a commit here and play around with the different features.
 
-[Commit 26](https://github.com/buildreactnative/assemblies-tutorial/tree/7c8f56213c64e2490b6de7bf3deed0863197f7ee) - "Add Profile view in other tabs"
+[Commit](https://github.com/buildreactnative/assemblies-tutorial/tree/7c8f56213c64e2490b6de7bf3deed0863197f7ee) - "Add Profile view in other tabs"
 
 ### Refactoring and Preparation for Deployment
 
