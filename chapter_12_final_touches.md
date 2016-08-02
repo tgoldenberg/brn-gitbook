@@ -11,9 +11,10 @@ Let's review what we've accomplished before and what our app can do.
 
 To finish up, let's make a user's avatar clickable, that leads to a `Profile` component. First, which tabs have user avatars? Well, any tab that has an event or group also has a list of user avatars. So we should create a component `Profile` and route to it in our `ActivityView`, `CalendarView`, `MessagesView`, and `GroupsView`.
 
-First let's design our `Profile` component in `application/profile/Profile.js`.
+First let's design our `Profile` component in **application/components/profile/Profile.js**.
 
 ```javascript
+/* application/components/profile/Profile.js */
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import React, { Component } from 'react';
@@ -128,11 +129,10 @@ export default Profile;
 And then, to start, let's render this in our `ActivityView`.
 
 ```javascript
-application/components/activity/ActivityView.js
-
-...
+/* application/components/activity/ActivityView.js */
+/* ... */
 import Profile from '../profile/Profile';
-...
+/* ... */
 case 'Profile':
   return (
     <Profile
@@ -141,6 +141,7 @@ case 'Profile':
       navigator={navigator}
     />
 );
+/* ... */
 ```
 
 Now when we click on a user avatar, we should be directed to their profile, with the option of sending a message (the `Conversation` route).
