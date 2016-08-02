@@ -649,8 +649,10 @@ class Conversation extends Component{
 
 Now you should be able to create messages on the fly and see the screen update!
 
-![new message](/images/chapter-7/new-message-data-1.png)
 ![new message](/images/chapter-7/new-message-data-2.png)
+
+![new message](/images/chapter-7/new-message-data-1.png)
+
 
 [Commit](https://github.com/buildreactnative/assemblies-tutorial/tree/9fd01c203de9cb0b336d477aaf1cd1b0ed6af516) - "Create Conversation component"
 
