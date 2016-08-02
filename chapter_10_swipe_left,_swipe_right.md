@@ -33,6 +33,7 @@ class Group extends Component{
       users     : [],
     }
   }
+  /* ... */
   componentDidMount(){
     this._loadEvents();
   }
@@ -49,23 +50,27 @@ class Group extends Component{
     .catch(err => {})
     .done();
   }
-...
+/* ... */
     <Text style={styles.h2}>Events</Text>
     <EventList 
       {...this.props}
       {...this.state}
     />
-...
+/* ... */
 ```
 
-We should now see the names of the events that were created in a simple `<Text/>` component.
+We should now see the names of the events that were created in a simple **Text** component.
 
 ![group](/images/chapter-9/group-with-event-1.png)
 
 Let's spruce up our `EventList` component a bit.
 
 ```javascript
-application/components/groups/Group.js
+/* application/components/groups/Group.js */
+
+/* ... */ 
+import { rowHasChanged } from '../../utilities';
+/* ... */
 class EventList extends Component{
   constructor(){
     super();
@@ -76,27 +81,47 @@ class EventList extends Component{
     let isGoing = find(event.going, (id) => isEqual(id, currentUser.id));
     return (
       <View style={styles.eventContainer}>
-        <TouchableOpacity style={globals.flex} onPress={() => this.props.visitEvent(event)}>
-          <Text style={globals.h5}>{event.name}</Text>
-          <Text style={styles.h4}>{moment(event.start).format('dddd, MMM Do')}</Text>
-          <Text style={styles.h4}>{event.going.length} Going</Text>
+        <TouchableOpacity
+          style={globals.flex}
+          onPress={() => this.props.visitEvent(event)}
+        >
+          <Text style={globals.h5}>
+            {event.name}
+          </Text>
+          <Text style={styles.h4}>
+            {moment(event.start).format('dddd, MMM Do')}
+          </Text>
+          <Text style={styles.h4}>
+            {event.going.length} Going
+          </Text>
         </TouchableOpacity>
         <View style={[globals.flexRow, globals.pa1]}>
           <Text style={[globals.primaryText, styles.h4, globals.ph1]}>
             {isGoing ? "You're Going" : "Want to go?"}
           </Text>
-          <Icon name={ isGoing ? "ios-checkmark" : "ios-add" } size={30} color={Colors.brandPrimary} />
+          <Icon
+            name={ isGoing ? "ios-checkmark" : "ios-add" }
+            size={30}
+            color={Colors.brandPrimary}
+          />
         </View>
       </View>
     )
   }
   dataSource(){
     return (
-      new ListView.DataSource({ rowHasChanged }).cloneWithRows(this.props.events)
+      new ListView.DataSource({ rowHasChanged })
+        .cloneWithRows(this.props.events)
     );
   }
   render(){
-    if (! this.props.events.length ){ return <Text style={[globals.h5, globals.mh2]}>No events scheduled</Text>}
+    if (! this.props.events.length ){ 
+      return (
+        <Text style={[globals.h5, globals.mh2]}>
+          No events scheduled
+        </Text>
+      )
+    }
     return (
       <ListView
         enableEmptySections={true}
@@ -108,32 +133,33 @@ class EventList extends Component{
     )
   }
 };
-...
+
+/* ... */
 ```
 
 Let's review:
-- We are using the `ListView` component to render our events. We initialize a `dataSource` with the events that are passed as props. We then check to see if the user is already attending the event, and if so, we show a success message. If not, we show a "want to join?" message. 
+- We are using the **ListView** component to render our events. We initialize a **dataSource** with the events that are passed as props. We then check to see if the user is already attending the event, and if so, we show a success message. If not, we show a "want to join?" message. 
 
 Now is a good time for a commit.
 
-[Commit 21](https://github.com/buildreactnative/assemblies-tutorial/tree/f84c739f60c28a5d4355a4e7193755da1354af23) - "Render created events on Group screen"
+[Commit](https://github.com/buildreactnative/assemblies-tutorial/tree/f84c739f60c28a5d4355a4e7193755da1354af23) - "Render created events on Group screen"
 
 ![group](/images/chapter-9/group-with-event-2.png)
 
 
 ## Joining an event
 
-Once we have created an event, we want our users to be able to RSVP for them, or cancel their reservation. Now is a good opportunity to use a swipe-to-join functionality. When our user swipes left on the event, we want to show them the option to either join or leave the event. We can use the package `react-native-swipeout` for this. Add this line to your `package.json` file and then `npm install`.
+Once we have created an event, we want our users to be able to RSVP for them, or cancel their reservation. Now is a good opportunity to use a swipe-to-join functionality. When our user swipes left on the event, we want to show them the option to either join or leave the event. We can use the package `react-native-swipeout` for this. Add this line to your **package.json** file and then `npm install`.
 
-```
+```json
     "react-native-swipeout": "dancormier/react-native-swipeout#829b7c01ba969cd70509944bc210289b759d48a6",
 ```
 
 ```javascript
-application/components/groups/Group.js
-...
+/* application/components/groups/Group.js */
+/* ... */
 import Swipeout from 'react-native-swipeout';
-...
+/* ... */
 class EventList extends Component{
   constructor(){
     super();
@@ -161,23 +187,35 @@ class EventList extends Component{
     return (
       <Swipeout backgroundColor='white' rowID={rowID} right={right}>
         <View style={styles.eventContainer}>
-          <TouchableOpacity style={globals.flex} onPress={() => this.props.visitEvent(event)}>
-            <Text style={globals.h5}>{event.name}</Text>
-            <Text style={styles.h4}>{moment(event.start).format('dddd, MMM Do')}</Text>
-            <Text style={styles.h4}>{event.going.length} Going</Text>
+          <TouchableOpacity
+            style={globals.flex}
+            onPress={() => this.props.visitEvent(event)}
+          >
+            <Text style={globals.h5}>
+              {event.name}
+            </Text>
+            <Text style={styles.h4}>
+              {moment(event.start).format('dddd, MMM Do')}
+            </Text>
+            <Text style={styles.h4}>
+              {event.going.length} Going
+            </Text>
           </TouchableOpacity>
           <View style={[globals.flexRow, globals.pa1]}>
             <Text style={[globals.primaryText, styles.h4, globals.ph1]}>
               {isGoing ? "You're Going" : "Want to go?"}
             </Text>
-            <Icon name={ isGoing ? "ios-checkmark" : "ios-add" } size={30} color={Colors.brandPrimary} />
+            <Icon
+              name={ isGoing ? "ios-checkmark" : "ios-add" }
+              size={30}
+              color={Colors.brandPrimary}
+            />
           </View>
         </View>
       </Swipeout>
     )
   }
-...
-
+/* ... */
 ```
 
 Now we should be able to reveal either a "cancel" or "join" button when you swipe left on each event row.
@@ -185,11 +223,12 @@ Now we should be able to reveal either a "cancel" or "join" button when you swip
 ![swipeout](/images/chapter-10/swipeout-1.png)
 
 
-In the `Swipeout` component we are referencing three actions, `this.props.cancelRSVP`, `this.props.visitEvent` and `this.props.joinEvent`. We should now define them in our `Group` component.
+In the **Swipeout** component we are referencing three actions, `this.props.cancelRSVP`, `this.props.visitEvent` and `this.props.joinEvent`. We should now define them in our **Group** component.
 
-Here are the methods we need to add to `Group`:
+Here are the methods we need to add to **Group**:
 
 ```javascript
+/* application/components/groups/Group.js */
 class Group extends Component{
   constructor(){
     super();
@@ -215,23 +254,24 @@ class Group extends Component{
     };
     let index = findIndex(this.state.events, ({ id }) => isEqual(id, event.id));
     let updatedEvents = [
-      ...this.state.events.slice(0, index),
+      ...events.slice(0, index),
       updatedEvent,
-      ...this.state.events.slice(index + 1)
+      ...events.slice(index + 1)
     ];
     this.setState({ events: updatedEvents })
     this.updateEventGoing(event);
   }
   cancelRSVP(event, currentUser){
+    let { events } = this.state;
     let updatedEvent = {
       ...event,
       going: event.going.filter((userId) => ! isEqual(userId, currentUser.id))
     };
     let index = findIndex(this.state.events, ({ id }) => isEqual(id, event.id));
     let updatedEvents = [
-      ...this.state.events.slice(0, index),
+      ...events.slice(0, index),
       updatedEvent,
-      ...this.state.events.slice(index + 1)
+      ...events.slice(index + 1)
     ];
     this.setState({ events: updatedEvents })
     this.updateEventGoing(event);
@@ -245,13 +285,14 @@ class Group extends Component{
     })
   }
   updateEvents(event){
+    let { events } = this.state;
     let idx = findIndex(this.state.events, ({ id }) => isEqual(id, event.id));
-    let events = [
-      ...this.state.events.slice(0, idx),
+    let updatedEvents = [
+      ...events.slice(0, idx),
       event,
-      ...this.state.events.slice(idx + 1)
+      ...events.slice(idx + 1)
     ];
-    this.setState({ events })
+    this.setState({ events: updatedEvents })
   }
   updateEventGoing(event){
     fetch(`${API}/events/${event.id}`, {
@@ -279,9 +320,9 @@ And then we add the methods in our `render` method:
 />
 ```
 Let's go over what we just added:
-- If a user is already RSVP'd to an event, we show the "cancel" button in `Swipeout`, otherwise the "RSVP" button. Each of these methods change the values of `this.state.events`, and then invoke the method `updateEventGoing`. This method then updates the database. 
+- If a user is already RSVP'd to an event, we show the "cancel" button in **Swipeout**, otherwise the "RSVP" button. Each of these methods change the values of **this.state.events**, and then invoke the method `updateEventGoing`. This method then updates the database. 
 - The process of updating the views before updating the database is sometimes called "optimistic rendering." This provides a much smoother and faster user experience.
-- Our `visitEvent` method routes us to the individual event. We haven't yet added this route or the `Event` component so it renders an empty screen.
+- Our `visitEvent` method routes us to the individual event. We haven't yet added this route or the **Event** component so it renders an empty screen.
 
 Take a moment to test out the swipe-left functionality. So that you can change from RSVP to cancel, and back again.
 
@@ -291,17 +332,17 @@ Take a moment to test out the swipe-left functionality. So that you can change f
 
 Let's take a moment to make a commit.
 
-[Commit 23](https://github.com/buildreactnative/assemblies-tutorial/tree/a9f32830bd66902ea75aed7014a5c59aafde179f) - "Add join/leave functionality to events"
+[Commit](https://github.com/buildreactnative/assemblies-tutorial/tree/a9f32830bd66902ea75aed7014a5c59aafde179f) - "Add join/leave functionality to events"
 
 ### Rendering an Event Screen
 
 Now that we can join and leave a group, we should enable our user to view an individual event and its relevant information. Let’s create a new route, ‘Event’, and direct to it when the user presses on the event section..
 
 ```javascript
-application/components/groups/GroupsView.js
-...
+/* application/components/groups/GroupsView.js */
+/* ... */
 import Event from './Event';
-...
+/* ... */
 case 'Event':
   return (
     <Event 
@@ -309,44 +350,48 @@ case 'Event':
       {...route}
       navigator={navigator}
     />
-  )
+);
+/* ... */
 ```
 
 ```javascript
-application/components/groups/Event.js
+/* application/components/groups/Event.js */
+import React, { Component } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  MapView,
+  TouchableOpacity
+} from 'react-native';
+
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import React, { Component } from 'react';
-import { find, uniq } from 'underscore';
-import { View, Text, ScrollView, Image, MapView, TouchableOpacity } from 'react-native';
-
+import Headers from '../../fixtures';
+import { find, uniq, contains } from 'underscore';
 import Colors from '../../styles/colors';
 import BackButton from '../shared/BackButton';
 import { globals, groupsStyles } from '../../styles';
 import { API, DEV } from '../../config';
-
 const styles = groupsStyles;
 
 const EmptyMap = ({ going, ready }) => (
   <View>
     <View style={[globals.map, globals.inactive, globals.pa1]}/>
     <View style={styles.bottomPanel}>
-      <Text style={[globals.h5, globals.primaryText]}>{ ready ? `${going.length} going` : '' }</Text>
+      <Text style={[globals.h5, globals.primaryText]}>
+        { ready ? `${going.length} going` : '' }
+      </Text>
     </View>
   </View>
 );
 
-const Join = () => (
-  <Icon name='ios-add' size={30} color='white'/>
-)
-
-const Joined = () => (
-  <Icon name="ios-checkmark" size={30} color='white' />
-);
-
 const EventMap = ({ location, going, ready }) => {
-  if ( ! location || typeof location != 'object' ) { return <EmptyMap going={going} ready={ready}/>}
+  if ( ! location || typeof location != 'object' ) {
+    return <EmptyMap going={going} ready={ready}/>
+  }
   const mapRegion = {
       latitude        : location.lat,
       longitude       : location.lng,
@@ -358,10 +403,15 @@ const EventMap = ({ location, going, ready }) => {
       <MapView
         style={globals.map}
         region={mapRegion}
-        annotations={[{latitude: mapRegion.latitude, longitude: mapRegion.longitude}]}
+        annotations={[{
+          latitude: mapRegion.latitude,
+          longitude: mapRegion.longitude
+        }]}
       />
       <View style={[styles.bottomPanel, globals.inactive, globals.pa1]}>
-        <Text style={[globals.h5, globals.primaryText]}>{location.formattedAddress}</Text>
+        <Text style={[globals.h5, globals.primaryText]}>
+          {location.formattedAddress}
+        </Text>
       </View>
     </View>
   )
@@ -369,9 +419,18 @@ const EventMap = ({ location, going, ready }) => {
 
 const JoinControls = ({ hasJoined, joinEvent }) => (
   <View style={[styles.joinButtonContainer, globals.mv1]}>
-    <TouchableOpacity onPress={() => { if (!hasJoined) joinEvent() }} style={styles.joinButton}>
-      <Text style={styles.joinButtonText}>{ hasJoined ? 'Joined' : 'Join'}</Text>
-      { hasJoined ? <Joined /> : <Join /> }
+    <TouchableOpacity
+      onPress={() => { if (!hasJoined) joinEvent() }}
+      style={styles.joinButton}
+    >
+      <Text style={styles.joinButtonText}>
+        { hasJoined ? 'Joined' : 'Join'}
+      </Text>
+      <Icon
+        name={hasJoined ? "ios-checkmark" : "ios-add"}
+        size={30}
+        color='white'
+      />
     </TouchableOpacity>
   </View>
 )
@@ -403,7 +462,7 @@ class Event extends Component{
     this.setState({ eventMembers: users });
     fetch(`${API}/events/${event.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: Headers,
       body: JSON.stringify({going: going})
     })
     .then(response => response.json())
@@ -415,7 +474,9 @@ class Event extends Component{
     this.props.navigator.pop();
   }
   visitProfile(user){
-    if ( user.id === this.props.currentUser.id ) { return; }
+    if ( user.id === this.props.currentUser.id ) {
+      return;
+    }
     this.props.navigator.push({
       name: 'Profile',
       user
@@ -424,12 +485,13 @@ class Event extends Component{
   render(){
     let { event, group, currentUser, navigator } = this.props;
     let { ready, eventMembers } = this.state;
-    let hasJoined = event.going.indexOf(currentUser.id) !== -1;
-    let justJoined = this.state.eventMembers.map(m => m.id).indexOf(currentUser.id) !== -1;
+    let hasJoined = contains(event.going, currentUser.id);
+    let justJoined = contains(eventMembers.map(m => m.id), currentUser.id);
+    let titleConfig = { title: event.name, tintColor: 'white' };
     return (
       <View style={styles.flexContainer}>
         <NavigationBar
-          title={{title: event.name, tintColor: 'white'}}
+          title={titleConfig}
           tintColor={Colors.brandPrimary}
           leftButton={<BackButton handlePress={this.goBack}/>}
         />
@@ -437,14 +499,24 @@ class Event extends Component{
           style={globals.flexContainer}
           contentInset={{ bottom: 49 }}
         >
-          <EventMap location={event.location} going={event.going} ready={ready}/>
+          <EventMap
+            location={event.location}
+            going={event.going}
+            ready={ready}
+          />
           <View style={styles.infoContainer}>
-            <Text style={styles.h2}>Summary</Text>
-            <Text style={[styles.h4, globals.mh2]}>{event.description ? event.description : 'N/A'}</Text>
+            <Text style={styles.h2}>
+              Summary
+            </Text>
+            <Text style={[styles.h4, globals.mh2]}>
+              {event.description ? event.description : 'N/A'}
+            </Text>
           </View>
           <View style={globals.lightDivider} />
           <View style={styles.infoContainer}>
-            <Text style={styles.h2}>Date</Text>
+            <Text style={styles.h2}>
+              Date
+            </Text>
             <Text style={[styles.h4, globals.mh2]}>
               {moment(event.start).format('dddd, MMM Do, h:mm')} till {moment(event.end).format('dddd, MMM Do, h:mm')}
             </Text>
@@ -452,12 +524,23 @@ class Event extends Component{
           <View style={globals.lightDivider} />
           { !hasJoined && <JoinControls hasJoined={justJoined} joinEvent={this.joinEvent} /> }
           <View style={styles.infoContainer}>
-            <Text style={styles.h2}>Going <Text style={styles.h4}>{event.going.length}</Text></Text>
+            <Text style={styles.h2}>
+              Going <Text style={styles.h4}>{eventMembers.length}</Text>
+            </Text>
             {eventMembers.map((member, idx) => (
-              <TouchableOpacity key={idx} onPress={() => this.visitProfile(member)} style={globals.flexRow}>
-                <Image source={{uri: member.avatar}} style={globals.avatar}/>
+              <TouchableOpacity
+                key={idx}
+                onPress={() => this.visitProfile(member)}
+                style={globals.flexRow}
+              >
+                <Image
+                  source={{uri: member.avatar}}
+                  style={globals.avatar}
+                />
                 <View style={globals.textContainer}>
-                  <Text style={globals.h5}>{member.firstName} {member.lastName}</Text>
+                  <Text style={globals.h5}>
+                    {member.firstName} {member.lastName}
+                  </Text>
                 </View>
               </TouchableOpacity>
             ))}
