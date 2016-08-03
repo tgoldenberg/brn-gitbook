@@ -237,7 +237,7 @@ import {
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import { find } from 'underscore';
+import { find, isEqual } from 'underscore';
 import Colors from '../../styles/colors';
 import { FakeConversations, FakeUsers, currentUser } from '../../fixtures';
 import { globals, messagesStyles } from '../../styles';
