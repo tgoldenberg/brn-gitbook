@@ -17,6 +17,25 @@ It will prompt you for the password, and then ask you to change the current pass
 root@ubuntu-512mb-nyc3-01:~#
 ```
 
-From here we can start the deployment process. 
+From here we can start the deployment process. The first thing we need to download is NodeJS. 
+
+#### Installing NodeJS
+```
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+sudo apt-get install -y build-essential nodejs
+```
+Once this is completed, you should be able to enter the Node console by typing `node`. Check to see that this works.
+
+#### Installing Git
+
+Next we need to install Git and then clone our API repository. 
+```
+sudo apt-get install git 
+
+```
+
+#### Installing MongoDB
+
+Next we need to install MongoDB, the database that Deployd runs on.
 
 
