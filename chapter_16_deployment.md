@@ -3,7 +3,7 @@
 As we demonstrated throughout the tutorial, using Deployd is a very easy way to access a backend API. In this chapter, we will look at how to deploy our API to a real server, so that users all over the world can access their data through the app.
 
 #### Digital Ocean
-For the purposes of instruction, we'll be using the a virtual machine hosted by Digital Ocean. There are certainly many options when it comes to hosting an API (Amazon Web Services, Microsoft Azure, Heroku, etc), but Digital Ocean provides a very minimalist interface that will make the instruction easier.
+For the purposes of instruction, we'll be using the a virtual machine hosted by Digital Ocean. There are certainly many options when it comes to hosting an API (Amazon Web Services, Microsoft Azure, Heroku, etc), but Digital Ocean provides a very simple interface that will make the instruction easier.
 
 To get started, create an account on www.digitalocean.com. Then you will want to create a "droplet", which is just a name for a virtual machine. You will then be directed to a page where you can select what type of operating system and how expensive the machine is. We'll be going with the default, Ubuntu, and the $5/month option. You also have the option of adding an SSH key, though we'll be skipping this for now.
 
