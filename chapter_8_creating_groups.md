@@ -499,15 +499,19 @@ export const EmptyGroupBox = () => (
 
 const EmptyGroupBoxes = ({ handlePress }) => (
   <View style={styles.boxContainer}>
-    <AddGroupBox handlePress={handlePress}/>
-    <EmptyGroupBox />
+    <View style={globals.flexRow}>
+      <AddGroupBox handlePress={handlePress}/>
+      <EmptyGroupBox />
+    </View>
   </View>
 );
 
 const EmptySuggestedGroupBoxes = () => (
   <View style={styles.boxContainer}>
-    <EmptyGroupBox />
-    <EmptyGroupBox />
+    <View style={globals.flexRow}>
+      <EmptyGroupBox />
+      <EmptyGroupBox />
+    </View>
   </View>
 )
 
