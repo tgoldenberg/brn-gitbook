@@ -1,11 +1,13 @@
 # Chapter 16: Deploying an API
 
-As we demonstrated throughout the tutorial, using Deployd is a very easy way to access a backend API. In this chapter, we will look at how to deploy our API to a real server, so that users all over the world can access their data through the app.
+As we demonstrated throughout the tutorial, using Deployd is a very easy and configurable API. In this chapter, we will look at how to deploy our API to a real server so as to support users all over the world.
 
-#### Digital Ocean
-For the purposes of instruction, we'll be using the a virtual machine hosted by Digital Ocean. There are certainly many options when it comes to hosting an API (Amazon Web Services, Microsoft Azure, Heroku, etc), but Digital Ocean provides a very simple interface that will make the instruction easier.
+#### [Digital Ocean](www.digitalocean.com)
+For the purposes of instruction, we'll be using the a virtual machine hosted by Digital Ocean. There are certainly many options when it comes to hosting an API ([Amazon Web Services](https://aws.amazon.com/), [Microsoft Azure](https://azure.microsoft.com/en-us/), [Heroku](https://www.heroku.com/), etc), but Digital Ocean provides a very simple interface that will make the learning process very easy.
 
-To get started, create an account on www.digitalocean.com. Then you will want to create a "droplet", which is just a name for a virtual machine. You will then be directed to a page where you can select what type of operating system and how expensive the machine is. We'll be going with the default, Ubuntu, and the $5/month option. You also have the option of adding an SSH key, though we'll be skipping this for now.
+To get started, create an account on [www.digitalocean.com](www.digitalocean.com). Then you will want to create a "droplet", which is just a name for a virtual machine. You will then be directed to a page where you can select what type of operating system and how expensive the machine is. We'll be going with the default, Ubuntu, and the $5/month option. You also have the option of adding an SSH key, though we'll be skipping this for now.
+
+![do](/images/chapter-17/digitalocean_screen_shot.png)
 
 #### Accessing the Virtual Machine
 Once you've created the droplet, you should receive an email from Digital Ocean with the credentials to access it. Using the IP address and the password given, you would log into the machine like this from your terminal (we'll take the example IP address 45.55.60.40:
