@@ -1,4 +1,3 @@
-# Chapter 8: Creating Groups
 
 In the last chapter, we built out a messaging feature. We were able to fetch messages related to a group of users and create new messages. Now we’ll focus on adding some new features to our tab-bar navigation – **Groups** and **Calendar**.
 
