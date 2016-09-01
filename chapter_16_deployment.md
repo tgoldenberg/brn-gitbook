@@ -1,5 +1,3 @@
-# Chapter 16: Deploying an API
-
 As we demonstrated throughout the tutorial, using Deployd is a very easy and configurable API. In this chapter, we will look at how to deploy our API to a real server so as to support users all over the world.
 
 #### [Digital Ocean](www.digitalocean.com)
