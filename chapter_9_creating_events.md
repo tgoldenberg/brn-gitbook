@@ -1,4 +1,3 @@
-# Chapter 9: Creating Events
 
 ### Joining groups
 
