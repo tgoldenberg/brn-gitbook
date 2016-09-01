@@ -1,6 +1,3 @@
-# Chapter 13: Understanding ES6 with React Native
-
-
 ### A function by any other name
 
 One of the more confusing things about working with React and React Native is the many different ways syntax is used, depending on the project or tutorial. Take the following examples and try them in your Node terminal. First make sure you are using the latest version of NodeJS (6 or above) by typing `node –v` in the terminal. If your version is lower, update it before continuing.
