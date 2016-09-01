@@ -1,4 +1,4 @@
-### Establishing a Database Schema
+## Establishing a Database Schema
 
 Let's go over what we want to do in our app and what kind of data we'll need. Already we have a **users** collection, with the following relevant fields:
 ```
