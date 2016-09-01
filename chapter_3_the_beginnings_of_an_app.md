@@ -1,4 +1,4 @@
-# Chapter 3: The Beginnings of an App
+## Chapter 3: The Beginnings of an App
 
 Mobile apps are comprised of many different parts - navigation, UI components, animations, integrating an external API, etc. We'll be looking first at navigation, which is how we tie different parts of the app together.
 
