@@ -1,5 +1,3 @@
-# Chapter 13: Final Touches
-
 Let's review what we've accomplished before and what our app can do. 
 
 - User authentication (login, register, logout, edit profile)
