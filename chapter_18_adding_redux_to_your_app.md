@@ -411,8 +411,17 @@ export const UPDATE_USER = 'accounts/UPDATE_USER';
 import * as actionTypes from '../constants';
 
 export const sendDashboard = (user) => ({
-  user,
-  
-})
+  type: actionTypes.SEND_DASHBOARD,
+  user
+});
+
+export const doneFetching = () => ({
+  type: actionTypes.DONE_FETCHING
+});
+
+export const updateUser = (user) => ({
+  type: actionTypes.UPDATE_USER,
+  user
+});
 ```
 
