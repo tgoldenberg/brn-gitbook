@@ -183,7 +183,7 @@ Finally, create the folders **application/actions**, **application/constants**, 
 ```javascript
 import { combineReducers } from 'redux';
 
-const user = (state={}, action) => {
+const accounts = (state={}, action) => {
   switch(action.type){
     default:
       return state;
@@ -191,7 +191,7 @@ const user = (state={}, action) => {
 }
 
 const appReducers = combineReducers({
-  user
+  accounts
 });
 
 export default appReducers;
@@ -206,7 +206,7 @@ Redux requires us to link our top-level component with the Redux store. We do th
 To create a store, you must provide the **createStoreWithMiddleware** function with an object that contains your reducers. A **reducer** is a function that takes in an action and returns a new state. We use the **combineReducers** function to enable us to have multiple reducers. Right now, our reducers object contains a single function which returns an empty object no matter what.
 
 ```
-const user = (state={}, action) => {
+const accounts = (state={}, action) => {
   switch(action.type){
     default:
       return state;
@@ -218,3 +218,37 @@ The **combineReducers** function simply allows us to have several of these state
 
 ### Building Our Store
 
+The next step is identifying which aspects of our application state that we want to keep in our store. To start, we can take the local state in our **AppContainer.js** component. Let's make a file **application/reducers/accounts.js** and use it to store our initial state.
+
+```javascript
+/* application/reducers/accounts.js */
+
+const initialState = {
+  user          : null,
+  ready         : false,
+  initialRoute  : 'Landing',
+};
+
+const accounts = (state=initialState, action) => {
+  switch(action.type){
+    default:
+      return state;
+  }
+};
+
+export default accounts;
+```
+
+And we can **import** this into our main **reducers/index.js** file:
+```javascript
+import accounts from './accounts';
+import { combineReducers } from 'redux';
+
+const appReducers = combineReducers({
+  accounts
+});
+
+export default appReducers;
+```
+
+Notice how we replaced our original **accounts** function with our new one.
