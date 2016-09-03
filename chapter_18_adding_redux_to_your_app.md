@@ -251,4 +251,152 @@ const appReducers = combineReducers({
 export default appReducers;
 ```
 
-Notice how we replaced our original **accounts** function with our new one.
+Notice how we replaced our original **accounts** function with our new one. Now how do we access this state in our **AppContainer.js** component? Through the **connect** function. Let's modify **AppContainer.js** to be a connector to the Redux store, and let's move the content of **AppContainer.js** to **application/components/App.js**. We'll also change the local state of **App.js** to rely on props rather than on local state.
+
+```javascript
+/* application/components/App.js */
+import React, { Component } from 'react';
+import {
+  ActivityIndicator,
+  View,
+  Navigator,
+  AsyncStorage
+} from 'react-native';
+import { extend } from 'underscore';
+
+import Dashboard from '../components/Dashboard';
+import Landing from '../components/Landing';
+import Loading from '../components/shared/Loading';
+import Login from '../components/accounts/Login';
+import Register from '../components/accounts/Register';
+import RegisterConfirmation from '../components/accounts/RegisterConfirmation';
+import { API, DEV } from '../config';
+import { Headers } from '../fixtures';
+import { globals } from '../styles';
+
+export default class App extends Component {
+  constructor(){
+    super();
+    this.logout = this.logout.bind(this);
+  }
+  componentDidMount(){
+    this._loadLoginCredentials()
+  }
+  async _loadLoginCredentials(){
+    try {
+      let sid = await AsyncStorage.getItem('sid');
+      if (sid){
+        this.fetchUser(sid);
+      } else {
+        this.props.doneFetching();
+      }
+    } catch (err) {
+      this.props.doneFetching(err);
+    }
+  }
+  fetchUser(sid){
+    fetch(`${API}/users/me`, { headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`})})
+    .then(response => response.json())
+    .then(user => this.props.sendDashboard(user))
+    .catch(err => this.props.doneFetching(err))
+    .done();
+  }
+  logout(){
+    this.nav.push({ name: 'Landing' })
+  }
+  render() {
+    let { initialRoute, updateUser, user, ready } = this.props;
+    if ( !ready ) { return <Loading /> }
+    return (
+      <Navigator
+        style={globals.flex}
+        ref={(el) => this.nav = el }
+        initialRoute={{name: initialRoute}}
+        renderScene={(route, navigator) => {
+          switch(route.name){
+            case 'Landing':
+              return (
+                <Landing navigator={navigator}/>
+            );
+            case 'Dashboard':
+              return (
+                <Dashboard
+                  updateUser={updateUser}
+                  navigator={navigator}
+                  logout={this.logout}
+                  user={user}
+                />
+            );
+            case 'Register':
+              return (
+                <Register navigator={navigator}/>
+            );
+            case 'RegisterConfirmation':
+              return (
+                <RegisterConfirmation
+                  {...route}
+                  updateUser={updateUser}
+                  navigator={navigator}
+                />
+            );
+            case 'Login':
+              return (
+                <Login
+                  navigator={navigator}
+                  updateUser={updateUser}
+                />
+            );
+          }
+        }}
+      />
+    );
+  }
+}
+```
+
+Notice that **App.js** has no local state, and only relies on props. Let's add these props in our new **AppContainer.js**:
+
+```javascript
+import React from 'react';
+import { connect } from 'react-redux';
+import App from '../components/App';
+
+export default connect(
+  (state, ownProps) => ({
+    ...state.accounts
+  }),
+  (dispatch) => ({
+    doneFetching: () => {
+      console.log('DONE FETCHING');
+    },
+    sendDashboard: (user) => {
+      console.log('SEND DASHBOARD');
+    },
+    updateUser: (user) => {
+      console.log('UPDATE USER');
+    }
+  })
+)(App);
+
+```
+
+Now our app should work, except it only loads the initial state (a loading indicator). It doesn't change anything because we haven't added that yet! First we need to go over how our **connect** function is working and connecting our Redux store to our **App.js** component.
+
+### Connecting to the Redux store
+
+The **connect** function accepts mainly two parameters, and returns a function. This function then accepts a component as a parameter, and returns the component with the **props** passed down through the store.
+
+The first parameter is a function that accepts the entire Redux store, and passing props to the component based on parts of the store that are passed down. Here we pass the **accounts** part of our store:
+```
+(state, ownProps) => ({
+  ...state.accounts
+}),
+```
+Notice that this function also takes a **ownProps** parameter. This is useful if the container is the child of another component, in which case you would pass the props from the parent to the connected component. 
+
+The second parameter takes the **dispatch** function as a parameter, and returns more **props** that act as functions that can alter the Redux store. In our current example, these don't do anything other than console.log their existence.
+
+### Dispatching Actions
+
+To change the state of the Redux store, we'll need dispatch an **action**. an action is an object with a **type** attribute and other data as well. Let's dispatch these actions in our container, by which defining them in **application/actions/accounts.js** and **application/constants/accounts.js**.
+
