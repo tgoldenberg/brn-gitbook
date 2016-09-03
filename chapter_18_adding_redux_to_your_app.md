@@ -33,3 +33,186 @@ To start, let's install the dependencies we'll be needing to implement Redux in 
 ```
 npm install --save redux react-redux redux-thunk
 ```
+
+* Now we'll need to move the contents of **index.ios.js** to the file **application/containers/AppContainer.js**
+
+* Next, replace **index.ios.js** with this code:
+
+```javascript
+import React, { Component } from 'react';
+import { AppRegistry } from 'react-native';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+
+import reducers from './application/reducers/index';
+import AppContainer from './application/containers/AppContainer';
+
+const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
+const store = createStoreWithMiddleware(reducers);
+
+class assembliesTutorial extends Component{
+  render(){
+    return (
+      <Provider store={store} >
+        <AppContainer />
+      </Provider>
+    )
+  }
+}
+
+AppRegistry.registerComponent('assembliesTutorial', () => assembliesTutorial);
+```
+
+Your file **application/containers/AppContainer.js** should look like this (since we're not using **AppRegistry** for this component anymore.
+
+```javascript
+import React, { Component } from 'react';
+import {
+  ActivityIndicator,
+  View,
+  Navigator,
+  AsyncStorage
+} from 'react-native';
+
+import Landing from '../components/Landing';
+import Register from '../components/accounts/Register';
+import RegisterConfirmation from '../components/accounts/RegisterConfirmation';
+import Login from '../components/accounts/Login';
+import Dashboard from '../components/Dashboard';
+import Loading from '../components/shared/Loading';
+import { Headers } from '../fixtures';
+import { extend } from 'underscore';
+import { API, DEV } from '../config';
+import { globals } from '../styles';
+
+export default class AppContainer extends Component {
+  constructor(){
+    super();
+    this.logout = this.logout.bind(this);
+    this.updateUser = this.updateUser.bind(this);
+    this.state = {
+      user          : null,
+      ready         : false,
+      initialRoute  : 'Landing',
+    }
+  }
+  componentDidMount(){
+    this._loadLoginCredentials()
+  }
+  async _loadLoginCredentials(){
+    try {
+      let sid = await AsyncStorage.getItem('sid');
+      console.log('SID', sid);
+      if (sid){
+        this.fetchUser(sid);
+      } else {
+        this.ready();
+      }
+    } catch (err) {
+      this.ready(err);
+    }
+  }
+  ready(err){
+    this.setState({ ready: true });
+  }
+  fetchUser(sid){
+    fetch(`${API}/users/me`, { headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`})})
+    .then(response => response.json())
+    .then(user => this.setState({ user, ready: true, initialRoute: 'Dashboard' }))
+    .catch(err => this.ready(err))
+    .done();
+  }
+  logout(){
+    this.nav.push({ name: 'Landing' })
+  }
+  updateUser(user){
+    this.setState({ user });
+  }
+  render() {
+    if ( ! this.state.ready ) { return <Loading /> }
+    return (
+      <Navigator
+        style={globals.flex}
+        ref={(el) => this.nav = el }
+        initialRoute={{ name: this.state.initialRoute }}
+        renderScene={(route, navigator) => {
+          switch(route.name){
+            case 'Landing':
+              return (
+                <Landing navigator={navigator}/>
+            );
+            case 'Dashboard':
+              return (
+                <Dashboard
+                  updateUser={this.updateUser}
+                  navigator={navigator}
+                  logout={this.logout}
+                  user={this.state.user}
+                />
+            );
+            case 'Register':
+              return (
+                <Register navigator={navigator}/>
+            );
+            case 'RegisterConfirmation':
+              return (
+                <RegisterConfirmation
+                  {...route}
+                  updateUser={this.updateUser}
+                  navigator={navigator}
+                />
+            );
+            case 'Login':
+              return (
+                <Login
+                  navigator={navigator}
+                  updateUser={this.updateUser}
+                />
+            );
+          }
+        }}
+      />
+    );
+  }
+}
+```
+
+Finally, create the folders **application/actions**, **application/constants**, **application/reducers**, and create the file **application/reducers/index.js** with these contents:
+
+```javascript
+import { combineReducers } from 'redux';
+
+const user = (state={}, action) => {
+  switch(action.type){
+    default:
+      return state;
+  }
+}
+
+const appReducers = combineReducers({
+  user
+});
+
+export default appReducers;
+```
+
+Now run your app, and everything should work exactly as it did before!
+
+#### What did we do?
+
+Redux requires us to link our top-level component with the Redux store. We do this in **index.ios.js**, by first creating a store ```const store = createStoreWithMiddleware(reducers)```, and then connecting that store to a **Provider** component. We then place our content (our app), as a child to the **Provider** component.
+
+To create a store, you must provide the **createStoreWithMiddleware** function with an object that contains your reducers. A **reducer** is a function that takes in an action and returns a new state. We use the **combineReducers** function to enable us to have multiple reducers. Right now, our reducers object contains a single function which returns an empty object no matter what.
+
+```
+const user = (state={}, action) => {
+  switch(action.type){
+    default:
+      return state;
+  }
+}
+```
+
+
+
