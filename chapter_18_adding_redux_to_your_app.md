@@ -203,7 +203,7 @@ Now run your app, and everything should work exactly as it did before!
 
 Redux requires us to link our top-level component with the Redux store. We do this in **index.ios.js**, by first creating a store ```const store = createStoreWithMiddleware(reducers)```, and then connecting that store to a **Provider** component. We then place our content (our app), as a child to the **Provider** component.
 
-To create a store, you must provide the **createStoreWithMiddleware** function with an object that contains your reducers. A **reducer** is a function that takes in an action and returns a new state. We use the **combineReducers** function to enable us to have multiple reducers. Right now, our reducers object contains a single function which returns an empty object no matter what.
+To create a store, you must provide the **createStoreWithMiddleware** function with an object that contains your reducers. A **reducer** is a function that takes in an action (a JavaScript object) and returns a new state. We use the **combineReducers** function to enable us to have multiple reducers. Right now, our reducers object contains a single function which returns an empty object no matter what.
 
 ```
 const accounts = (state={}, action) => {
@@ -398,5 +398,21 @@ The second parameter takes the **dispatch** function as a parameter, and returns
 
 ### Dispatching Actions
 
-To change the state of the Redux store, we'll need dispatch an **action**. an action is an object with a **type** attribute and other data as well. Let's dispatch these actions in our container, by which defining them in **application/actions/accounts.js** and **application/constants/accounts.js**.
+To change the state of the Redux store, we'll need dispatch an **action**. an action is an object with a **type** attribute and other data as well. Let's dispatch these actions in our container, by defining them in **application/actions/index.js** and **application/constants/index.js**.
+
+```javascript
+/* application/constants/index.js */
+export const SEND_DASHBOARD = 'accounts/SEND_DASHBOARD';
+export const DONE_FETCHING = 'accounts/DONE_FETCHING';
+export const UPDATE_USER = 'accounts/UPDATE_USER';
+```
+```javascript
+/* application/actions/index.js */
+import * as actionTypes from '../constants';
+
+export const sendDashboard = (user) => ({
+  user,
+  
+})
+```
 
