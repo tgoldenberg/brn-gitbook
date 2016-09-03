@@ -214,5 +214,7 @@ const user = (state={}, action) => {
 }
 ```
 
+The **combineReducers** function simply allows us to have several of these state objects, and combine them into a single object. The use of **thunk** is for sending asyncronous actions to our store, a common need in complex apps, but not absolutely necessary.
 
+### Building Our Store
 
