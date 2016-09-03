@@ -26,4 +26,10 @@ This means that our components can theoretically become "lighter", carrying less
 
 Instead of explaining Redux in abstract terms, let's dig in right away in the codebase and start implementing, learning more as we go along. Since the user data is shared across all of our components, it makes sense to incorporate user data in our Redux store to start. 
 
+#### Getting Started
 
+To start, let's install the dependencies we'll be needing to implement Redux in our React Native app. 
+
+```
+npm install --save redux react-redux redux-thunk
+```
