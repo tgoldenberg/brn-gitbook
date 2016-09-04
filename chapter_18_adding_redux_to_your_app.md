@@ -1,4 +1,4 @@
-**Redux**, according to its [Github README](https://github.com/reactjs/redux), is a "predictable state container for JavaScript apps." In other words, it's a way to create a single source of truth for your client-side state. This can be very useful for complex applications that share data across different views. 
+**Redux**, according to its [Github README](https://github.com/reactjs/redux), is a "predictable state container for JavaScript apps." In other words, it's a way to create a single source of truth for your client-side state. This can be very useful for complex applications that share data across different views. *Note: this content assumes you have built the app according to the previous chapters and are familiar with ES6 syntax.*
 
 #### Setting Things Straight
 
