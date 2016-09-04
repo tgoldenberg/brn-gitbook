@@ -1,30 +1,30 @@
 # Chapter 18: Adding Redux to your App
 
-Redux, according to its Github README, is a "predictable state container for JavaScript apps." In other words, it's a way to create a single source of truth for your client-side state. This can very useful for complex applications that share data across different views. 
+**Redux**, according to its Github README, is a "predictable state container for JavaScript apps." In other words, it's a way to create a single source of truth for your client-side state. This can be very useful for complex applications that share data across different views. 
 
 #### Setting Things Straight
 
-However, do not think that every application **needs** Redux. This is not true. Redux is an excellent pattern for when state is shared across many components. It is also a reliable way to test user flows and locating bottlenecks and bugs. There are situations where you probably shouldn't use Redux, though, and definitely not to start when using React or React Native. Here are some tweets by Dan Abramov, creator of Redux.
+Don't think that every application **needs** Redux. This is not true. Redux is an excellent pattern for when state is shared across many components. It is also a great tool for monitoring user flows and identifying bugs. However, there are situations where you probably shouldn't use Redux, and that includes when you are starting out using React and React Native. Here are some tweets by [Dan Abramov](https://twitter.com/dan_abramov), creator of Redux.
 
 * ["Don’t use Redux unless you *tried* local component state and were dissatisfied."](https://twitter.com/dan_abramov/status/725089243836588032)
 * ["There is so much FUD about local state. “setState is bad”, “no-set-state”, “root of all evil”, “use functional components”. State is fine."](https://twitter.com/dan_abramov/status/725089775783391232)
 * ["Beginners take Redux principles (“use single state tree”) and think they’re universally good advice for any React app"](https://twitter.com/dan_abramov/status/760891641657954305)
 
-And from Ryan Florence, author of `react-router`:
+And from [Ryan Florence](https://twitter.com/ryanflorence), author of **React Router**:
 
 * ["why do so many think React means React + Webpack + Redux + CSS Modules + Hot Loading + Server Rendering + ..."](https://twitter.com/ryanflorence/status/724934112822329344)
 
 #### How does Redux work?
 
-Let's examine how Redux works. If you think of your application as a tree of components, then state flows downwards from higher to lower components. But what happens when sibling components need to be aware of a change? Then a lower component has to pass a callback to the higher component which then shares the state with the sibling. This happens in **Assemblies** with our user state. We initiate the initial user data in our **index.ios.js** file and pass it to the child components. However, in **profile.js**, for example, we initiate a change in the user object -- the user updates their profile. This change then needs to be passed up to the parent component via a callback (**updateUser**), and then the change is shared with the rest of the application.
+Let's examine how Redux works. If you think of your application as a tree of components, then state flows downwards from higher to lower components. But what happens when sibling components need to be aware of a change? Then a lower component has to pass a callback to the higher component which then shares the state with the sibling. This happens in **Assemblies** with our user state. We initialize our user data in the top-level **index.ios.js** file and pass it to the child components. However, in **profile.js**, for example, we initiate a change in the user object -- the user updates their profile. This change then needs to be passed up to the parent component via a callback (**updateUser**), and then the change is shared with the rest of the application.
 
-What's the way around this? Redux introduces a client data store that holds application state, and that individual components can "connect" to. That means that we don't have to pass `updateUser={this.props.updateUser}` as **props** in all of our components. Any component that needs access to the user object can "connect" to the Redux store.
+What's the way around this? Redux introduces a client data store that holds application state, which individual components can "connect" to. That means that we don't have to pass `updateUser={this.props.updateUser}` as **props** in all of our components. Any component that needs read or write access to the **user** object can "connect" to the Redux store.
 
 ![redux](https://css-tricks.com/wp-content/uploads/2016/03/redux-article-3-02.svg)
 
-This means that our components can theoretically become "lighter", carrying less props. It also means that sharing data across components is seamless. Finally, holding state in a single store makes logging changes and identifying bugs much easier (more on this later). 
+This means that our components can theoretically become "lighter" (carrying less props), and that sharing data across components is seamless. Holding state in a single store also makes logging changes and identifying bugs much easier (more on this later). 
 
-Instead of explaining Redux in abstract terms, let's dig in right away in the codebase and start implementing it, learning more as we go along. Since the user data is shared across all of our components, it makes sense to incorporate user data in our Redux store to start. 
+Instead of explaining Redux in abstract terms, let's dig right into the codebase and start using it, learning as we go along. Since the **user** data is shared across all of our components, it makes sense to incorporate user data in our Redux store to start. 
 
 #### Getting Started
 
@@ -37,6 +37,7 @@ npm install --save redux react-redux redux-thunk
 Now we'll need to move the contents of **index.ios.js** to the file **application/containers/AppContainer.js**, and replace **index.ios.js** with this code:
 
 ```javascript
+/* index.ios.js */
 import React, { Component } from 'react';
 import { AppRegistry } from 'react-native';
 import { createStore, applyMiddleware } from 'redux';
@@ -249,7 +250,7 @@ const appReducers = combineReducers({
 export default appReducers;
 ```
 
-Notice how we replaced our original **accounts** function with our new one. Now, how do we access this state in our **AppContainer.js** component? Through the **connect** function the **react-redux** provides us. Let's modify **AppContainer.js** to be a connector to the Redux store, and let's move the content of **AppContainer.js** to **application/components/App.js**. We'll also change the local state of **App.js** to rely on props rather than on local state.
+Notice how we replaced our original **accounts** function with our new one. Now, how do we access this state in our **AppContainer.js** component? Through the **connect** function that **react-redux** provides us. Let's modify **AppContainer.js** to be a connector to the Redux store, and let's move the content of **AppContainer.js** to **application/components/App.js**. We'll also change the local state of **App.js** to rely on props rather than on local state.
 
 ```javascript
 /* application/components/App.js */
@@ -378,7 +379,7 @@ export default connect(
 
 ```
 
-Now our app should work, except it only loads the initial state (a loading indicator). It doesn't change anything because we haven't added that yet! First we need to go over how our **connect** function is working and connecting our Redux store to our **App.js** component.
+Now our app should work, except it only loads the initial state (a loading indicator). It doesn't change anything because we haven't added that yet! First we need to go over how our **connect** function works to connect our Redux store to our **App.js** component.
 
 ### Connecting to the Redux store
 
@@ -396,7 +397,7 @@ The second parameter takes the **dispatch** function as a parameter, and returns
 
 ### Dispatching Actions
 
-To change the state of the Redux store, we'll need dispatch an **action**. an action is an object with a **type** attribute, that can also contain other fields of data. Let's dispatch these actions in our container, by defining them in **application/actions/index.js** and **application/constants/index.js**.
+To change the state of the Redux store, we'll need dispatch an **action**. An action is essentially an object with a **type** attribute, and any other data that it requires. Let's dispatch these actions in our container, by defining them in **application/actions/index.js** and **application/constants/index.js**.
 
 ```javascript
 /* application/constants/index.js */
@@ -477,7 +478,7 @@ Notice that our action has been recognized by the reducer. It has a **type**, as
 
 #### Modifying the Redux Store
 
-There are some best practices for using Redux, and one is to use pure functions, meaning that we don't mutate the Redux store state. Instead, we replace it with a new state. In our case, we want to replace the field **user** in the Redux store with our new value, as well as setting the **initialRoute** and **ready** fields. Here's what that looks like:
+There are some [best practices](http://redux.js.org/docs/introduction/ThreePrinciples.html) for using Redux, and one is to use pure functions, meaning that we don't mutate the Redux store state. Instead, we replace it with a new state. In our case, we want to replace the field **user** in the Redux store with our new value, as well as setting the **initialRoute** and **ready** fields. Here's what that looks like:
 
 ```javascript
 /* application/reducers/accounts.js */
@@ -655,9 +656,9 @@ export const loadCredentials = () => (
 )
 ```
 
-Here, we are offloading a lot of the functionality to our **actions**. Because these are pure JavaScript functions untangled with our UI, it makes both the functionality and the components easier to reason about and test. What **redux-thunk** allows us to do is to dispatch asynchronous actions -- to fetch the user's session id in local storage, and then call our API to log in the user. **Thunk** achieves this by allowing our actions to return an asynchronous function. If this overly confusing, then stick with the previous strategy of performing the asynchronous actions in the container or component. This is definitely a more nuanced point of using Redux.
+Here, we are offloading a lot of the functionality to our **actions**. Because these are pure JavaScript functions untangled with our UI, it makes both the functionality and the components easier to reason about and test. What **redux-thunk** allows us to do is to dispatch asynchronous actions -- to fetch the user's session id in local storage, and then call our API to log in the user. **Thunk** achieves this by allowing our actions to return an asynchronous function. If this is overly confusing, then stick with the previous strategy of performing the asynchronous actions in the container or component. This is definitely a more nuanced point of using Redux.
 
-Notice how simpler our rendering component is, and how much easier to reason it is? That is the beauty of Redux. We also are passing less **props** to the child components. This means that we have to **connect** the child components wherever we need to update our **user** object. This is mainly in **Login.js**, **Register.js**, and  **ProfileView.js**. Here's a brief look at what that would look like:
+Notice how simpler our rendering component is, and how much easier to it is to reason about it what it does? That is the beauty of **Redux**. We also are passing less **props** to the child components. This means that we have to **connect** the child components wherever we need to update our **user** object. This is mainly in **Login.js**, **Register.js**, and  **ProfileView.js**. Here's a brief look at what that would look like:
 
 ```javascript
 /* application/containers/LoginContainer.js */
@@ -868,7 +869,7 @@ From all this, you should be able to see in what directions you can take Redux. 
 
 Another cool thing about Redux is the ability to log every change in client state. Dan Abramov explains how to do so in the free video series [Building React Applications with Idiomatic Redux](https://egghead.io/courses/building-react-applications-with-idiomatic-redux). 
 
-Finally, if you find your team embracing the Redux philosophy, you may want to explore the new experimental navigation module in React Native, **NavigationExperimental**. It was specifically designed to connect routing events to a Redux store, and works really well with that setup. For more info on **NavigationExperimental**, check out the [official documents](https://facebook.github.io/react-native/docs/navigation.html). These blog posts are also helpful:
+Finally, if you find your team embracing the Redux philosophy, you may want to explore the new experimental navigation module in React Native, **NavigationExperimental**. It was specifically designed to connect routing events to a Redux store, and works really well with that setup. For more info on **NavigationExperimental**, check out the [official documents](https://facebook.github.io/react-native/docs/navigation.html). These posts are also helpful:
 
 * [First look: React Native Navigator Experimental](https://medium.com/@dabit3/first-look-react-native-navigator-experimental-9a7cf39a615b#.d6bradcn1)
 * [Github repository with wiki](https://github.com/ericvicenti/navigation-rfc)
