@@ -198,7 +198,12 @@ Now run your app, and everything should work exactly as it did before!
 
 #### What did we do?
 
-Redux requires us to link our top-level component with the Redux store. We do this in **index.ios.js**, by first creating a store ```const store = createStoreWithMiddleware(reducers)```, and then connecting that store to a **Provider** component. We then place our content (our app), as a child to the **Provider** component.
+Redux requires us to link our top-level component with the Redux store. We do this in **index.ios.js**, by first creating a store,
+
+```javascript
+const store = createStoreWithMiddleware(reducers)
+```
+and then connecting that store to a **Provider** component. We then place our content (our app), as a child to the **Provider** component.
 
 To create a store, you must provide the **createStoreWithMiddleware** function with an object that contains your reducers. A **reducer** is a function that takes in an action (a JavaScript object) and returns a new state. We use the **combineReducers** function to enable us to have multiple reducers. Right now, our reducers object contains a single function which returns an empty object no matter what.
 
@@ -248,7 +253,7 @@ const appReducers = combineReducers({
 export default appReducers;
 ```
 
-Notice how we replaced our original **accounts** function with our new one. Now, how do we access this state in our **AppContainer.js** component? Through the **connect** function that **react-redux** provides us. Let's modify **AppContainer.js** to be a connector to the Redux store, and let's move the content of **AppContainer.js** to **application/components/App.js**. We'll also change the local state of **App.js** to rely on props rather than on local state.
+Notice how we replaced our original **accounts** function with our new one. Now, how do we access this state in our **AppContainer.js** component? Through the `connect` function that **react-redux** provides us. Let's modify **AppContainer.js** to be a connector to the Redux store, and let's move the content of **AppContainer.js** to **application/components/App.js**. We'll also change the local state of **App.js** to rely on props rather than on local state.
 
 ```javascript
 /* application/components/App.js */
@@ -381,7 +386,7 @@ Now our app should work, except it only loads the initial state (a loading indic
 
 ### Connecting to the Redux store
 
-The **connect** function accepts two parameters (mostly) and returns another function. This function then accepts a component as a parameter, and returns the component with the **props** passed down through the store.
+The **connect** function accepts two parameters and returns another function. This function then accepts a component as a parameter, and returns the component with the **props** passed down through the store.
 
 The first parameter is a function that accepts the entire Redux store, and passes specific props to the component. Here we pass the **accounts** part of our store:
 ```
