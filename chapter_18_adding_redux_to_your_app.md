@@ -424,4 +424,440 @@ export const updateUser = (user) => ({
   user
 });
 ```
+Now we can send these actions from **AppContainer.js**:
 
+```javascript
+/* application/containers/AppContainer.js */
+import React from 'react';
+import { connect } from 'react-redux';
+import { updateUser, sendDashboard, doneFetching } from '../actions';
+import App from '../components/App';
+
+export default connect(
+  (state, ownProps) => ({
+    ...state.accounts
+  }),
+  (dispatch) => ({
+    doneFetching: () => {
+      dispatch(doneFetching());
+    },
+    sendDashboard: (user) => {
+      dispatch(sendDashboard(user));
+    },
+    updateUser: (user) => {
+      dispatch(updateUser(user));
+    }
+  })
+)(App);
+
+```
+Let's also add a console.log in our **application/reducers/accounts.js** file:
+```javascript
+
+const initialState = {
+  user          : null,
+  ready         : false,
+  initialRoute  : 'Landing',
+};
+
+const accounts = (state=initialState, action) => {
+  console.log('ACTION', action);
+  switch(action.type){
+    default:
+      return state;
+  }
+};
+
+export default accounts;
+```
+
+Now let's see what happens when we run our app and debug remotely in our browser:
+
+![redux](/images/chapter-19/redux-1.png)
+
+Notice that our action has been recognized by the reducer. It has a **type**, as well as the field **user** with the data for the current users. Then why is our app still showing a loading indicator? Because we haven't changed our Redux store!
+
+#### Modifying the Redux Store
+
+There are some best practices for using Redux, and one is to use pure functions, meaning that we don't mutate the Redux store state. Instead, we replace it with a new state. In our case, we want to replace the field **user** in the Redux store with our new value, as well as setting the **initialRoute** and **ready** fields. Here's what that looks like:
+
+```javascript
+/* application/reducers/accounts.js */
+import * as actionTypes from '../constants';
+
+const initialState = {
+  user          : null,
+  ready         : false,
+  initialRoute  : 'Landing',
+};
+
+const accounts = (state=initialState, action) => {
+  console.log('ACTION', action);
+  switch(action.type){
+    case actionTypes.SEND_DASHBOARD:
+      return {
+        ...state,
+        user: action.user,
+        ready: true,
+        initialRoute: 'Dashboard'
+      };
+    case actionTypes.DONE_FETCHING:
+      return {
+        ...state,
+        ready: true
+      };
+    case actionTypes.UPDATE_USER:
+      return {
+        ...state,
+        user: action.user
+      };
+    default:
+      return state;
+  }
+};
+
+export default accounts;
+```
+
+Now we'll see that we can login to the app, refresh and then be automatically logged in!
+
+### Reaping the Benefits
+
+Now we don't have to pass an **updateUser** function to all children components. Wherever we need to update our user object in the Redux store, we simply connect that component to the store and dispatch the **updateStore** action. 
+
+We can also throw our **async** actions into the dispatch action, since we are using **redux-thunk**. Here's how that would look:
+
+```javascript 
+/* application/components/App.js */
+import React, { Component } from 'react';
+import { Navigator } from 'react-native';
+
+import Dashboard from '../components/Dashboard';
+import Landing from '../components/Landing';
+import Loading from '../components/shared/Loading';
+import Login from '../components/accounts/Login';
+import Register from '../components/accounts/Register';
+import RegisterConfirmation from '../components/accounts/RegisterConfirmation';
+import { globals } from '../styles';
+
+export default class App extends Component {
+  constructor(){
+    super();
+    this.logout = this.logout.bind(this);
+  }
+  componentDidMount(){
+    this.props.loadCredentials();
+  }
+  logout(){
+    this.nav.push({ name: 'Landing' })
+  }
+  render() {
+    let { initialRoute, user, ready } = this.props;
+    if ( !ready ) { return <Loading /> }
+    return (
+      <Navigator
+        style={globals.flex}
+        ref={(el) => this.nav = el }
+        initialRoute={{name: initialRoute}}
+        renderScene={(route, navigator) => {
+          switch(route.name){
+            case 'Landing':
+              return (
+                <Landing navigator={navigator}/>
+            );
+            case 'Dashboard':
+              return (
+                <Dashboard navigator={navigator} logout={this.logout} user={user}/>
+            );
+            case 'Register':
+              return (
+                <Register navigator={navigator}/>
+            );
+            case 'RegisterConfirmation':
+              return (
+                <RegisterConfirmation {...route} navigator={navigator}/>
+            );
+            case 'Login':
+              return (
+                <Login navigator={navigator} />
+            );
+          }
+        }}
+      />
+    );
+  }
+}
+
+```
+```javascript
+/* application/containers/AppContainer.js */
+import React from 'react';
+import { connect } from 'react-redux';
+import { loadCredentials } from '../actions';
+import App from '../components/App';
+
+export default connect(
+  (state, ownProps) => ({
+    ...state.accounts
+  }),
+  (dispatch) => ({
+    loadCredentials(){
+      dispatch(loadCredentials())
+    }
+  })
+)(App);
+
+```
+
+```javascript
+/* application/actions/index.js */
+import * as actionTypes from '../constants';
+import { extend } from 'underscore';
+import { API, DEV } from '../config';
+import { Headers } from '../fixtures';
+import { AsyncStorage } from 'react-native';
+
+export const sendDashboard = (user) => ({
+  type: actionTypes.SEND_DASHBOARD,
+  user
+});
+
+export const doneFetching = () => ({
+  type: actionTypes.DONE_FETCHING
+});
+
+export const updateUser = (user) => ({
+  type: actionTypes.UPDATE_USER,
+  user
+});
+
+export const fetchUser = (sid) => (
+  (dispatch, getState) => {
+    fetch(`${API}/users/me`, { headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`})})
+    .then(response => response.json())
+    .then(user => dispatch(sendDashboard(user)))
+    .catch(err => dispatch(doneFetching()))
+    .done();
+  }
+);
+
+export const loadCredentials = () => (
+  async (dispatch, getState) => {
+    try {
+      let sid = await AsyncStorage.getItem('sid');
+      if (sid) {
+        dispatch(fetchUser(sid));
+      } else {
+        dispatch(doneFetching())
+      }
+    } catch (err) {
+      dispatch(doneFetching())
+    }
+  }
+)
+```
+
+Here, we are off-loading alot of the functionality to our **actions**. Because these are pure JavaScript untangled with our UI, it makes both the functionality and the components easier to reason about and test. What **redux-thunk** allows us to do is to dispatch asynchronous actions -- our fetch of the user's session id in local storage, and then our API call to login the user. **Thunk** achieves this by allowing our actions to return an asynchronous function. If this overly confusing, then stick with the previous strategy of performing the asynchronous actions in the container or component. This is definitely a more nuanced point of using Redux.
+
+Notice how simpler our rendering component is, and how much easier to reason it is? That is the beauty of Redux. We also are passing less **props** to the child components. This means that we have to **connect** the child components wherever we need to update our **user** object. This is mainly in **Login.js**, **Register.js**, and  **ProfileView.js**. Here's a brief look at what that would look like:
+
+```javascript
+/* application/containers/LoginContainer.js */
+import React from 'react';
+import { connect } from 'react-redux';
+import { updateUser } from '../actions';
+import Login from '../components/accounts/Login';
+
+export default connect(
+   (state, ownProps) => ({
+    ...ownProps
+  }),
+  (dispatch) => ({
+    updateUser(user){
+      dispatch(updateUser(user))
+    }
+  })
+)(Login);
+```
+```javascript
+/* application/containers/RegisterConfirmationContainer.js */
+import React from 'react';
+import { connect } from 'react-redux';
+import { updateUser } from '../actions';
+import RegisterConfirmation from '../components/accounts/RegisterConfirmation';
+
+export default connect(
+  (state, ownProps) => ({
+    ...ownProps
+  }),
+  (dispatch) => ({
+    updateUser(user){
+      dispatch(updateUser(user))
+    }
+  })
+)(RegisterConfirmation);
+```
+```javascript
+/* application/containers/ProfileContainer.js */
+import React from 'react';
+import { connect } from 'react-redux';
+import { updateUser } from '../actions';
+import ProfileView from '../components/profile/ProfileView';
+
+export default connect(
+  (state, ownProps) => ({
+    ...ownProps
+  }),
+  (dispatch) => ({
+    updateUser(user){
+      dispatch(updateUser(user))
+    }
+  })
+)(ProfileView);
+```
+
+```javascript
+/* application/components/App.js */
+import React, { Component } from 'react';
+import {
+  ActivityIndicator,
+  Navigator,
+} from 'react-native';
+
+import Dashboard from '../components/Dashboard';
+import Landing from '../components/Landing';
+import Loading from '../components/shared/Loading';
+import LoginContainer from '../containers/LoginContainer';
+import Register from '../components/accounts/Register';
+import RegisterConfirmationContainer from '../containers/RegisterConfirmationContainer';
+import { globals } from '../styles';
+
+export default class App extends Component {
+  constructor(){
+    super();
+    this.logout = this.logout.bind(this);
+  }
+  componentDidMount(){
+    this.props.loadCredentials();
+  }
+  logout(){
+    this.nav.push({ name: 'Landing' })
+  }
+  render() {
+    let { initialRoute, user, ready } = this.props;
+    if ( !ready ) { return <Loading /> }
+    return (
+      <Navigator
+        style={globals.flex}
+        ref={(el) => this.nav = el }
+        initialRoute={{name: initialRoute}}
+        renderScene={(route, navigator) => {
+          switch(route.name){
+            case 'Landing':
+              return (
+                <Landing navigator={navigator}/>
+            );
+            case 'Dashboard':
+              return (
+                <Dashboard navigator={navigator} logout={this.logout} user={user}/>
+            );
+            case 'Register':
+              return (
+                <Register navigator={navigator}/>
+            );
+            case 'RegisterConfirmation':
+              return (
+                <RegisterConfirmationContainer {...route} navigator={navigator}/>
+            );
+            case 'Login':
+              return (
+                <LoginContainer navigator={navigator} />
+            );
+          }
+        }}
+      />
+    );
+  }
+}
+```
+```javascript
+/* application/components/Dashboard.js */
+import React, { Component } from 'react';
+import { TabBarIOS } from 'react-native';
+import { TabBarItemIOS } from 'react-native-vector-icons/Ionicons';
+
+import ActivityView from './activity/ActivityView';
+import MessagesView from './messages/MessagesView';
+import ProfileContainer from '../containers/ProfileContainer';
+import GroupsView from './groups/GroupsView';
+import CalendarView from './calendar/CalendarView';
+import { Headers } from '../fixtures';
+import { API, DEV } from '../config';
+
+class Dashboard extends Component{
+  constructor(){
+    super();
+    this.logout = this.logout.bind(this);
+    this.state = {
+      selectedTab: 'Activity'
+    };
+  }
+  logout(){ /* end the current session and redirect to the Landing page */
+    fetch(`${API}/users/logout`, { method: 'POST', headers: Headers })
+    .then(response => response.json())
+    .then(data => this.props.logout())
+    .catch(err => {})
+    .done();
+  }
+  render(){
+    let { user } = this.props;
+    return (
+      <TabBarIOS>
+        <TabBarItemIOS
+          title='Activity'
+          selected={this.state.selectedTab === 'Activity'}
+          iconName='ios-pulse'
+          onPress={() => this.setState({ selectedTab: 'Activity' })}
+        >
+          <ActivityView currentUser={user}/>
+        </TabBarItemIOS>
+        <TabBarItemIOS
+          title='Groups'
+          selected={ this.state.selectedTab == 'Groups' }
+          iconName='ios-people'
+          onPress={() => this.setState({ selectedTab: 'Groups' })}
+        >
+          <GroupsView currentUser={user}/>
+        </TabBarItemIOS>
+        <TabBarItemIOS
+          title='Calendar'
+          selected={ this.state.selectedTab == 'Calendar' }
+          iconName='ios-calendar'
+          onPress={() => this.setState({ selectedTab: 'Calendar' })}
+        >
+          <CalendarView currentUser={user}/>
+        </TabBarItemIOS>
+        <TabBarItemIOS
+          title='Messages'
+          selected={this.state.selectedTab === 'Messages'}
+          iconName='ios-chatboxes'
+          onPress={() => this.setState({ selectedTab: 'Messages' })}
+        >
+          <MessagesView currentUser={user}/>
+        </TabBarItemIOS>
+        <TabBarItemIOS
+          title='Profile'
+          selected={this.state.selectedTab === 'Profile'}
+          iconName='ios-person'
+          onPress={() => this.setState({ selectedTab: 'Profile' })}
+        >
+          <ProfileContainer currentUser={user} logout={this.logout} {...this.props}/>
+        </TabBarItemIOS>
+      </TabBarIOS>
+    )
+  }
+}
+
+export default Dashboard;
+
+```
