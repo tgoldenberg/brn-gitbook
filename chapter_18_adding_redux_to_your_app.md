@@ -1,6 +1,4 @@
-# Chapter 18: Adding Redux to your App
-
-**Redux**, according to its Github README, is a "predictable state container for JavaScript apps." In other words, it's a way to create a single source of truth for your client-side state. This can be very useful for complex applications that share data across different views. 
+**Redux**, according to its [Github README](https://github.com/reactjs/redux), is a "predictable state container for JavaScript apps." In other words, it's a way to create a single source of truth for your client-side state. This can be very useful for complex applications that share data across different views. 
 
 #### Setting Things Straight
 
