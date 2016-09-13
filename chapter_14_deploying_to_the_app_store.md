@@ -4,11 +4,11 @@ Great, so we've built all the features we want to build and refactored our code.
 
 For that, we need to do several things. Our ultimate goal is to have our app available on the App Store. But for that to happen, there are some steps we should take.
 
-1. We need to create an Apple Developer account
-2. We need to test on an actual device
-3. We need to add an app icon and splash image
-4. We need to share the app with beta testers through TestFlight
-5. We need to deploy the app to the App Store and get it approved
+1. We need to create an Apple Developer account                   [ ]
+2. We need to test on an actual device                            [ ]  
+3. We need to add an app icon and splash image                    [ ]
+4. We need to share the app with beta testers through TestFlight  [ ]
+5. We need to deploy the app to the App Store and get it approved [ ]
 
 # First Steps
 
@@ -52,7 +52,18 @@ The last thing to do before running the app on your device is to create an app I
 
 ![app-id](/images/chapter-15/app-id-1.png)
 
+Now we can check off one of our boxes!
+
+1. We need to create an Apple Developer account                   [x]
+2. We need to test on an actual device                            [ ]  
+3. We need to add an app icon and splash image                    [ ]
+4. We need to share the app with beta testers through TestFlight  [ ]
+5. We need to deploy the app to the App Store and get it approved [ ]
+
+
 # Testing on Your Device
+
+Now that we've set up an Apple Developer account and handled the necessary logistics in the [www.developer.apple.com](www.developer.apple.com) portal, we can head over to XCode to set ourselves up to test our app locally on our own device.
 
 
 ## App Icons
