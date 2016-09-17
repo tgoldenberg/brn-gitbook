@@ -30,7 +30,7 @@ A lot of this information can be found in the detailed blog post linked above, b
 1. Use your personal Apple ID and make it an individual account
 2. Create a new Apple ID and register as a business account
 
-I myself registered with my personal Apple ID as an individual. The advantage to this is that it is easy to setup. The disadvantage is that instead of your company's name, your full name will be listed as the app creator. Somehow the aesthetic of that is less pleasing. Also, if you are creating an app with partners, you may want to register as a business account, for tax and distribution purposes. Both approaches are definitely doable. Just make sure you weigh the pros and cons before deciding.
+In my own personal case, I registered with my personal Apple ID as an individual. The advantage to this is that it is easy to setup. The disadvantage is that instead of your company's name, your full name will be listed as the app creator. Somehow the aesthetic of that is less pleasing. Also, if you are creating an app with partners, you may want to register as a business account, for tax and distribution purposes. Both approaches are definitely doable. Just make sure you weigh the pros and cons before deciding.
 
 Either way, the tutorial linked to above gives step-by-step instruction on setting up the account. You will have to link your bank account and sign tax agreements if you plan on charging for your app. 
 
@@ -42,13 +42,15 @@ To add a certificate to your machine, choose the **Certificates** tab on the lef
 
 ![certificates](/images/chapter-15/certificates-1.png)
 
-After installing the device certificate, you will want to add your device as well. Tony covers this as well -- you will want to go to the **Devices** section on the left and follow the instructions for adding your device.
+After installing the device certificate, you will want to add your device as well. Tony covers this as well -- you will want to go to the **Devices** section on the left and follow the instructions for adding your device. 
 
 ![device](/images/chapter-15/device-1.png)
 
 ## Creating an App ID
 
 The last thing to do before running the app on your device is to create an app ID for your app. To do this we go to the **Identifiers** tab on the left and click the plus button to add a new app ID. When giving an app ID, it will ask for a description of the app, and give the option of using a wildcard ID or an explicit one. It is best to give the explicit one. Apple expects the ID to be ing the form of com.companyName.appName.
+
+The last thing you'll want to do in this portal is to set up what Apple calls your Provisioning Profile. This tab is also on the left side menu, and Tony shows how to easily set this up.
 
 ![app-id](/images/chapter-15/app-id-1.png)
 
@@ -63,8 +65,30 @@ Now we can check off one of our boxes!
 
 # Testing on Your Device
 
-Now that we've set up an Apple Developer account and handled the necessary logistics in the [www.developer.apple.com](www.developer.apple.com) portal, we can head over to XCode to set ourselves up to test our app locally on our own device.
+Now that we've set up an Apple Developer account and handled the necessary logistics in the [www.developer.apple.com](www.developer.apple.com) portal, we can head over to XCode to set ourselves up to test our app locally on our own device. Most of the changes to our actual code take place in a single file: AppDelegate.m
 
+![xcode](/images/chapter-15/xcode-1.png)
+
+Now this is **really** important to understand - the line that defines **jsCodeLocation** determines whether your app will be run from a local Node instance or from a bundled file. The default is to run from a local Node instance. This is the line: 
+```objective-c
+jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+```
+
+Now, there are 2 ways to run on a local device. The first is to run the local Node instance on our phone, the second is to actually download a bundled file to run on the phone. There are advantages to both:
+
+#### Running a local Node instance
+
+This is much easier in development. You are able to access the Chrome Devtools debugger in this way on your actual phone, which can be quite helpful. Also much easier to make changes and see them after a refresh.
+
+#### Running a bundled file
+
+This is cool because it actually downloads the app onto your phone, and it doesn't depend on anything else. This means that once you have done this, you can continue to test your app on the commute to work, for example. While running a local Node instance can only be run when your phone is connected to your computer, the bundled file can be run anywhere.
+
+### How to run your app on your phone locally
+
+To run the app locally, you will want to connect your iPhone to your Mac. Once it is connected, you should be able to select your device in the top device menu. 
+
+![choose device](/images/chapter-15/choose-device-1.png)
 
 ## App Icons
 
