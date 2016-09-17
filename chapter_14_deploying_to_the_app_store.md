@@ -187,9 +187,15 @@ First let's validate the build, by clicking **Validate**. This will first ask us
 
 Now click **Validate**, and you should get a success message.
 
+![validate](/images/chapter-15/validate-1.png)
+
 After that is done, you should click the **Export** button, and basically follow the same steps as the **Validate** process. Make sure you choose the default, to upload for iOS deployment. When this is over, it will save a file to your Desktop with the app name and timestamp (ex. **assembliesTutorial 2016-09-17 12-50-03**). Inside this folder will be your build to submit (ex. **assembliesTutorial.ipa**). 
 
+![build](/images/chapter-15/app-build-1.png)
+
 From here, you should open the **Application Loader** application. Select **Deliver Your App**, and then choose the **.ipa** file you just created. The build information should then display, and you can select **Next** to upload it. Next it should take some time to upload the app, and then (hopefully) deliver a success message.
+
+![application loader](/images/chapter-15/application-loader-success-1.png)
 
 #### What If My Upload Fails?
 
@@ -225,6 +231,10 @@ There are several things we will need to do this.
 * submit a rating for the app - this is straightforward, just check the selections for sensitive content
 
 Once you submit your app, the status will change to **Waiting for Review**. About 5-7 days later, the status will change to either **Approved** or will fail, in which case you should investigate any errors that are given.
+
+### Congratulations!
+
+If you've made it this far, congrats! The App Store deployment process is a painful process, requiring many steps that can be confusing, from creating the proper type of account to loading your final bundle. We hope that this overview may have saved you some precious time! Good luck!
 
 
 
