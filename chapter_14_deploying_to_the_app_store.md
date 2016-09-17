@@ -207,6 +207,8 @@ If your build failed to upload, you will usually receive an error message. The m
 
 From the time that your app successfully uploads from **Application Loader**, it will usually take about 15 minutes for it to be available on iTunes Connect. Access your account on [www.itunesconnect.apple.com](www.itunesconnect.apple.com). From here, go to **My Apps**, and click the **+** icon to add a new app. Add your app ID as **Bundle ID** and **SKU** to get started.
 
+![sku](/images/chapter-15/sku-1.png)
+
 From here, the main options are **App Information** (basic info, description about your app), **Pricing and Availability** (in which countries it is available, etc.), and **Prepare for Submission**. The last option is where we will eventually add our description, screenshots, app icon, and build. 
 
 For now, go to the **TestFlight** option above. First you will want to select **Internal Testing**. Add your internal testers (your team), and select a version to test. As mentioned, you may have to wait a while for your build to become ready. Once selected, you can click **Save** and your internal testers will get a notification from Apple.
@@ -225,6 +227,8 @@ TestFlight is a great tool once you get to know it. It enables you to get feedba
 
 This part should be pretty easy if you've followed the previous steps. We have already created a successful build and tested it on our own device, as well as sharing the build with our team and friends. Now it's time to submit that build to the App Store!
 
+![screenshots](/images/chapter-15/screenshots-1.png)
+
 There are several things we will need to do this.
 
 * A privacy url - you can host a static page on Github pages for this and follow other similar privacy pages
@@ -233,6 +237,8 @@ There are several things we will need to do this.
 * submit a rating for the app - this is straightforward, just check the selections for sensitive content
 
 Once you submit your app, the status will change to **Waiting for Review**. About 5-7 days later, the status will change to either **Approved** or will fail, in which case you should investigate any errors that are given.
+
+![review](/images/chapter-15/review-1.png)
 
 ### Congratulations!
 
