@@ -214,3 +214,18 @@ Once you've tested the app internally, the next step is to submit a build for ex
 TestFlight is a great tool once you get to know it. It enables you to get feedback from up to 2,000 users before unleashing your new app to the public. The internal testing tool is a great way to share updates across a dev team and actually test the app on multiple devices (something that is important for design purposes, among other reasons). We recommend that you at least go through internal testing before submitting a build to the App Store. Always better to get feedback from friends and family before getting bad reviews from paying customers.
 
 # Deploying Your App to the App Store
+
+This part should be pretty easy if you've followed the previous steps. We have already created a successful build and tested it on our own device, as well as sharing the build with our team and friends. Now it's time to submit that build to the App Store!
+
+There are several things we will need to do this.
+
+* A privacy url - you can host a static page on Github pages for this and follow other similar privacy pages
+* screenshots - we can get those with the command **cmd + s** on the Xcode Simulator. Make sure to take 3-4 relevant screenshots on iPhone 6s Simulator.
+* large app icon - just use the same app icon we used before but with the specified measurements
+* submit a rating for the app - this is straightforward, just check the selections for sensitive content
+
+Once you submit your app, the status will change to **Waiting for Review**. About 5-7 days later, the status will change to either **Approved** or will fail, in which case you should investigate any errors that are given.
+
+
+
+
