@@ -193,7 +193,7 @@ From here, you should open the **Application Loader** application. Select **Deli
 
 #### What If My Upload Fails?
 
-If your build failed to upload, you will usually receive an error message. The most common one is that there is already a build with the same versioning (as warned above). 
+If your build failed to upload, you will usually receive an error message. The most common one is that there is already a build with the same versioning (as warned above). If your build fails for some unknown reason, you are probably best bumping the **Version** number up and creating a new build to upload.
 
 ### Accessing Your Build on iTunes Connect
 
