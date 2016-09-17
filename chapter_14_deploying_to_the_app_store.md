@@ -211,4 +211,6 @@ Once you've tested the app internally, the next step is to submit a build for ex
 
 ### Benefits of TestFlight
 
+TestFlight is a great tool once you get to know it. It enables you to get feedback from up to 2,000 users before unleashing your new app to the public. The internal testing tool is a great way to share updates across a dev team and actually test the app on multiple devices (something that is important for design purposes, among other reasons). We recommend that you at least go through internal testing before submitting a build to the App Store. Always better to get feedback from friends and family before getting bad reviews from paying customers.
+
 # Deploying Your App to the App Store
