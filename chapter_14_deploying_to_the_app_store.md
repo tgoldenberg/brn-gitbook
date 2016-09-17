@@ -1,5 +1,3 @@
-# Chapter 14: Deploying to the App Store
-
 Great, so we've built all the features we want to build and refactored our code. Now we want to show it to our friends! How can we do that? 
 
 For that, we need to do several things. Our ultimate goal is to have our app available on the App Store. But for that to happen, there are some steps we should take.
