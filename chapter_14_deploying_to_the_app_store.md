@@ -153,4 +153,6 @@ Basically, you will want to add a **new iOS Launch Image** from the **Images.xca
 ![launch image](/images/chapter-15/launch-image-3.png)
 # Deploying Your App to TestFlight
 
+
+
 # Deploying Your App to the App Store
