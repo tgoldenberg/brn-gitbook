@@ -4,11 +4,11 @@ Great, so we've built all the features we want to build and refactored our code.
 
 For that, we need to do several things. Our ultimate goal is to have our app available on the App Store. But for that to happen, there are some steps we should take.
 
-1. We need to create an Apple Developer account                   [ ]
-2. We need to test on an actual device                            [ ]  
-3. We need to add an app icon and splash image                    [ ]
-4. We need to share the app with beta testers through TestFlight  [ ]
-5. We need to deploy the app to the App Store and get it approved [ ]
+1. We need to create an Apple Developer account                   
+2. We need to test on an actual device                            
+3. We need to add an app icon and splash image                    
+4. We need to share the app with beta testers through TestFlight  
+5. We need to deploy the app to the App Store and get it approved 
 
 # First Steps
 
@@ -131,14 +131,14 @@ NSURL *jsCodeLocation;
 
 This tells Xcode that we want to run our app from the **main.jsbundle** file instead of the local file directory. The app should run exactly the same, except it will say **Loading from pre-bundled file** when the app is refreshed. Notice that it doesn't depend on any local Node processes as well!
 
-Once you successfully bundle in this way and install on your device, you can test the app anywhere you go. This is also the biggest step to deployment, because you have verified that the bundle works properly. Everything else if just submitting your bundle and distributing it to other users!
+Once you successfully bundle in this way and install on your device, you can test the app anywhere you go. This is also the biggest step to deployment, because you have verified that the bundle works properly. Everything else is just submitting your bundle and distributing it to other users!
 
 ## App Icons
 
 Apple has specific size requirements for app icons and launch images, which can be quite confusing. Luckily, there are some online tools that make it easier. If you have a high-resolution image that you wish to use for your icon or launch screen, you can visit [www.makeappicon.com](www.makeappicon.com) and download a folder with all the different sizes. 
 ![app-icon](/images/chapter-15/make-app-icon-1.png)
 
-Notice that if your app lacks app icon images, you will not be able to upload it to the App Store. While this process can be confusing, Xcode will give warning on the left panel if your images are the wrong size.
+Notice that if your app lacks app icon images, you will not be able to upload it to the App Store. While this process can be confusing, Xcode will give warnings on the left panel if your images are the wrong size.
 
 For editing image sizes, it is good to have one image in a very large size, and then make copies, editing the size in a program like **Sketch** or even in your Mac's **Preview** application. For a list of required image sizes, there are [resources](https://developer.apple.com/library/content/qa/qa1686/_index.html) on Apple's Q&A forum. 
 
@@ -176,6 +176,8 @@ It's also useful to modify the settings right below this, under **General > Depl
 ### Creating a Build
 
 Once we have ensured that our app is linked to the proper app ID and Apple ID, we can create a build. To do this, first select **Generic iOS Device** under the top device selection button. Then under the **Product** top tab, select **Archive**.
+
+![archive](/images/chapter-15/archive-1.png)
 
 This will then create a build, and show the build in a separate window. Here, we will need to do a few things:
 
