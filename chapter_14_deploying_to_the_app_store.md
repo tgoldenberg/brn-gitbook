@@ -90,6 +90,31 @@ To run the app locally, you will want to connect your iPhone to your Mac. Once i
 
 ![choose device](/images/chapter-15/choose-device-1.png)
 
+From here, if you build the app (without changing any of the lines in your AppDelegate.m file, it should build a version on your iPhone. Shaking the phone will bring up the developer menu.
+
+### Why is my app much slower?
+
+If you're wondering why your app runs slower on your actual iPhone than in the Simulator, it could be because of unnecessary **console.log** statements. That is why we adding a configuration file that turns off **console.log** statements when in mode **DEV=false**. 
+
+Also, the **Navigator** transitions could be slow if you are not making good use of the **InteractionsManager**. We show how to use this to your advantage in order to maintain smooth scene transitions in the tutorial.
+
+### How to run your app with a bundle
+
+Although not very well documented, React Native provides a **bundle** command in its command line tool. This command expects the following arguments
+* **--entry-file** the file where your app starts (**index.ios.js**)
+* **--platform** the platform compiling for (**ios** or **android**)
+* **--dev** development mode (**true** or **false**)
+* **--bundle-output** where you want to store the final bundle (**ios/main.jsbundle**)
+* **--assets-dest** where you would like the images, etc., store (**ios**)
+
+While there are other arguments the **react-native bundle** command accepts, these are the main ones we will be utilizing.
+
+Now run the command with arguments we specified. The command should look like this:
+
+```
+react-native bundle --entry-file index.ios.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios
+```
+
 ## App Icons
 
 Apple has specific size requirements for app icons and launch images, which can be quite confusing. Luckily, there are some online tools that make it easier. If you have a high-resolution image that you wish to use for your icon or launch screen, you can visit www.makeappicon.com and download a folder with all the different sizes. 
