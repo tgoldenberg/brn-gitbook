@@ -153,6 +153,20 @@ Basically, you will want to add a **new iOS Launch Image** from the **Images.xca
 ![launch image](/images/chapter-15/launch-image-3.png)
 # Deploying Your App to TestFlight
 
+From here, it gets relatively easy. Please do not skip to this step until you have done all of the above. The reasons for this:
+* if you do not have an app icon you cannot upload your app
+* if you have not properly bundled and successfully ran your app from a bundle you may be wasting lots of time (and may only realize the error after waiting a week to hear your submission response).
+
+Now that we've got all that taken care of, here are some things we will have to be aware of when uploading our app
+
+1. We will need to download the **Application Loader** application. This makes uploading our binaries much easier and reliable, at least in my opinion.
+2. We will need to make sure our app is linked to the **App ID** we created earlier and that our Apple ID account is correctly linked
+3. We will need to manage the version numbers of each upload. Uploading an app with the same version number will cause an error and will fail.
+
+That said, let's get started!
+
+
+
 
 
 
