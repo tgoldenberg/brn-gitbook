@@ -115,17 +115,42 @@ Now run the command with arguments we specified. The command should look like th
 react-native bundle --entry-file index.ios.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios
 ```
 
+![bundle](/images/chapter-15/bundle-1.png)
+
+You should see output showing the app being bundled, and then a notification that it was successful. After this, we have to configure our **AppDelegate.m** file to run the bundle instead of the local Node instance. 
+
+You will want to comment out the previous definition of **jsCodeLocation** and replace it with the following:
+
+```
+NSURL *jsCodeLocation;
+  jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+
+//  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+
+```
+
+This tells Xcode that we want to run our app from the **main.jsbundle** file instead of the local file directory. The app should run exactly the same, except it will say **Loading from pre-bundled file** when the app is refreshed. Notice that it doesn't depend on any local Node processes as well!
+
+Once you successfully bundle in this way and install on your device, you can test the app anywhere you go. This is also the biggest step to deployment, because you have verified that the bundle works properly. Everything else if just submitting your bundle and distributing it to other users!
+
 ## App Icons
 
-Apple has specific size requirements for app icons and launch images, which can be quite confusing. Luckily, there are some online tools that make it easier. If you have a high-resolution image that you wish to use for your icon or launch screen, you can visit www.makeappicon.com and download a folder with all the different sizes. 
+Apple has specific size requirements for app icons and launch images, which can be quite confusing. Luckily, there are some online tools that make it easier. If you have a high-resolution image that you wish to use for your icon or launch screen, you can visit [www.makeappicon.com](www.makeappicon.com) and download a folder with all the different sizes. 
 ![app-icon](/images/chapter-15/make-app-icon-1.png)
 
+Notice that if your app lacks app icon images, you will not be able to upload it to the App Store. While this process can be confusing, Xcode will give warning on the left panel if your images are the wrong size.
 
-## Setting up the App Icon
+For editing image sizes, it is good to have one image in a very large size, and then make copies, editing the size in a program like **Sketch** or even in your Mac's **Preview** application. For a list of required image sizes, there are [resources](https://developer.apple.com/library/content/qa/qa1686/_index.html) on Apple's Q&A forum. 
 
 ## Setting up the Launch Screen
 
+While setting up a launch screen isn't absolutely essential to uploading your app, it is recommended. From the start, React Native provides us with a basic launch screen, but you may want to follow the instructions in Apple's developer [documentation](https://developer.apple.com/ios/human-interface-guidelines/graphics/launch-screen/) to add your own custom launch screen images. 
 
+Basically, you will want to add a **new iOS Launch Image** from the **Images.xcassets** directory, and fill it with images of the proper sizes. Then you will want to **General > App Icons and Launch Images** and add your Launch Screen folder to the **Launch Images Source** option. You will also want to remove the default **LaunchImage.xib** file provided by React Native and clean/rebuild your build to test the changes. 
+
+![launch image](/images/chapter-15/launch-image-1.png)
+![launch image](/images/chapter-15/launch-image-2.png)
+![launch image](/images/chapter-15/launch-image-3.png)
 # Deploying Your App to TestFlight
 
 # Deploying Your App to the App Store
