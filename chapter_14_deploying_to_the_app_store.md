@@ -165,10 +165,50 @@ Now that we've got all that taken care of, here are some things we will have to 
 
 That said, let's get started!
 
+#### Linking to our App ID
 
+In **General > Identity**, there are three fields we need to ensure are correct. The first is **Bundle Identifier**. This should be exactly the same as the app ID that we created in the itunes developer portal. The second is the **Team** field. This should be your Apple developer account (you may have to add it here, by clicking **add**). Last is the **Version**. As mentioned earlier, this adhere to **semver** rules, meaning **Number dot number dot number**. You want to bump up the last number after each upload, and change the major numbers as needed.
 
+![deploying](/images/chapter-15/deploying-1.png)
 
+It's also useful to modify the settings right below this, under **General > Deployment Info**. Here you can set your **Deployment Target** (the earliest iOS you will support), **Device Orientation** (usually useful to only have **Portrait** on, and **Status Bar Style** (useful to have as **Light** if shown over a dark navigation bar, as in our case).
 
+### Creating a Build
 
+Once we have ensured that our app is linked to the proper app ID and Apple ID, we can create a build. To do this, first select **Generic iOS Device** under the top device selection button. Then under the **Product** top tab, select **Archive**.
+
+This will then create a build, and show the build in a separate window. Here, we will need to do a few things:
+
+* Validate the build
+* Export the build
+* Upload via the Application Loader
+
+First let's validate the build, by clicking **Validate**. This will first ask us to select an Apple account. Then it will show a screen that asks us to **Validate**. Here, it is recommeded to unclick the checkbox that says **Include bitcode**. This is a small modification that sometimes speeds up the upload time.
+
+Now click **Validate**, and you should get a success message.
+
+After that is done, you should click the **Export** button, and basically follow the same steps as the **Validate** process. Make sure you choose the default, to upload for iOS deployment. When this is over, it will save a file to your Desktop with the app name and timestamp (ex. **assembliesTutorial 2016-09-17 12-50-03**). Inside this folder will be your build to submit (ex. **assembliesTutorial.ipa**). 
+
+From here, you should open the **Application Loader** application. Select **Deliver Your App**, and then choose the **.ipa** file you just created. The build information should then display, and you can select **Next** to upload it. Next it should take some time to upload the app, and then (hopefully) deliver a success message.
+
+#### What If My Upload Fails?
+
+If your build failed to upload, you will usually receive an error message. The most common one is that there is already a build with the same versioning (as warned above). 
+
+### Accessing Your Build on iTunes Connect
+
+From the time that your app successfully uploads from **Application Loader**, it will usually take about 15 minutes for it to be available on iTunes Connect. Access your account on [www.itunesconnect.apple.com](www.itunesconnect.apple.com). From here, go to **My Apps**, and click the **+** icon to add a new app. Add your app ID as **Bundle ID** and **SKU** to get started.
+
+From here, the main options are **App Information** (basic info, description about your app), **Pricing and Availability** (in which countries it is available, etc.), and **Prepare for Submission**. The last option is where we will eventually add our description, screenshots, app icon, and build. 
+
+For now, go to the **TestFlight** option above. First you will want to select **Internal Testing**. Add your internal testers (your team), and select a version to test. As mentioned, you may have to wait a while for your build to become ready. Once selected, you can click **Save** and your internal testers will get a notification from Apple.
+
+From the email notification, you can access a special code and enter the code in the **TestFlight** iOS app. This will give you access to download the build and run it on your device.
+
+### External Testers
+
+Once you've tested the app internally, the next step is to submit a build for external testers. This step has a little more scrutiny, and usually requires 1-2 days for approval. You will have to specify what your users should be testing for and provide contact information. Once submitted, you will be notified when the build is approved, and the same process as internal testing will take place.
+
+### Benefits of TestFlight
 
 # Deploying Your App to the App Store
