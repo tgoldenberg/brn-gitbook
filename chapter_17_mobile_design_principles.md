@@ -1,2 +1,2 @@
-# Chapter 17: Mobile Design Principles
+# Chapter 17: Mobile Design for Non-Designers
 
