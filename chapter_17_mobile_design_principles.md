@@ -49,3 +49,13 @@ The easiest way to design an app that users will understand and love is to look 
 
 When you're about to embark on a new design project, start by taking screenshots of all of the apps in your industry or just those that you like. How do they handle navigation? How do the handle registration? If your app has a chat interface, look at ten apps that do chat well side-by-side. Chances are you'll see a lot of similarities and you can include those similarities n your app. Using common paradigms helps users understand how your app works, since they've lkely seen similar patterns before. 
 
+##Principle #3: Standardize, then Standardize Some More
+
+React Native requires you to build your app as a series of components arranged in a hierarchy of parents and children. This approach has a lot of benefits for a developer - it enforces unidrectional data flow to improve debugging, it encourages code reusability, and it makes it easier to leverage open source components. But the component approach isn't just powerful for the developer, it makes it far easier to design a consistent experience.
+
+When planning your app, keep an idea on how many similar components you're creating. How many different kinds of buttons do you have? If you answered six, ask yourself if you you can collapse some of your styles. How many different classes do you have for text? Most apps won't need more than three or four heading styles, a paragraph style, and one or two for buttons.  Better yet, if you reuse the same styles again and again, you can tweak them quickly and see how they look across the app.
+
+### Identify Your Components
+
+If you've made sketches of your app, you can probably start to draw boxes around your different kinds of views, cards, buttons, etc. You can then decide on intuitive names for these components before you translate them to code. If you spend a little time planning before you code, you can figure out which components will need to handle logic, and which will just be for presentation. For example, if you have a couple of button components, you can re-use them anytime you need a button, and just have them inherit a value `prop`. This way if you decide you want your buttons to be blue instead of green, all you need to do is update one value and try it out. 
+
