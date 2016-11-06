@@ -28,3 +28,24 @@ You don't need any design talent to scratch out some rough ideas and run them by
 Disclaimer: Sketch costs $99 for the full version, but I can say it is absolutely worth it if you're going to be doing regular sketching, and it's far cheaper than it's competitors. It does have a 30-day free trial if you expect to only need it for a few weeks.
 
 #### InVision
+
+[InVision](https://www.invisionapp.com/) is a free service that lets you create clickable/tappable prototypes from images you upload. If you've got some rough PNGs you've drawn in Sketch, you can quickly create a prototype you can share via a link with friends and potential users. You can even let them comment directly on your designs and iterate through to the best ideas. The company has built an incredible following among the design community for how easy it is to use. It also offers paid plans which provide a deeper feature set if you're serious
+
+#### Pen and Paper
+
+Seriously, one of the oldest design tools is still one of the best. Design agencies all over the world have conference rooms covered with whiteboards because drawing is one of the best ways to work through ideas. If you find digital tools to overwhelming, just close your laptop and get a pen and paper. No matter how rough your sketches, you'll be able to get an idea of the core screens that make your app in under an hour. At the very least, it'll give you a clear picture of what you're coding before you start.
+
+## Principle #2: Don't Do Something New
+
+This may sound like insane advice. After all, shouldn't your app solve people's problems in some new, inventive way? Actually no, successful products usually rely heavily on common design patterns with a bit of innovation thrown in in key areas.
+
+Imagine if you were trying to design a new bike. But not just any bike, you're going to completely re-imagine the way people think about bikes. You decide that in order to innovate it's important you throw out all of these stupid conventions? Why should you use rubber tires? Just because we've been using rubber tires for a century doesn't mean we should continue doing so. Maybe polyurethane would be more durable. And instead of carbon fiber frames, you decide someone really needs to look into trying bamboo. And finally, you think the angles are all wrong - people clearly would prefer to lean back further as they ride, right? 
+
+You can see where this is going. It's one thing to challenge some of the core assumptions underpinning a product's design, it's another thing to challenge *all* of them. The reality is that most well-established products are the culmination of extensive research and usability testing, and you can benefit by leveraging what works. 
+
+### Leveraging Design Patterns
+
+The easiest way to design an app that users will understand and love is to look at what other successful apps do. I'm not saying you directly copy someone else's design, I'm saying you draw inspiration from it and follow the patterns that work. 
+
+When you're about to embark on a new design project, start by taking screenshots of all of the apps in your industry or just those that you like. How do they handle navigation? How do the handle registration? If your app has a chat interface, look at ten apps that do chat well side-by-side. Chances are you'll see a lot of similarities and you can include those similarities n your app. Using common paradigms helps users understand how your app works, since they've lkely seen similar patterns before. 
+
