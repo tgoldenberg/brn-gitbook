@@ -1,7 +1,7 @@
 # Chapter 17: App Design for Non-Designers
 
 
-React Native is incredible technology. The framework makes it possible for a single web developer to create an entire app herself. To be sure, this is progress.
+React Native is an incredible technology. The framework makes it possible for a single web developer to create an entire app herself. To be sure, this is progress.
 
 But with great power comes great responsibility. Now that you *can* build a whole app yourself, how do you make sure it's actually usable? It's completely possible to be a great developer and not have the first idea about how to make your app intuitive and attractive.
 
