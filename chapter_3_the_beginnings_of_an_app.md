@@ -50,7 +50,10 @@ We'll also need to link the icon package to XCode with [**rnpm**](https://github
 ```
 npm install -g rnpm
 ```
+
 Then link the packages with the command `rnpm link`. You should get a success message.
+
+*Note: you can now directly link from the react-native CLI, as rnpm has been merged in the core repo. Just use the command `react-native link`*
 
 ![rnpm](/images/chapter-3/rnpm-1.png)
 
@@ -377,8 +380,7 @@ import {
 } from 'react-native';
 
 import Colors from '../styles/colors';
-import { landingStyles } from '../styles';
-import { globals } from '../styles';
+import { landingStyles, globals } from '../styles';
 
 const BackgroundImage = 'https://s3-us-west-2.amazonaws.com/assembliesapp/welcome%402x.png';
 const Logo = 'https://s3-us-west-2.amazonaws.com/assembliesapp/logo.png';
