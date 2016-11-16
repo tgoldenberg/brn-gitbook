@@ -419,9 +419,9 @@ class Landing extends Component{
           style={globals.button}
           onPress={this.visitDashboard}
         >
-          <Icon name='person' size={36} color='white' />
+          <Icon name='ios-person' size={36} color='white' />
           <Text style={globals.buttonText}>
-            Go to Dashboard
+            {" "} Go to Dashboard
           </Text>
         </TouchableOpacity>
       </View>
