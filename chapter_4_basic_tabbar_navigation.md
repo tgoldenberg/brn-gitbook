@@ -29,7 +29,7 @@ Next we want to create a tab bar with 3 tabs - **Dashboard**, **Messages**, and 
 /* application/components/Dashboard.js */
 import React, { Component } from 'react';
 import { TabBarIOS } from 'react-native';
-import { TabBarItemIOS } from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import ActivityView from './activity/ActivityView';
 import MessagesView from './messages/MessagesView';
@@ -45,15 +45,15 @@ class Dashboard extends Component{
   render(){
     return (
       <TabBarIOS>
-        <TabBarItemIOS
+        <Icon.TabBarItemIOS
           title='Activity'
           selected={this.state.selectedTab === 'Activity'}
           iconName='ios-pulse'
           onPress={() => this.setState({ selectedTab: 'Activity' })}
         >
           <ActivityView />
-        </TabBarItemIOS>
-        <TabBarItemIOS
+        </Icon.TabBarItemIOS>
+        <Icon.TabBarItemIOS
           title='Messages'
           selected={this.state.selectedTab === 'Messages'}
           iconName='ios-chatboxes'
@@ -61,14 +61,14 @@ class Dashboard extends Component{
         >
           <MessagesView />
         </TabBarItemIOS>
-        <TabBarItemIOS
+        <Icon.TabBarItemIOS
           title='Profile'
           selected={this.state.selectedTab === 'Profile'}
           iconName='ios-person'
           onPress={() => this.setState({ selectedTab: 'Profile' })}
         >
           <ProfileView />
-        </TabBarItemIOS>
+        </Icon.TabBarItemIOS>
       </TabBarIOS>
     )
   }
@@ -244,7 +244,7 @@ import { globals, messagesStyles } from '../../styles';
 
 const styles = messagesStyles;
 
-class Conversations extends Component{
+class MessagesView extends Component{
   constructor(){
     super();
     this._renderRow = this._renderRow.bind(this);
@@ -282,7 +282,7 @@ class Conversations extends Component{
   }
 };
 
-export default Conversations;
+export default MessagesView;
 
 ```
 ![messages](/images/chapter-4/messages-1.png)
