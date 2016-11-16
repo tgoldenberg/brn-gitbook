@@ -127,6 +127,8 @@ Installing a new package works just like it does in any other Node project. Make
 
 ```npm install moment --save```
 
+You can also use the package `yarn` if you have it installed. Check out the [documentation](https://yarnpkg.com/). The command with `yarn` would be `yarn add moment`.
+
 Here we’re installing the marvelous [Moment.js](http://momentjs.com/) package which we’ll be using to format dates easily in our project. Adding the `--save` flag is essential, as `npm install` only installs the package locally - ```--save``` will add the package as a dependency in `package.json` so it will get bundled with our app.
 
 Opening up `package.json`, we can see that `moment` has been added:
