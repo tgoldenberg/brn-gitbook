@@ -60,7 +60,7 @@ class Dashboard extends Component{
           onPress={() => this.setState({ selectedTab: 'Messages' })}
         >
           <MessagesView />
-        </TabBarItemIOS>
+        </Icon.TabBarItemIOS>
         <Icon.TabBarItemIOS
           title='Profile'
           selected={this.state.selectedTab === 'Profile'}
